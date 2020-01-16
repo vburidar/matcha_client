@@ -8,7 +8,7 @@ function HomePage() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
-  const callbackLogin = async ([childLogin, childPassword, childEmail]) => {
+  const callbackSignupData = async ([childLogin, childPassword, childEmail]) => {
     setLogin(childLogin);
     setPassword(childPassword);
     setEmail(childEmail);
@@ -31,7 +31,7 @@ function HomePage() {
   return (
     <div>
       <h1>Sign up today</h1>
-      <SignupForm parentCallback={callbackLogin} />
+      <SignupForm parentCallback={callbackSignupData} />
       <p>{login}</p>
       <p>{password}</p>
       <p>{email}</p>

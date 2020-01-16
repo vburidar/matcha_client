@@ -6,7 +6,7 @@ function HomePage() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
 
-  const callbackLogin = async ([childLogin, childPassword]) => {
+  const callbackSigninData = async ([childLogin, childPassword]) => {
     setLogin(childLogin);
     setPassword(childPassword);
   };
@@ -14,12 +14,11 @@ function HomePage() {
   useEffect(() => {
     async function readUser() {
       if (login !== '' && password !== '') {
-        //requete node
-        //const user = await api.post('users', {
+        // requete node
+        // const user = await api.post('users', {
         //  login,
         //  password,
-        //});
-        console.log('logged in ' + login + ' ' + password);
+        // });
       }
     }
     readUser();
@@ -28,7 +27,8 @@ function HomePage() {
   return (
     <div>
       <h1>Sign in</h1>
-      <SigninForm parentCallback={callbackLogin} />
+      <SigninForm parentCallback={callbackSigninData} />
+      <a href="/resetPwd">Forgot your password?</a>
       <p>{login}</p>
       <p>{password}</p>
     </div>
