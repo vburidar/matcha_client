@@ -6,13 +6,18 @@ class SignupForm extends React.Component {
     this.state = {
       login: '',
       password: '',
-      password_conf: '',
+      passwordConf: '',
       email: '',
-      email_conf: '',
-      message_pwd: '',
-      message_email:'',
+      emailConf: '',
+      messagePwd: '',
+      messageEmail: '',
+      pwdIsValid: 0,
+      emailIsValid: 0,
+      disableSubmit: 1,
     };
 
+    this.updateSubmitAbility = this.updateSubmitAbility.bind(this);
+    this.allFieldsAreSet = this.allFieldsAreSet.bind(this);
     this.handleChangeLogin = this.handleChangeLogin.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
     this.handleChangePasswordConf = this.handleChangePasswordConf.bind(this);
@@ -21,48 +26,106 @@ class SignupForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  allFieldsAreSet() {
+    const {
+      login, password, passwordConf, email, emailConf,
+    } = this.state;
+    let test = 0;
+    const tabParams = [login, password, passwordConf, email, emailConf];
+    tabParams.forEach((item) => {
+      if (item.length === 0) {
+        test = 1;
+      }
+    });
+    if (test > 0) {
+      return (0);
+    }
+    return (1);
+  }
+
+  updateSubmitAbility() {
+    const { pwdIsValid, emailIsValid } = this.state;
+    this.state.disableSubmit = 1;
+    if (pwdIsValid && emailIsValid && this.allFieldsAreSet()) {
+      this.state.disableSubmit = 0;
+    }
+  }
+
   handleChangeLogin(event) {
     this.setState({ login: event.target.value });
   }
 
   handleChangePassword(event) {
+    let { messagePwd } = this.state;
     this.setState({ password: event.target.value });
-    if (this.state.password_conf != event.target.value && this.state.password_conf != ''){
-      this.state.message_pwd = "Password confirmation is different from password";
+    const { passwordConf } = this.state;
+    const password = event.target.value;
+    this.state.pwdIsValid = 0;
+    if (password.toUpperCase() === password && password.length > 0) {
+      messagePwd = 'Password must contain one lower case';
+    } else if (password.toLowerCase() === password && password.length > 0) {
+      messagePwd = 'Password must contain one upper case';
+    } else if (!password.match(/\d+/) && password.length > 0) {
+      messagePwd = 'Password must contain one digit';
+    } else if (password.length < 9 && password.length > 0) {
+      messagePwd = 'Password should be at least 9 characters long';
+    } else if (passwordConf !== event.target.value && passwordConf !== '') {
+      messagePwd = 'Password confirmation is different from password';
+    } else {
+      messagePwd = '';
+      if (password.length > 0 && passwordConf.length > 0) {
+        this.state.pwdIsValid = 1;
+      }
     }
-    else{
-      this.state.message_pwd = "";
-    }
+    this.updateSubmitAbility();
+    this.state.messagePwd = messagePwd;
   }
 
   handleChangePasswordConf(event) {
-    this.setState({ password_conf: event.target.value });
-    if (this.state.password != event.target.value){
-      this.state.message_pwd = "Password confirmation is different from password";
+    const { password } = this.state;
+    let { messagePwd } = this.state;
+    this.state.pwdIsValid = 0;
+    this.setState({ passwordConf: event.target.value });
+    if (password !== event.target.value && messagePwd === '') {
+      messagePwd = 'Password confirmation is different from password';
+    } else if (password === event.target.value && messagePwd === 'Password confirmation is different from password') {
+      messagePwd = '';
+      this.state.pwdIsValid = 1;
     }
-    else{
-      this.state.message_pwd = "";
-    }
+    this.state.messagePwd = messagePwd;
+    this.updateSubmitAbility();
   }
 
   handleChangeEmail(event) {
+    const { emailConf } = this.state;
     this.setState({ email: event.target.value });
-    if (this.state.email_conf !== event.target.value && this.state.email_conf != ''){
-      this.state.message_email = "Email confirmation is different from email";
+    this.state.emailIsValid = 0;
+    if (!event.target.value.match(/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/) && event.target.value.length > 0) {
+      this.state.messageEmail = 'This Email address is invalid';
+    } else if (emailConf !== event.target.value && emailConf !== '') {
+      this.state.messageEmail = 'Email confirmation is different from email';
+    } else {
+      this.state.messageEmail = '';
+      if (emailConf.length > 0) {
+        this.state.emailIsValid = 1;
+      }
     }
-    else {
-      this.state.message_email = "";
-    }
+    this.updateSubmitAbility();
   }
-  
+
   handleChangeEmailConf(event) {
-    this.setState({ email_conf: event.target.value });
-    if (this.state.email != event.target.value){
-      this.state.message_email = "Email confirmation is different from email";
+    const { email } = this.state;
+    let { messageEmail } = this.state;
+    this.state.emailIsValid = 0;
+    this.setState({ emailConf: event.target.value });
+    if (email !== event.target.value) {
+      messageEmail = 'Email confirmation is different from email';
+    } else if (email === event.target.value && messageEmail === 'Email confirmation is different from email') {
+      messageEmail = '';
+      this.state.emailIsValid = 1;
     }
-    else {
-      this.state.message_email = "";
-    }
+    this.state.messageEmail = messageEmail;
+    this.updateSubmitAbility();
   }
 
   handleSubmit(event) {
@@ -73,18 +136,22 @@ class SignupForm extends React.Component {
   }
 
   render() {
-    const { login, password, password_conf, email, email_conf, message_pwd, message_email } = this.state;
+    const {
+      login, password, passwordConf, email, emailConf, messagePwd, messageEmail, disableSubmit,
+    } = this.state;
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <input type="text" name="login" placeholder="login" value={login} onChange={this.handleChangeLogin} required /><br/>
-          <p>{message_pwd}</p>
+          <input type="text" name="login" placeholder="login" value={login} onChange={this.handleChangeLogin} required />
+          <br />
+          <p>{messagePwd}</p>
           <input type="password" name="pwd" placeholder="password" value={password} onChange={this.handleChangePassword} required />
-          <input type="password" name="pwd" placeholder="confirm password" value={password_conf} onChange={this.handleChangePasswordConf} required />
-          <p>{message_email}</p>
+          <input type="password" name="pwd" placeholder="confirm password" value={passwordConf} onChange={this.handleChangePasswordConf} required />
+          <p>{messageEmail}</p>
           <input type="email" name="email" placeholder="email" value={email} onChange={this.handleChangeEmail} required />
-          <input type="email" name="email" placeholder="confirm email" value={email_conf} onChange={this.handleChangeEmailConf} required /><br/>
-          <input type="submit" name="submit" value="submit" />
+          <input type="email" name="email" placeholder="confirm email" value={emailConf} onChange={this.handleChangeEmailConf} required />
+          <br />
+          <input type="submit" name="submit" value="submit" disabled={disableSubmit} />
         </form>
       </div>
     );
