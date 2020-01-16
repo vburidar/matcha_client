@@ -28,7 +28,7 @@ class ForgottenPwdForm extends React.Component {
   }
 
   render() {
-    const {email, submitDisable } = this.state;
+    const { email, submitDisable } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
         <input type="email" name="email" placeholder="email" value={email} onChange={this.handleChangeEmail} />

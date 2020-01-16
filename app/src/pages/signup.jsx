@@ -17,7 +17,7 @@ function HomePage() {
   useEffect(() => {
     async function createUser() {
       if (login !== '' && password !== '' && email !== '') {
-        const user = await api.post('users', {
+        const user = await api.post('auth/signup', {
           login,
           password,
           email,

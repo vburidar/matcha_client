@@ -10,19 +10,20 @@ function HomePage() {
     setLogin(childLogin);
     setPassword(childPassword);
   };
-
+  
   useEffect(() => {
     async function readUser() {
       if (login !== '' && password !== '') {
-        // requete node
-        // const user = await api.post('users', {
-        //  login,
-        //  password,
-        // });
+        const user = await api.post('auth/signin', {
+          login,
+          password,
+        });
+        console.log('User read!', user);
       }
     }
     readUser();
   });
+
 
   return (
     <div>
