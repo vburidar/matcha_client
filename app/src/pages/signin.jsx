@@ -10,7 +10,7 @@ function HomePage() {
     setLogin(childLogin);
     setPassword(childPassword);
   };
-  
+
   useEffect(() => {
     async function readUser() {
       if (login !== '' && password !== '') {
@@ -18,7 +18,7 @@ function HomePage() {
           login,
           password,
         });
-        console.log('User read!', user);
+        console.log(user);
       }
     }
     readUser();
