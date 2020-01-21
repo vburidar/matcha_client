@@ -29,7 +29,7 @@ function HomePage() {
     <div>
       <h1>Sign in</h1>
       <SigninForm parentCallback={callbackSigninData} />
-      <a href="/resetPwd">Forgot your password?</a>
+      <a href="/forgotPwd">Forgot your password?</a>
       <p>{login}</p>
       <p>{password}</p>
     </div>

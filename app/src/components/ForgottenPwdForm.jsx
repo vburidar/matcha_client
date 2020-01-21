@@ -15,7 +15,7 @@ class ForgottenPwdForm extends React.Component {
   handleSubmit(event) {
     const { email } = this.state;
     const { parentCallback } = this.props;
-    parentCallback(email);
+    parentCallback([email]);
     event.preventDefault();
   }
 
