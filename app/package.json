@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "^4.8.3",
+    "@material-ui/lab": "^4.0.0-alpha.39",
     "axios": "^0.19.1",
     "next": "^9.1.7",
     "react": "^16.12.0",
