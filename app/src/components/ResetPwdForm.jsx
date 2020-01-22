@@ -1,81 +1,87 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FormControl, FormHelperText } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import FlatButton from '@material-ui/core/Button';
 
-class ResetPwdForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      password: '',
-      passwordConf: '',
-      messagePwd: '',
-      submitDisabled: 1,
-    };
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.handleChangePasswordConf = this.handleChangePasswordConf.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+function ResetPwdForm(
+  { submitResetData },
+) {
+  const [password, setPassword] = useState('');
+  const [passwordConf, setPasswordConf] = useState('');
+  const [messagePwd, setMessagePwd] = useState('');
+  const [submitDisabled, setSubmitDisabled] = useState(true);
 
-  handleSubmit(event) {
-    const { password, passwordConf } = this.state;
-    const { parentCallback } = this.props;
-    parentCallback([password, passwordConf]);
+  const handleSubmit = (event) => {
+    submitResetData([password, passwordConf]);
     event.preventDefault();
-  }
+  };
 
-  handleChangePassword(event) {
-    let { messagePwd } = this.state;
-    this.setState({ password: event.target.value });
-    const { passwordConf } = this.state;
-    const password = event.target.value;
-    this.state.pwdIsValid = 1;
-    if (password.toUpperCase() === password && password.length > 0) {
-      messagePwd = 'Password must contain one lower case';
-    } else if (password.toLowerCase() === password && password.length > 0) {
-      messagePwd = 'Password must contain one upper case';
-    } else if (!password.match(/\d+/) && password.length > 0) {
-      messagePwd = 'Password must contain one digit';
-    } else if (password.length < 9 && password.length > 0) {
-      messagePwd = 'Password should be at least 9 characters long';
+  const handleChangePassword = (event) => {
+    setPassword(event.target.value);
+    setSubmitDisabled(true);
+    if (event.target.value.toUpperCase() === event.target.value && event.target.value.length > 0) {
+      setMessagePwd('Password must contain one lower case');
+    } else if (event.target.value.toLowerCase() === event.target.value && event.target.value.length > 0) {
+      setMessagePwd('Password must contain one upper case');
+    } else if (!event.target.value.match(/\d+/) && event.target.value.length > 0) {
+      setMessagePwd('Password must contain one digit');
+    } else if (event.target.value.length < 9 && event.target.value.length > 0) {
+      setMessagePwd('Password should be at least 9 characters long');
     } else if (passwordConf !== event.target.value && passwordConf !== '') {
-      messagePwd = 'Password confirmation is different from password';
+      setMessagePwd('Password confirmation is different from password');
     } else {
-      messagePwd = '';
-      if (password.length > 0 && passwordConf.length > 0) {
-        this.submitDisabled = 0;
+      setMessagePwd('');
+      if (event.target.value.length > 0 && passwordConf.length > 0) {
+        setSubmitDisabled(false);
       }
     }
-    this.state.messagePwd = messagePwd;
-  }
+  };
 
-  handleChangePasswordConf(event) {
-    const { password } = this.state;
-    let { messagePwd } = this.state;
-    this.state.pwdIsValid = 1;
-    this.setState({ passwordConf: event.target.value });
+  const handleChangePasswordConf = (event) => {
+    setSubmitDisabled(true);
+    setPasswordConf(event.target.value);
     if (password !== event.target.value && messagePwd === '') {
-      messagePwd = 'Password confirmation is different from password';
+      setMessagePwd('Password confirmation is different from password');
     } else if (password === event.target.value && messagePwd === 'Password confirmation is different from password') {
-      messagePwd = '';
-      this.state.submitDisabled = 0;
+      setMessagePwd('');
+      setSubmitDisabled(false);
     }
-    this.state.messagePwd = messagePwd;
-  }
+  };
+  return (
+    <div>
+      <form onSubmit={handleSubmit} noValidate>
+        <FormControl fullWidth>
+          <TextField
+            type="password"
+            name="password"
+            label="password"
+            value={password}
+            onChange={handleChangePassword}
+          />
+        </FormControl>
+        <FormHelperText error>{messagePwd}</FormHelperText>
+        <FormControl fullWidth>
+          <TextField
+            type="password"
+            name="passwordConf"
+            label="password confirmation"
+            value={passwordConf}
+            onChange={handleChangePasswordConf}
+          />
+        </FormControl>
+        <FormControl fullWidth>
+          <FlatButton
+            type="submit"
+            name="submit"
+            disabled={submitDisabled}
+            onChange={handleSubmit}
+          >
+            SUBMIT
+          </FlatButton>
+        </FormControl>
+      </form>
+    </div>
 
-  render() {
-    const {
-      password, passwordConf, messagePwd, submitDisabled,
-    } = this.state;
-    return (
-      <div>
-        <p>{messagePwd}</p>
-        <form onSubmit={this.handleSubmit}>
-          <input type="password" name="password" placeholder="password" value={password} onChange={this.handleChangePassword} />
-          <input type="password" name="passwordConf" placeholder="password confirmation" value={passwordConf} onChange={this.handleChangePasswordConf} />
-          <input type="submit" name="submit" disabled={submitDisabled} onChange={this.handleSubmit} />
-        </form>
-      </div>
-
-    );
-  }
+  );
 }
-
 export default ResetPwdForm;

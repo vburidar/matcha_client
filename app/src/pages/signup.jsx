@@ -1,17 +1,37 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Container, Paper,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import Layout from '../components/Layout';
 import api from '../api';
 import SignupForm from '../components/SignupForm';
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  paper: {
+    padding: theme.spacing(3),
+  },
+  button: {
+    color: theme.palette.primary,
+  },
+}));
 
 function HomePage() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const classes = useStyles();
 
   const callbackSignupData = async ([childLogin, childPassword, childEmail]) => {
     setLogin(childLogin);
     setPassword(childPassword);
     setEmail(childEmail);
+    console.log(childLogin);
   };
 
   useEffect(() => {
@@ -26,16 +46,19 @@ function HomePage() {
       }
     }
     createUser();
-  });
+  }, [login]);
 
   return (
-    <div>
-      <h1>Sign up today</h1>
-      <SignupForm parentCallback={callbackSignupData} />
-      <p>{login}</p>
-      <p>{password}</p>
-      <p>{email}</p>
-    </div>
+    <Layout>
+      <Container maxWidth="md" className={classes.container}>
+        <Paper className={classes.paper}>
+          <div>
+            <h1>Sign up</h1>
+            <SignupForm signupData={callbackSignupData} />
+          </div>
+        </Paper>
+      </Container>
+    </Layout>
   );
 }
 
