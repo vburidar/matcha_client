@@ -12,7 +12,7 @@ function ResetPwdForm(
   const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const handleSubmit = (event) => {
-    submitResetData([password, passwordConf]);
+    submitResetData([password]);
     event.preventDefault();
   };
 
