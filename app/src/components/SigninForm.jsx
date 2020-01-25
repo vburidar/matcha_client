@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
+import api from '../api';
+
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -12,9 +13,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function SigninForm({
-  submitData,
-}) {
+export default function SigninForm() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [submitDisable, setSubmitDisable] = useState(true);
@@ -39,14 +38,24 @@ export default function SigninForm({
     updateSubmitAbility();
   };
 
-  const handleSubmit = (event) => {
-    submitData([login, password]);
-    event.preventDefault();
+  const submitSigninForm = () => {
+    async function readUser() {
+      try {
+        const user = await api.post('auth/signin', {
+          login,
+          password,
+        });
+        console.log(user);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    readUser();
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form method="post" noValidate>
         <FormControl fullWidth className={classes.formControl}>
           <TextField
             id="login"
@@ -72,6 +81,7 @@ export default function SigninForm({
             label="submit"
             value="submit"
             disabled={submitDisable}
+            onClick={submitSigninForm}
           >
             SUBMIT
           </FlatButton>
