@@ -38,7 +38,8 @@ export default function SigninForm() {
     updateSubmitAbility();
   };
 
-  const submitSigninForm = () => {
+  const submitSigninForm = (event) => {
+    event.preventDefault();
     async function readUser() {
       try {
         const user = await api.post('auth/signin', {

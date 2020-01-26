@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormControl, FormHelperText } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
+import api from '../api';
 
 function ResetPwdForm(
-  { submitResetData },
+  { login, code },
 ) {
   const [password, setPassword] = useState('');
   const [passwordConf, setPasswordConf] = useState('');
   const [messagePwd, setMessagePwd] = useState('');
   const [submitDisabled, setSubmitDisabled] = useState(true);
-
-  const handleSubmit = (event) => {
-    submitResetData([password]);
-    event.preventDefault();
-  };
 
   const handleChangePassword = (event) => {
     setPassword(event.target.value);
@@ -38,6 +34,8 @@ function ResetPwdForm(
   };
 
   const handleChangePasswordConf = (event) => {
+    console.log(code);
+    console.log(login);
     setSubmitDisabled(true);
     setPasswordConf(event.target.value);
     if (password !== event.target.value && messagePwd === '') {
@@ -47,9 +45,28 @@ function ResetPwdForm(
       setSubmitDisabled(false);
     }
   };
+
+  const submitResetForm = () => {
+    async function readUser() {
+      if (login) {
+        try {
+          await api.post('auth/resetPwd', {
+            login,
+            password,
+            code,
+          });
+          //Router.replace('/resetPwd', '/signin', { shallow: true });
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+    readUser();
+  };
+
   return (
     <div>
-      <form onSubmit={handleSubmit} noValidate>
+      <form noValidate>
         <FormControl fullWidth>
           <TextField
             type="password"
@@ -74,7 +91,8 @@ function ResetPwdForm(
             type="submit"
             name="submit"
             disabled={submitDisabled}
-            onChange={handleSubmit}
+            //onChange={handleSubmit}
+            onClick={submitResetForm}
           >
             SUBMIT
           </FlatButton>

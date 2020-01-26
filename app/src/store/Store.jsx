@@ -7,9 +7,10 @@ export const Store = React.createContext();
 const initialState = {
   message: '',
   severity: '',
+  inSession: false,
 };
 
-export function StoreProvider({ children }) {
+export function Provider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = { state, dispatch };
 

@@ -23,17 +23,12 @@ const useStyles = makeStyles((theme) => ({
 
 function HomePage() {
   const router = useRouter();
-  const [password, setPassword] = useState('');
-  const [submit, setSubmit] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [failureUrl, setFailureUrl] = useState(true);
   const classes = useStyles();
 
-  const callbackResetData = async ([childPassword]) => {
-    setPassword(childPassword);
-    setSubmit(!submit);
-  };
-
   useEffect(() => {
+    console.log('in useEffect testLink');
     async function testLink() {
       try {
         await api.post('auth/testLinkResetPwd', {
@@ -46,29 +41,9 @@ function HomePage() {
       }
     }
     if (router.query.login) {
-      console.log(router.query.login);
       testLink();
     }
   }, [router.query.login]);
-
-  useEffect(() => {
-    async function readUser() {
-      if (router.query.login) {
-        try {
-          await api.post('auth/resetPwd', {
-            login: router.query.login,
-            password,
-            code: router.query.code,
-          });
-          Router.replace('/resetPwd', '/signin', { shallow: true});
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    }
-    readUser();
-  }, [submit]);
-
 
   if (failureUrl) {
     return (
@@ -84,7 +59,11 @@ function HomePage() {
         <Paper className={classes.paper}>
           <div>
             <h1>Reset your password</h1>
-            <ResetPwdForm submitResetData={callbackResetData} />
+            <ResetPwdForm
+              code={router.query.code}
+              login={router.query.login}
+              isSubmitted={isSubmitted}
+            />
           </div>
         </Paper>
       </Container>

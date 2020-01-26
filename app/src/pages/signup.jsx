@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Container, Paper,
 } from '@material-ui/core';
@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Layout from '../components/Layout';
 import api from '../api';
 import SignupForm from '../components/SignupForm';
+import { contextTest } from '../contextTest';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -26,6 +27,9 @@ function HomePage() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const classes = useStyles();
+  const MyContext = useContext(contextTest);
+  console.log(MyContext);
+
 
   const callbackSignupData = async ([childLogin, childPassword, childEmail]) => {
     setLogin(childLogin);
