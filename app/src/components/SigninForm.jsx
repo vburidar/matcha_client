@@ -4,7 +4,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
+import { updateConnectionStatus } from '../store/actions';
 import api from '../api';
+import {StoreContext} from '../store/Store';
 import {ApiContext} from '../api/Api';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,7 +23,7 @@ export default function SigninForm({
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [submitDisable, setSubmitDisable] = useState(true);
-
+  const {dispatch, state} = useContext(StoreContext);
   const classes = useStyles();
 
   const updateSubmitAbility = () => {
@@ -46,12 +48,11 @@ export default function SigninForm({
     event.preventDefault();
     async function readUser() {
       try {
-        //const user = await api.post('auth/signin', {
-        const user = await signin({  
-        login,
+        const user = await signin({
+          login,
           password,
         });
-        console.log(user);
+        updateConnectionStatus(dispatch, { inSession: true, login: user.login });
       } catch (err) {
         console.log(err);
       }

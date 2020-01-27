@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Container, Paper,
 } from '@material-ui/core';
-import Layout from '../components/Layout';
 import api from '../api';
+import { StoreContext } from '../Store/store'; 
 import ForgottenPwdForm from '../components/ForgottenPwdForm';
+import { Router } from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -18,20 +19,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function HomePage() {
+function forgotPwdPage() {
   const [email, setEmail] = useState('');
   const classes = useStyles();
+  const {dispatch, state } = useContext(ContextStore);
 
   const callbackEmail = async ([childEmail]) => {
     setEmail(childEmail);
   };
 
   useEffect(() => {
+    if (state.inSession) {
+      Router.push('/myHomePage');
+    }
+  });
+
+  useEffect(() => {
     async function readUser() {
       if (email !== '') {
         const reset = await api.post('/auth/forgotPwd',
           { email });
-        console.log(reset);
       }
     }
     readUser();
@@ -50,4 +57,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default forgotPwdPage;

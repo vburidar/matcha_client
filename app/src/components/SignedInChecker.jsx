@@ -1,38 +1,28 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { FormControl, FormHelperText } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import FlatButton from '@material-ui/core/Button';
+import { useEffect, useContext } from 'react';
 import api from '../api';
 import { StoreContext } from '../store/Store';
+import { updateConnectionStatus } from '../store/actions';
+
+
 
 function SignedInChecker() {
-  const [signedIn, setSignedIn] = useState(false);
-  const [response, setResponse] = useState('');
-  const myStore = useContext(StoreContext);
+  const { dispatch } = useContext(StoreContext);
 
   useEffect(() => {
     try {
       api.post('auth/ping').then((test) => {
-        setResponse(test.data);
-        console.log(test.data.message);
         if (test.data.message === 'in_session') {
-          console.log('in_session');
-          myStore.dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true });
-          myStore.dispatch({ type: 'UPDATE_CONNECTION_STATUS', login: test.data.login });
+          updateConnectionStatus(dispatch, { inSession: true, login: test.data.login });
         } else {
-          myStore.dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: false });
+          updateConnectionStatus(dispatch, { inSession: false, login: '' });
         }
       });
     } catch (err) {
-      setSignedIn(false);
+      console.log(err);
     }
   }, []);
 
-  return (
-    <div>
-      <h1>{response.message}</h1>
-    </div>
-  );
+  return (null);
 }
 
 export default SignedInChecker;

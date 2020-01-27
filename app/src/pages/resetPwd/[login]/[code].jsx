@@ -28,7 +28,6 @@ function HomePage() {
   const classes = useStyles();
 
   useEffect(() => {
-    console.log('in useEffect testLink');
     async function testLink() {
       try {
         await api.post('auth/testLinkResetPwd', {

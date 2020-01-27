@@ -7,9 +7,10 @@ export const StoreContext = createContext();
 const initialState = {
   message: '',
   severity: '',
-  inSession: false,
-  login: '',
   open: false,
+  inSession: null,
+  login: '',
+  pageStatus: 'private',
 };
 
 export function StoreProvider({ children }) {

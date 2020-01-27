@@ -6,7 +6,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Layout from '../components/Layout';
 import api from '../api';
 import SignupForm from '../components/SignupForm';
-import { contextTest } from '../contextTest';
+import { StoreContext } from '../store/Store';
+import Router from 'next/router';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -22,13 +23,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function HomePage() {
+function SignupPage() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const classes = useStyles();
-  const MyContext = useContext(contextTest);
-  console.log(MyContext);
+  const { state } = useContext(StoreContext);
 
 
   const callbackSignupData = async ([childLogin, childPassword, childEmail]) => {
@@ -37,6 +37,12 @@ function HomePage() {
     setEmail(childEmail);
     console.log(childLogin);
   };
+
+  useEffect(() => {
+    if (state.inSession) {
+      Router.push('/myHomepage');
+    }
+  }, [state.inSession]);
 
   useEffect(() => {
     async function createUser() {
@@ -64,4 +70,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default SignupPage;
