@@ -1,22 +1,12 @@
-import { useState, useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import { Store } from '../store/Store';
+import { StoreContext } from '../store/Store';
+import { closeNotification } from '../store/actions';
 
 export default function Notifications() {
-  const [open, setOpen] = useState(false);
-  const { state } = useContext(Store);
-
-  const handleClose = async () => {
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    if (state.message !== '') {
-      setOpen(true);
-    }
-  }, [state.message]);
+  const { state, dispatch } = useContext(StoreContext);
 
   return (
     <Snackbar
@@ -24,14 +14,14 @@ export default function Notifications() {
         vertical: 'bottom',
         horizontal: 'left',
       }}
-      open={open}
+      open={state.open}
       autoHideDuration={3000}
-      onClose={handleClose}
+      onClose={() => closeNotification(dispatch, {})}
     >
       <MuiAlert
         elevation={6}
         variant="filled"
-        onClose={handleClose}
+        onClose={() => closeNotification(dispatch, {})}
         severity={state.severity}
       >
         {state.message}

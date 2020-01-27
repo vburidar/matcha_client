@@ -38,7 +38,6 @@ function HomePage() {
   });
 
   return (
-    <Layout>
       <Container maxWidth="md" className={classes.container}>
         <Paper className={classes.paper}>
           <div>
@@ -48,7 +47,6 @@ function HomePage() {
           </div>
         </Paper>
       </Container>
-    </Layout>
   );
 }
 

@@ -4,7 +4,6 @@ import Layout from '../components/Layout';
 
 function HomePage() {
   return (
-    <Layout>
       <Container>
         <Paper>
           <div>
@@ -12,7 +11,6 @@ function HomePage() {
           </div>
         </Paper>
       </Container>
-    </Layout>
   );
 }
 

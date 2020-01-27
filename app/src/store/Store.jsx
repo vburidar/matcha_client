@@ -1,22 +1,24 @@
-import React, { useReducer } from 'react';
+import { useReducer, createContext } from 'react';
 
 import reducer from './reducers';
 
-export const Store = React.createContext();
+export const StoreContext = createContext();
 
 const initialState = {
   message: '',
   severity: '',
   inSession: false,
+  login: '',
+  open: false,
 };
 
-export function Provider({ children }) {
+export function StoreProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = { state, dispatch };
 
   return (
-    <Store.Provider value={value}>
+    <StoreContext.Provider value={value}>
       {children}
-    </Store.Provider>
+    </StoreContext.Provider>
   );
 }

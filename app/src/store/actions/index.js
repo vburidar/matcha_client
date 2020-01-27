@@ -1,9 +1,4 @@
-import {
-  updateMessageAction,
-  updateMessageWithSeverityAction,
-} from './notifications';
+import notificationsActions from './notifications';
 
-export const notificationsActions = {
-  updateMessageAction,
-  updateMessageWithSeverityAction,
-};
+export const { newNotification } = notificationsActions;
+export const { closeNotification } = notificationsActions;

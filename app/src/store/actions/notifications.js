@@ -1,16 +1,21 @@
 import {
-  UPDATE_MESSAGE,
-  UPDATE_MESSAGE_WITH_SEVERITY,
+  NEW_NOTIFICATION,
+  CLOSE_NOTIFICATION,
 } from '../actionTypes';
 
-/** payload.message */
-export const updateMessageAction = async (dispatch, payload) => dispatch({
-  type: UPDATE_MESSAGE,
+/** payload.message, payload.severity */
+const newNotification = async (dispatch, payload) => dispatch({
+  type: NEW_NOTIFICATION,
   payload,
 });
 
-/** payload.message, payload.severity */
-export const updateMessageWithSeverityAction = async (dispatch, payload) => dispatch({
-  type: UPDATE_MESSAGE_WITH_SEVERITY,
+/** no payload */
+const closeNotification = async (dispatch, payload) => dispatch({
+  type: CLOSE_NOTIFICATION,
   payload,
 });
+
+export default {
+  newNotification,
+  closeNotification,
+};
