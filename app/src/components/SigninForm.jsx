@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
-import api from '../api';
-
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -13,7 +12,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function SigninForm() {
+export default function SigninForm({
+  submitData,
+}) {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [submitDisable, setSubmitDisable] = useState(true);
@@ -38,6 +39,7 @@ export default function SigninForm() {
     updateSubmitAbility();
   };
 
+<<<<<<< HEAD
   const submitSigninForm = (event) => {
     event.preventDefault();
     async function readUser() {
@@ -52,11 +54,16 @@ export default function SigninForm() {
       }
     }
     readUser();
+=======
+  const handleSubmit = (event) => {
+    submitData([login, password]);
+    event.preventDefault();
+>>>>>>> parent of 7804579... Changes page Signin and component signinForm so that the api request is part of the signinForm component and not the signin page
   };
 
   return (
     <div>
-      <form method="post" noValidate>
+      <form onSubmit={handleSubmit}>
         <FormControl fullWidth className={classes.formControl}>
           <TextField
             id="login"
@@ -82,7 +89,6 @@ export default function SigninForm() {
             label="submit"
             value="submit"
             disabled={submitDisable}
-            onClick={submitSigninForm}
           >
             SUBMIT
           </FlatButton>
