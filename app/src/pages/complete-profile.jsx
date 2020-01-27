@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import Container from '@material-ui/core/Container';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
+import {
+  Container,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  Paper,
+} from '@material-ui/core';
 
-import Layout from '../components/Layout';
 import GeneralSettingsForm from '../components/GeneralSettingsForm';
+import PicturesUpload from '../components/PicturesUpload';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -25,35 +27,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Pictures() {
-  return (
-    <div>Pictures</div>
-  );
-}
-
 function Localisation() {
   return (
-    <div>Localisation</div>
+    <div>
+      Localisation
+    </div>
   );
 }
-
-// function getStepContent(step, { generalProps, picturesProps, localisationProps }) {
-//   switch (step) {
-//     case 0:
-//       return <GeneralSettingsForm props={generalProps} />;
-//     case 1:
-//       return <Pictures props={picturesProps} />;
-//     case 2:
-//       return <Localisation props={localisationProps} />;
-//     default:
-//       return 'Unknown step';
-//   }
-// }
-// const steps = [
-//   'General',
-//   'Pictures',
-//   'Localisation',
-// ];
 
 export default function CompleteProfilePage() {
   const classes = useStyles();
@@ -66,7 +46,6 @@ export default function CompleteProfilePage() {
     gender: '',
     sexualOrientation: [],
     description: '',
-    interest: '',
     interests: [],
   });
 
@@ -74,7 +53,9 @@ export default function CompleteProfilePage() {
     generalProps: {
       inputs, setInputs, disabled, setDisabled,
     },
-    picturesProps: {},
+    picturesProps: {
+      disabled, setDisabled,
+    },
     localisationProps: {},
   };
 
@@ -85,7 +66,7 @@ export default function CompleteProfilePage() {
     },
     {
       name: 'Pictures',
-      component: <Pictures props={picturesProps} />,
+      component: <PicturesUpload props={picturesProps} />,
     },
     {
       name: 'Localisation',
@@ -93,28 +74,54 @@ export default function CompleteProfilePage() {
     },
   ];
 
+  const goToNextStep = () => {
+    if (activeStep + 1 < steps({}, {}, {}).length - 1) {
+      setActiveStep(activeStep + 1);
+      setDisabled(true);
+    }
+  };
+
+  const completeProfile = async () => {
+    console.log('completeProfile');
+    console.log(inputs);
+  };
+
   return (
-    <Layout>
-      <Container maxWidth="md" className={classes.container}>
-        <Paper>
-          <Stepper activeStep={activeStep} alternativeLabel>
-            {steps(propsToPass).map(({ name }) => (
-              <Step key={name}>
-                <StepLabel>{name}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          <Paper elevation={0} className={classes.paper}>
-            <div>
-              {/* {getStepContent(activeStep, propsToPass)} */}
-              {steps(propsToPass)[activeStep].component}
-            </div>
-          </Paper>
-          <Paper elevation={0} className={`${classes.paper} ${classes.alignRight}`}>
-            <Button disabled={disabled} onClick={() => setActiveStep(activeStep + 1)}>NEXT</Button>
-          </Paper>
+    <Container maxWidth="md" className={classes.container}>
+      <Paper>
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {steps(propsToPass).map(({ name }) => (
+            <Step key={name}>
+              <StepLabel>{name}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <Paper elevation={0} className={classes.paper}>
+          <div>
+            {steps(propsToPass)[activeStep].component}
+          </div>
         </Paper>
-      </Container>
-    </Layout>
+        <Paper elevation={0} className={`${classes.paper} ${classes.alignRight}`}>
+          {activeStep < 2 && (
+            <Button
+              disabled={disabled}
+              onClick={goToNextStep}
+            >
+            NEXT
+            </Button>
+          )}
+          {/* {activeStep === 2 && ( */}
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={false}
+            onClick={completeProfile}
+          >
+            FINISH
+          </Button>
+          {/* )} */}
+        </Paper>
+      </Paper>
+    </Container>
   );
 }

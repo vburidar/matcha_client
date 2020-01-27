@@ -3,15 +3,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import { subYears } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Chip from '@material-ui/core/Chip';
-import ListItemText from '@material-ui/core/ListItemText';
-import Checkbox from '@material-ui/core/Checkbox';
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  InputAdornment,
+  Chip,
+  ListItemText,
+  Checkbox,
+} from '@material-ui/core';
 
 import SearchIcon from '@material-ui/icons/Search';
 
