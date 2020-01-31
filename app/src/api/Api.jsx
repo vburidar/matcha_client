@@ -7,7 +7,6 @@ export const ApiContext = createContext(null);
 
 export function createApiRequester(req) {
   if (req === undefined) {
-    console.log('here');
     return (axios.create({
       baseURL: 'http://localhost:8080/api',
       timeout: 10000,

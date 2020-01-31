@@ -6,7 +6,6 @@ import FlatButton from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import router from 'next/router';
 import { ApiContext } from '../api/Api';
-import api from '../api';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {

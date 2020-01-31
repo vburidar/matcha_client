@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
+import Link from 'next/link';
 import { Container, Paper } from '@material-ui/core';
 import { useContext, useEffect } from 'react';
 import SigninForm from '../components/SigninForm';
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SigninPage = (props) => {
+const SigninPage = () => {
   const classes = useStyles();
   const { state, dispatch } = useContext(StoreContext);
 
@@ -34,7 +35,9 @@ const SigninPage = (props) => {
             {state.login}
           </h2>
           <SigninForm />
-          <a href="/forgotPwd">Forgot your password?</a>
+          <Link href="/forgotPwd">
+            <a>Forgot your password?</a>
+          </Link>
         </div>
       </Paper>
     </Container>
@@ -45,7 +48,7 @@ SigninPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
   const ret = await IsSessionAuthOnPage('public_only', apiObj);
-  if (ret === false) {
+  if (ret === false && res) {
     res.writeHead(302, {
       Location: '/homepage',
     });

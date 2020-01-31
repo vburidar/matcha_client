@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import router from 'next/router';
 import { FormControl, FormHelperText } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
@@ -55,7 +56,7 @@ function ResetPwdForm(
             password,
             code,
           });
-          //Router.replace('/resetPwd', '/signin', { shallow: true });
+          router.push('/signin');
         } catch (err) {
           console.log(err);
         }
@@ -91,7 +92,6 @@ function ResetPwdForm(
             type="submit"
             name="submit"
             disabled={submitDisabled}
-            //onChange={handleSubmit}
             onClick={submitResetForm}
           >
             SUBMIT

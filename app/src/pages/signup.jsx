@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container, Paper,
 } from '@material-ui/core';
@@ -56,11 +56,11 @@ function SignupPage() {
   return (
     <Container maxWidth="md" className={classes.container}>
       <Paper className={classes.paper}>
-          <div>
-            <h1>Sign up</h1>
-            <SignupForm signupData={callbackSignupData} />
-          </div>
-        </Paper>
+        <div>
+          <h1>Sign up</h1>
+          <SignupForm signupData={callbackSignupData} />
+        </div>
+      </Paper>
     </Container>
   );
 }

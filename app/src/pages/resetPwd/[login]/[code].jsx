@@ -4,8 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   Container, Paper,
 } from '@material-ui/core';
-import { route } from 'next/dist/next-server/server/router';
-import Layout from '../../../components/Layout';
 import { createApiRequester, IsSessionAuthOnPage } from '../../../api/Api';
 import api from '../../../api';
 import SigninPage from '../../signin';
@@ -54,18 +52,18 @@ function HomePage() {
     );
   }
   return (
-      <Container maxWidth="md" className={classes.container}>
-        <Paper className={classes.paper}>
-          <div>
-            <h1>Reset your password</h1>
-            <ResetPwdForm
-              code={router.query.code}
-              login={router.query.login}
-              isSubmitted={isSubmitted}
-            />
-          </div>
-        </Paper>
-      </Container>
+    <Container maxWidth="md" className={classes.container}>
+      <Paper className={classes.paper}>
+        <div>
+          <h1>Reset your password</h1>
+          <ResetPwdForm
+            code={router.query.code}
+            login={router.query.login}
+            isSubmitted={isSubmitted}
+          />
+        </div>
+      </Paper>
+    </Container>
   );
 }
 

@@ -1,23 +1,10 @@
-import { makeStyles } from '@material-ui/core/styles';
 import router from 'next/router';
-import {
-  Button,
-  AppBar,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { useContext, useEffect } from 'react';
 import { StoreContext } from '../../store/Store';
-import { ApiContext } from '../../api/Api';
-
-const useStyles = makeStyles((theme) => ({
-  title: {
-    flexGrow: 1,
-  },
-}));
 
 function ButtonListDisconnected() {
-  const { state, dispatch } = useContext(StoreContext);
+  const { state } = useContext(StoreContext);
 
   useEffect(() => {
   }, [state.inSession]);

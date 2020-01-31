@@ -1,26 +1,14 @@
-import { makeStyles } from '@material-ui/core/styles';
 import router from 'next/router';
-import {
-  Button,
-  AppBar,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { useContext, useEffect } from 'react';
 import { StoreContext } from '../../store/Store';
 import { ApiContext } from '../../api/Api';
-
-const useStyles = makeStyles((theme) => ({
-  title: {
-    flexGrow: 1,
-  },
-}));
 
 function ButtonListConnected() {
   const { state, dispatch } = useContext(StoreContext);
   const { sessionDelete } = useContext(ApiContext);
 
-  async function handleLogout(event) {
+  async function handleLogout() {
     try {
       await sessionDelete();
       dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: false });
