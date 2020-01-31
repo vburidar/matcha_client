@@ -1,10 +1,45 @@
 import { createContext, useContext } from 'react';
 import axios from 'axios';
-
 import { StoreContext } from '../store/Store';
 import { newNotification } from '../store/actions';
 
 export const ApiContext = createContext(null);
+
+export function createApiRequester(req) {
+  if (req === undefined) {
+    console.log('here');
+    return (axios.create({
+      baseURL: 'http://localhost:8080/api',
+      timeout: 10000,
+      withCredentials: true,
+      headers: { 'Access-Control-Allow-Origin': 'http://localhost:3000/' },
+    }));
+  }
+  return (axios.create({
+    baseURL: 'http://localhost:8080/api',
+    timeout: 10000,
+    withCredentials: true,
+    headers: req.headers,
+  }));
+}
+
+export async function IsSessionAuthOnPage(pageStatus, apiRequester) {
+  try {
+    let inSession = null;
+    const apiResponse = await apiRequester.post('auth/ping');
+    if (apiResponse.data.message === 'in_session') {
+      inSession = true;
+    } else if (apiResponse.data.message === 'not_in_session') {
+      inSession = false;
+    }
+    if ((pageStatus === 'public_only' && inSession === true) || (pageStatus === 'private' && inSession === false)) {
+      return (false);
+    }
+    return (apiResponse);
+  } catch (err) {
+    return ({ error: 'Failed to reach api server' });
+  }
+}
 
 export function ApiProvider({ children }) {
   const { dispatch } = useContext(StoreContext);
@@ -33,6 +68,7 @@ export function ApiProvider({ children }) {
     signin: (data) => (api.post('auth/signin', data).catch(handleError)),
     signup: (data) => (api.post('auth/signup', data).catch(handleError)),
     accountValidation: (data) => (api.post('auth/accountValidation', data).catch(handleError)),
+    sessionDelete: () => (api.delete('auth/deleteSession').catch(handleError)),
   };
 
   return (

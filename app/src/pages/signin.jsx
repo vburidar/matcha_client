@@ -1,12 +1,8 @@
-import router from 'next/router';
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, Paper } from '@material-ui/core';
-import { useEffect, useContext, useRef, useState } from 'react';
-import Layout from '../components/Layout';
-import GeneralSettingsForm from '../components/GeneralSettingsForm';
-
+import { useContext, useEffect } from 'react';
 import SigninForm from '../components/SigninForm';
-import SignedInChecker from '../components/SignedInChecker';
+import { createApiRequester, IsSessionAuthOnPage } from '../api/Api';
 import { StoreContext } from '../store/Store';
 
 const useStyles = makeStyles((theme) => ({
@@ -20,29 +16,42 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-function SigninPage() {
+const SigninPage = (props) => {
   const classes = useStyles();
-  const {state, dispatch} = useContext(StoreContext);
-  console.log(state);
+  const { state, dispatch } = useContext(StoreContext);
 
   useEffect(() => {
-    console.log(state);
-  }, [state]);
-
+    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: false });
+  }, []);
 
   return (
-      <Container maxWidth="md" className={classes.container}>
-        <Paper className={classes.paper}>
-          <div>
-            <h2>Sign in {state.login}</h2>
-            <SignedInChecker />
-            <SigninForm />
-            <a href="/forgotPwd">Forgot your password?</a>
-          </div>
-        </Paper>
-      </Container>
+    <Container maxWidth="md" className={classes.container}>
+      <Paper className={classes.paper}>
+        <div>
+          <h2>
+            Sign in
+            {' '}
+            {state.login}
+          </h2>
+          <SigninForm />
+          <a href="/forgotPwd">Forgot your password?</a>
+        </div>
+      </Paper>
+    </Container>
   );
-}
+};
+
+SigninPage.getInitialProps = async (ctx) => {
+  const { req, res } = ctx;
+  const apiObj = createApiRequester(req);
+  const ret = await IsSessionAuthOnPage('public_only', apiObj);
+  if (ret === false) {
+    res.writeHead(302, {
+      Location: '/homepage',
+    });
+    res.end();
+  }
+  return (ret.data);
+};
 
 export default SigninPage;

@@ -5,7 +5,7 @@ import {
 const updateConnectionStatusReducer = {
   actionType: UPDATE_CONNECTION_STATUS,
   reduce: (state, action) => (
-    { ...state, se: action.payload }
+    { ...state, inSession: action.inSession }
   ),
 };
 

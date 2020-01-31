@@ -71,7 +71,7 @@ function ProfilePic({ props }) {
                 Your profile picture
       </Typography>
       <img width="100%" className={classes.image} src={props.image} alt="profile_picture" />
-      <Button onClick={handleChangePic} className={classes.buttonBottom} color="primary" variant="contained">
+      <Button onClick={handleChangePic} className={classes.buttonBottom} color="secondary" variant="contained">
           CHANGE
       </Button>
     </Paper>

@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 import { route } from 'next/dist/next-server/server/router';
 import Layout from '../../../components/Layout';
+import { createApiRequester, IsSessionAuthOnPage } from '../../../api/Api';
 import api from '../../../api';
 import SigninPage from '../../signin';
 import ResetPwdForm from '../../../components/ResetPwdForm';
@@ -28,7 +29,6 @@ function HomePage() {
   const classes = useStyles();
 
   useEffect(() => {
-    console.log('in useEffect testLink');
     async function testLink() {
       try {
         await api.post('auth/testLinkResetPwd', {
@@ -68,5 +68,18 @@ function HomePage() {
       </Container>
   );
 }
+
+SigninPage.getInitialProps = async (ctx) => {
+  const { req, res } = ctx;
+  const apiObj = createApiRequester(req);
+  const ret = await IsSessionAuthOnPage('public_only', apiObj);
+  if (ret === false) {
+    res.writeHead(302, {
+      Location: '/homepage',
+    });
+    res.end();
+  }
+  return (ret.data);
+};
 
 export default HomePage;

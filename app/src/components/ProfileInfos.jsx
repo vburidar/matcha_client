@@ -90,7 +90,7 @@ function ProfileInfos({ props }) {
         <Typography variant="h5" component="h4">
           {props.localisation}
         </Typography>
-        <Button className={classes.buttonBottom} color="primary" variant="contained">
+        <Button className={classes.buttonBottom} color="secondary" variant="contained">
             CHANGE
         </Button>
       </Paper>
@@ -107,7 +107,7 @@ function ProfileInfos({ props }) {
         <Chip onDelete={handleDelete} className={classes.chip} label={props.preference[0]} />
         <Chip onDelete={handleDelete} className={classes.chip} label={props.preference[1]} />
         <Chip onDelete={handleDelete} className={classes.chip} label={props.preference[2]} />
-        <Button color="primary" variant="contained">
+        <Button color="secondary" variant="contained">
             CHOOSE
         </Button>
       </Paper>
@@ -118,7 +118,7 @@ function ProfileInfos({ props }) {
         <Typography className={classes.justifiedText} color="textPrimary" variant="h6" component="h4">
           {props.description}
         </Typography>
-        <Button className={classes.buttonBottom} color="primary" variant="contained">
+        <Button className={classes.buttonBottom} color="secondary" variant="contained">
               CHANGE
         </Button>
       </Paper>
@@ -128,7 +128,7 @@ function ProfileInfos({ props }) {
         </Typography>
         <Container className={classes.containerLeft}>
           <TextField className={classes.textField} />
-          <Button className={classes.buttonBottom} color="primary" variant="contained">
+          <Button className={classes.buttonBottom} color="secondary" variant="contained">
             ADD
           </Button>
         </Container>
@@ -139,7 +139,7 @@ function ProfileInfos({ props }) {
             className={classes.chip}
             label={label}
             onDelete={handleDelete(label)}
-            color="primary"
+            color="secondary"
           />
         ))}
       </Paper>

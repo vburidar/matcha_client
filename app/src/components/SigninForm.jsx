@@ -4,8 +4,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
+import router from 'next/router';
+import { ApiContext } from '../api/Api';
 import api from '../api';
-import {ApiContext} from '../api/Api';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -14,9 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function SigninForm({
-  submitData,
-}) {
+export default function SigninForm() {
   const { signin } = useContext(ApiContext);
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
@@ -46,12 +45,11 @@ export default function SigninForm({
     event.preventDefault();
     async function readUser() {
       try {
-        //const user = await api.post('auth/signin', {
-        const user = await signin({  
-        login,
+        await signin({
+          login,
           password,
         });
-        console.log(user);
+        router.push('/homepage');
       } catch (err) {
         console.log(err);
       }

@@ -14,9 +14,9 @@ function SignedInChecker() {
     try {
       api.post('auth/ping').then((test) => {
         setResponse(test.data);
-        console.log(test.data.message);
+        //console.log(test.data.message);
         if (test.data.message === 'in_session') {
-          console.log('in_session');
+          //console.log('in_session');
           myStore.dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true });
           myStore.dispatch({ type: 'UPDATE_CONNECTION_STATUS', login: test.data.login });
         } else {
