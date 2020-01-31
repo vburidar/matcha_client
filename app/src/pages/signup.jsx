@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Container, Paper,
 } from '@material-ui/core';
 import router from 'next/router';
 import { makeStyles } from '@material-ui/core/styles';
-import { createApiRequester, IsSessionAuthOnPage } from '../api/Api';
+import { createApiRequester, IsSessionAuthOnPage, ApiContext } from '../api/Api';
 import SignupForm from '../components/SignupForm';
-import api from '../api';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -26,27 +25,25 @@ function SignupPage() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const { signup } = useContext(ApiContext);
   const classes = useStyles();
 
   const callbackSignupData = async ([childLogin, childPassword, childEmail]) => {
     setLogin(childLogin);
     setPassword(childPassword);
     setEmail(childEmail);
-    console.log(childLogin);
   };
 
   useEffect(() => {
     async function createUser() {
       if (login !== '' && password !== '' && email !== '') {
-        try {
-          await api.post('auth/signup', {
-            login,
-            password,
-            email,
-          });
+        const response = await signup({
+          login,
+          password,
+          email,
+        });
+        if (response.type !== 'error') {
           router.push('/signin');
-        } catch (err) {
-          console.log('error', err);
         }
       }
     }

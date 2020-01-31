@@ -33,7 +33,7 @@ function forgotPwdPage() {
       }
     }
     readUser();
-  });
+  }, [email]);
 
   return (
     <Container maxWidth="md" className={classes.container}>

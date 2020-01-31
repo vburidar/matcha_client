@@ -1,41 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import {useRouter} from 'next/router'
-import api from '../api';
+import { useState, useEffect, useContext } from 'react';
+import { useRouter } from 'next/router';
+import { ApiContext } from '../api/Api';
 
-function HomePage({ url }) {
+function HomePage() {
   const router = useRouter();
-  const ValidateAccount = () => {
-    const [login, setLogin] = useState(router.query.login);
-    const [code, setCode] = useState(router.query.code);
+  const { validateAccount } = useContext(ApiContext);
+  const [login, setLogin] = useState(router.query.login);
+  const [code, setCode] = useState(router.query.code);
 
-    useEffect(() => {
-      async function validateAccount() {
-        if (router.query.login !== undefined && router.query.code !== undefined) {
-          setLogin(router.query.login);
-          setCode(router.query.code);
-          try {
-            await api.post('auth/accountValidation', {
-              login,
-              code,
-            });
-            console.log('validation is successfull');
-          } catch (err) {
-            console.log('validation failed');
-          }
-        }
+  useEffect(() => {
+    console.log('in useEffect');
+    async function setupValidation() {
+      if (router.query.login !== undefined && router.query.code !== undefined) {
+        setLogin(router.query.login);
+        setCode(router.query.code);
+        await validateAccount({
+          login,
+          code,
+        });
+        console.log('ready to push to signin');
+        router.push('/signin');
       }
-      validateAccount();
-    }, []);
-
-    return (
-      <div><p /></div>
-    );
-  };
+    }
+    setupValidation();
+  }, []);
 
   return (
     <div>
       <h1>Subscription validation</h1>
-      <ValidateAccount />
       <div><p /></div>
     </div>
   );

@@ -1,3 +1,4 @@
+import router from 'next/router';
 import { createContext, useContext } from 'react';
 import axios from 'axios';
 import { StoreContext } from '../store/Store';
@@ -51,22 +52,43 @@ export function ApiProvider({ children }) {
   });
 
   const handleError = (err) => {
-    const message = err.response.data.message || 'Unknown error';
+    console.log(err.response);
+    const message = err.response.data || 'Unknown error';
     const severity = 'error';
     newNotification(
       dispatch,
       { message, severity },
     );
+    return ({ type: 'error' });
+  };
+
+  const showNotification = (data, requestName) => {
+    console.log('notification', data);
+    if (data.type !== 'error') {
+      let message = '';
+      if (requestName === 'signup') {
+        message = 'Your account was successfully created! Wait for our email with our validation link';
+      }
+      if (requestName === 'forgotPwd') {
+        message = 'An Email with a reset link has been sent to your email address';
+      }
+      const severity = 'success';
+      newNotification(
+        dispatch,
+        { message, severity },
+      );
+    }
+    return (data);
   };
 
   const routes = {
     getToto: () => (api.get('auth/toto').catch(handleError)),
     getUsers: () => (api.get('users').catch(handleError)),
-    forgotPwd: (data) => (api.post('auth/forgotPwd', data).catch(handleError)),
+    forgotPwd: async (data) => (showNotification(await api.post('auth/forgotPwd', data).catch(handleError), 'forgotPwd')),
     resetPwd: (data) => (api.post('auth/resetPwd', data).catch(handleError)),
-    signin: (data) => (api.post('auth/signin', data).catch(handleError)),
-    signup: (data) => (api.post('auth/signup', data).catch(handleError)),
-    accountValidation: (data) => (api.post('auth/accountValidation', data).catch(handleError)),
+    signin: async (data) => (api.post('auth/signin', data).catch(handleError)),
+    signup: async (data) => (showNotification(await api.post('auth/signup', data).catch(handleError), 'signup')),
+    validateAccount: (data) => (api.post('auth/accountValidation', data).catch(handleError)),
     sessionDelete: () => (api.delete('auth/deleteSession').catch(handleError)),
   };
 

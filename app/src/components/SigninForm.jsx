@@ -43,14 +43,12 @@ export default function SigninForm() {
   const submitSigninForm = (event) => {
     event.preventDefault();
     async function readUser() {
-      try {
-        await signin({
-          login,
-          password,
-        });
+      const response = await signin({
+        login,
+        password,
+      });
+      if (response.type !== 'error') {
         router.push('/homepage');
-      } catch (err) {
-        console.log(err);
       }
     }
     readUser();
