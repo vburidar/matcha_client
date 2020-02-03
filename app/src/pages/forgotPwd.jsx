@@ -41,7 +41,6 @@ function forgotPwdPage() {
         <div>
           <h1>Forgot your password?</h1>
           <ForgottenPwdForm submitEmail={callbackEmail} />
-          <p>{email}</p>
         </div>
       </Paper>
     </Container>

@@ -1,15 +1,14 @@
 import { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { ApiContext } from '../api/Api';
+import { ApiContext, createApiRequester, IsSessionAuthOnPage } from '../../../api/Api';
 
-function HomePage() {
+function ValidateAccountPage() {
   const router = useRouter();
   const { validateAccount } = useContext(ApiContext);
   const [login, setLogin] = useState(router.query.login);
   const [code, setCode] = useState(router.query.code);
 
   useEffect(() => {
-    console.log('in useEffect');
     async function setupValidation() {
       if (router.query.login !== undefined && router.query.code !== undefined) {
         setLogin(router.query.login);
@@ -18,19 +17,26 @@ function HomePage() {
           login,
           code,
         });
-        console.log('ready to push to signin');
         router.push('/signin');
       }
     }
     setupValidation();
   }, []);
 
-  return (
-    <div>
-      <h1>Subscription validation</h1>
-      <div><p /></div>
-    </div>
-  );
+  return (null);
 }
 
-export default HomePage;
+ValidateAccountPage.getInitialProps = async (ctx) => {
+  const { req, res } = ctx;
+  const apiObj = createApiRequester(req);
+  const ret = await IsSessionAuthOnPage('public_only', apiObj);
+  if (ret === false && res) {
+    res.writeHead(302, {
+      Location: '/homepage',
+    });
+    res.end();
+  }
+  return (ret.data);
+};
+
+export default ValidateAccountPage;

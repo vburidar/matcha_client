@@ -20,37 +20,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function HomePage() {
+function resetPwdPage() {
   const router = useRouter();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [failureUrl, setFailureUrl] = useState(true);
   const classes = useStyles();
 
-  useEffect(() => {
-    async function testLink() {
-      try {
-        await api.post('auth/testLinkResetPwd', {
-          login: router.query.login,
-          code: router.query.code,
-        });
-        setFailureUrl(false);
-      } catch (err) {
-        Router.replace('/resetPwd', '/signin', { shallow: true });
-      }
-    }
-    if (router.query.login) {
-      testLink();
-    }
-  }, [router.query.login]);
-
-  if (failureUrl) {
-    return (
-      <div>
-        <p>Forbidden Access to /resetPwd</p>
-        <SigninPage />
-      </div>
-    );
-  }
   return (
     <Container maxWidth="md" className={classes.container}>
       <Paper className={classes.paper}>
@@ -67,11 +42,23 @@ function HomePage() {
   );
 }
 
-SigninPage.getInitialProps = async (ctx) => {
+resetPwdPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
   const ret = await IsSessionAuthOnPage('public_only', apiObj);
-  if (ret === false) {
+  let testLink = true;
+  const { url } = req;
+  const login = url.split(/\//)[2];
+  const code = url.split(/\//)[3];
+  try {
+    await api.post('auth/testLinkResetPwd', {
+      login,
+      code,
+    });
+  } catch (err) {
+    testLink = false;
+  }
+  if (ret === false || testLink === false) {
     res.writeHead(302, {
       Location: '/homepage',
     });
@@ -80,4 +67,4 @@ SigninPage.getInitialProps = async (ctx) => {
   return (ret.data);
 };
 
-export default HomePage;
+export default resetPwdPage;
