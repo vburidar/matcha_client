@@ -1,4 +1,5 @@
 /* eslint react/jsx-props-no-spreading: 0 */
+import 'pure-react-carousel/dist/react-carousel.es.css';
 
 import React from 'react';
 import App from 'next/app';

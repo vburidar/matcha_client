@@ -1,16 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
-import CardMedia from '@material-ui/core/CardMedia';
-import Card from '@material-ui/core/Card';
-import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import { Chip } from '@material-ui/core';
 
 import ProfilePic from '../components/ProfilePic';
 import ProfileInfos from '../components/ProfileInfos';
@@ -54,7 +43,7 @@ function profile() {
 
   return (
     <Grid container spacing={3} className={classes.containerMain}>
-      <Grid item xs={12} sm={8} md={5} lg={4} xl={3}>
+      <Grid item xs={12} sm={9} md={5} lg={4} xl={3}>
         <ProfilePic props={obj} />
       </Grid>
       <Grid item xs={12} sm={12} md={7} lg={6} xl={4} className={classes.container}>
