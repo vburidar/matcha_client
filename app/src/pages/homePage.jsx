@@ -139,7 +139,14 @@ HomePage.getInitialProps = async (ctx) => {
     });
     res.end();
   }
-  return (ret.data);
+  try {
+    const suggestionList = await apiObj.get('users/getSuggestionList');
+    console.log(suggestionList.data.rows);
+    return ({ suggestionList: suggestionList.data.rows });
+  } catch (err) {
+    console.log('error: couldn\'t fetch suggestion list');
+  }
+  return ({ type: 'error', id: 'Unable to fetch suggestion list' });
 };
 
 export default HomePage;
