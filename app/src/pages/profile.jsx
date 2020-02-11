@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
-import ProfilePic from '../components/ProfilePic';
+import ProfilePic from '../components/Profile/ProfilePic';
 import ProfileInfos from '../components/ProfileInfos';
 
 const useStyles = makeStyles((theme) => ({

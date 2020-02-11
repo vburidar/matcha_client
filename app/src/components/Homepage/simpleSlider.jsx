@@ -36,13 +36,13 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     width: '100%',
-    position: "absolute",
-    left: "0",
-    top: "10%",
+    position: 'absolute',
+    left: '0',
+    top: '10%',
   },
 }));
 
-export default function simpleSlider() {
+export default function simpleSlider({ imageList }) {
   const classes = useStyles();
 
   const handleClick = () => {
@@ -54,13 +54,11 @@ export default function simpleSlider() {
       className={classes.carousel}
       naturalSlideWidth={100}
       naturalSlideHeight={125}
-      totalSlides={3}
+      totalSlides={imageList.split(',').length}
       infinite
     >
       <Slider>
-        <Slide index={0}><img className={classes.image} src="http://www.placehold.it/300x300" alt="bonjour" /></Slide>
-        <Slide index={1}><img className={classes.image} src="http://www.placehold.it/300x300" alt="bonjour" /></Slide>
-        <Slide index={2}><img className={classes.image} src="http://www.placehold.it/300x300" alt="bonjour" /></Slide>
+        {imageList.split(',').map((element, index) => <Slide key={element} index={index}><img className={classes.image} src={element} alt='Not found' /></Slide>)}
       </Slider>
       <ButtonBack className={classes.prev}><ArrowBackIosIcon /></ButtonBack>
       <ButtonNext className={classes.next}><ArrowForwardIosIcon /></ButtonNext>

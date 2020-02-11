@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
+import {useEffect} from 'react';
 import CardMedia from '@material-ui/core/CardMedia';
 import Card from '@material-ui/core/Card';
 import Container from '@material-ui/core/Container';
@@ -68,12 +69,9 @@ function ProfilePic({ props }) {
   return (
     <Paper className={classes.paper}>
       <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">
-                Your profile picture
+                Picture
       </Typography>
-      <img width="100%" className={classes.image} src={props.image} alt="profile_picture" />
-      <Button onClick={handleChangePic} className={classes.buttonBottom} color="secondary" variant="contained">
-          CHANGE
-      </Button>
+      <img width="100%" className={classes.image} src={props.path} alt="profile_picture" />
     </Paper>
   );
 }
