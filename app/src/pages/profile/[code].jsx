@@ -1,6 +1,7 @@
 import { useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Container from '@material-ui/core/Container';
 import { StoreContext } from '../../store/Store';
 import ProfilePic from '../../components/Profile/ProfilePic';
 import ProfileInfos from '../../components/Profile/ProfileInfo';
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
 }));
 
@@ -29,14 +30,16 @@ const profile = (props) => {
   }, []);
 
   return (
-    <Grid container spacing={3} className={classes.containerMain}>
-      <Grid item xs={12} sm={9} md={5} lg={4} xl={3}>
-        <ProfilePic props={props} />
+    <Container maxWidth="xl" className={classes.container}>
+      <Grid container spacing={3} className={classes.containerMain}>
+        <Grid item xs={12} sm={9} md={5}>
+          <ProfilePic props={props} />
+        </Grid>
+        <Grid item xs={12} sm={12} md={7} className={classes.container}>
+          <ProfileInfos props={props} />
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={12} md={7} lg={6} xl={4} className={classes.container}>
-        <ProfileInfos props={props} />
-      </Grid>
-    </Grid>
+    </Container>
   );
 };
 

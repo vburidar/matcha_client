@@ -23,7 +23,7 @@ export default function Header() {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-          Match point
+          See You
         </Typography>
         <ButtonListConnected />
         <ButtonListDisconnected />

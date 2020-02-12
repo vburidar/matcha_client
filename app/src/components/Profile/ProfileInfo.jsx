@@ -1,7 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { Chip } from '@material-ui/core';
+import { Chip, Button } from '@material-ui/core';
+import ProfileActions from '../../components/Profile/ProfileActions'
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -52,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
 function ProfileInfos({ props }) {
   const classes = useStyles();
 
+  function likeProfile() {
+
+  }
 
   return (
     <div>
@@ -93,6 +97,7 @@ function ProfileInfos({ props }) {
           />
         ))}
       </Paper>
+      <ProfileActions props={props} />
     </div>
   );
 }
