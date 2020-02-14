@@ -8,7 +8,7 @@ const initialState = {
   message: '',
   severity: '',
   inSession: false,
-  login: '',
+  user_id: null,
   open: false,
 };
 

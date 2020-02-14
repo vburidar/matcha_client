@@ -6,6 +6,7 @@ import FlatButton from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import router from 'next/router';
 import { ApiContext } from '../api/Api';
+import { StoreContext } from '../store/Store';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -19,6 +20,7 @@ export default function SigninForm() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [submitDisable, setSubmitDisable] = useState(true);
+  const myStore = useContext(StoreContext);
 
   const classes = useStyles();
 
@@ -48,6 +50,8 @@ export default function SigninForm() {
         password,
       });
       if (response.type !== 'error') {
+        console.log('add id to store =', response.data.id);
+        myStore.dispatch({ type: 'UPDATE_CONNECTION_STATUS', user_id: response.data.id, inSession: true });
         router.push('/homepage');
       }
     }

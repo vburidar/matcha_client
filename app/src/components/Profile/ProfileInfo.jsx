@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { Chip, Button } from '@material-ui/core';
-import ProfileActions from '../../components/Profile/ProfileActions'
+import {
+  Chip, IconButton, Menu, MenuItem,
+} from '@material-ui/core';
+import ProfileActions from './ProfileActions';
+import ReportDialog from './reportDialog';
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -35,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
     textAlign: 'center',
+    position: 'relative',
   },
   justifiedText: {
     textAlign: 'justify',
@@ -48,18 +53,20 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     padding: theme.spacing(1),
   },
+  reportMenu: {
+    position: 'absolute',
+    top: '10px',
+    left: '10px',
+  },
 }));
 
 function ProfileInfos({ props }) {
   const classes = useStyles();
 
-  function likeProfile() {
-
-  }
-
   return (
     <div>
       <Paper className={classes.paper}>
+        <ReportDialog props={props} />
         <Typography variant="h4" component="h4">
           {props.first_name}
           {' '}

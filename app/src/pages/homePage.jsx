@@ -59,10 +59,10 @@ const useStyles = makeStyles((theme) => ({
 const HomePage = (props) => {
   const classes = useStyles();
   const { state, dispatch } = useContext(StoreContext);
-  const { data } = props;
+  const { data, userId } = props;
 
   useEffect(() => {
-    dispatch({ type: 'UPDATE_CONNECTION_STATUS', login: props.first_name, inSession: true });
+    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
   }, []);
 
   return (
@@ -92,7 +92,8 @@ HomePage.getInitialProps = async (ctx) => {
   try {
     const suggestionList = await apiObj.get('users/getSuggestionList');
     //console.log(suggestionList.data.rows);
-    return { data: suggestionList.data.rows };
+    console.log('data=', ret.data);
+    return { data: suggestionList.data.rows, userId: ret.data.user_id };
   } catch (err) {
     console.log('error: couldn\'t fetch suggestion list');
   }
