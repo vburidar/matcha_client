@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 
@@ -6,8 +6,10 @@ import {
   TextField,
   Grid,
 } from '@material-ui/core';
-
 import Autocomplete from '@material-ui/lab/Autocomplete';
+
+import { StoreContext } from '../../store/Store';
+import { newNotification } from '../../store/actions';
 
 const useStyles = makeStyles((theme) => ({
 }));
@@ -268,6 +270,7 @@ export default function SingleLocation({
   disabled, location, dispatchLocation,
 }) {
   const classes = useStyles();
+  const { dispatch } = useContext(StoreContext);
   const [timeoutId, setTimeoutId] = useState(-1);
   const [locationSuggestions, setLocationSuggestions] = useState([location]);
 
@@ -280,28 +283,32 @@ export default function SingleLocation({
 
   async function getLocationSuggestions(queryText) {
     try {
-      if (queryText.trim() !== '') {
-        const query = `https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json?apiKey=${process.env.HERE_API_KEY}&query=${queryText}&maxresults=10`;
-        const res = await axios.get(query);
-        let { suggestions } = res.data;
-
-        suggestions = suggestions
-          .filter((el) => (
-            ['houseNumber', 'intersection', 'street', 'postalCode', 'district'].indexOf(el.matchLevel) > -1
-          ))
-          .map((suggestion) => ({
-            label: `${countryToFlag(suggestion.countryCode)} ${suggestion.label.split(',').slice(1).join(',')}`,
-            locationId: suggestion.locationId,
-            latitude: 0,
-            longitude: 0,
-          }));
-
-        setLocationSuggestions(suggestions);
-      } else {
-        setLocationSuggestions([]);
+      if (queryText.trim() === '') {
+        return setLocationSuggestions([]);
       }
+
+      const query = 'https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json'
+          + `?apiKey=${process.env.HERE_API_KEY}`
+          + `&query=${queryText}`
+          + '&maxresults=10';
+
+      const res = await axios.get(query);
+      let { suggestions } = res.data;
+
+      suggestions = suggestions
+        .filter((el) => (
+          ['houseNumber', 'intersection', 'street', 'postalCode', 'district'].indexOf(el.matchLevel) > -1
+        ))
+        .map((suggestion) => ({
+          label: `${countryToFlag(suggestion.countryCode)} ${suggestion.label.split(',').slice(1).join(',')}`,
+          locationId: suggestion.locationId,
+          latitude: 0,
+          longitude: 0,
+        }));
+
+      return setLocationSuggestions(suggestions);
     } catch (err) {
-      console.error(err);
+      return newNotification(dispatch, { message: err.message, severity: 'error' });
     }
   }
 
@@ -313,11 +320,22 @@ export default function SingleLocation({
   async function selectLocation(selectedSuggestion) {
     try {
       if (selectedSuggestion !== null) {
-        const res = await axios.get(`https://geocoder.ls.hereapi.com/6.2/geocode.json?apiKey=${process.env.HERE_API_KEY}&locationid=${selectedSuggestion.locationId}`);
+        const query = 'https://geocoder.ls.hereapi.com/6.2/geocode.json'
+          + `?apiKey=${process.env.HERE_API_KEY}`
+          + `&locationid=${selectedSuggestion.locationId}`
+          + '&jsonattributes=1';
+
+        const res = await axios.get(query);
+
+        if (!res.data.response.view.length === 0) {
+          throw new Error('Unable to get area suggestions');
+        }
+
         const [latitude, longitude] = [
-          res.data.Response.View[0].Result[0].Location.DisplayPosition.Latitude,
-          res.data.Response.View[0].Result[0].Location.DisplayPosition.Longitude,
+          res.data.response.view[0].result[0].location.displayPosition.latitude,
+          res.data.response.view[0].result[0].location.displayPosition.longitude,
         ];
+
         dispatchLocation({
           type: 'addLocation',
           payload: {
@@ -329,7 +347,7 @@ export default function SingleLocation({
         });
       }
     } catch (err) {
-      console.error(err);
+      newNotification(dispatch, { message: err.message, severity: 'error' });
     }
   }
 

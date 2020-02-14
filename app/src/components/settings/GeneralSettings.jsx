@@ -38,19 +38,23 @@ const useStyles = makeStyles((theme) => ({
 const genders = [
   {
     name: 'Woman',
-    value: 'woman',
+    value: 1,
   },
   {
     name: 'Man',
-    value: 'man',
+    value: 2,
   },
   {
-    name: 'Non binary',
-    value: 'non-binary',
+    name: 'Gender Queer',
+    value: 4,
+  },
+  {
+    name: 'Gender Fluid',
+    value: 8,
   },
 ];
 
-export default function GeneralSettingsForm({
+export default function GeneralSettings({
   props: {
     inputs, setInputs, disabled, setDisabled,
   },
@@ -66,7 +70,9 @@ export default function GeneralSettingsForm({
   };
 
   const handleInterestChange = (event) => {
-    setInterest(event.target.value);
+    if (/^[a-zA-Z0-9-'. ]+$/.test(event.target.value) === true) {
+      setInterest(event.target.value);
+    }
   };
 
   const handleInputChange = (event) => {
@@ -83,14 +89,15 @@ export default function GeneralSettingsForm({
   };
 
   const handleKeyPress = (e) => {
+    const interestModified = interest.trim().toLowerCase().replace(/ /g, '_');
     if (
       e.key === 'Enter'
-      && interest.trim() !== ''
-      && inputs.interests.indexOf(interest.trim()) === -1
+      && interestModified !== ''
+      && inputs.interests.indexOf(interestModified) === -1
     ) {
       setInputs({
         ...inputs,
-        ...{ interests: inputs.interests.concat([interest.trim()]) },
+        ...{ interests: inputs.interests.concat([interestModified]) },
       });
       setInterest('');
     }
@@ -107,7 +114,7 @@ export default function GeneralSettingsForm({
     if (
       inputs.birthdate === null
       || genders.findIndex((el) => el.value === inputs.gender) === -1
-      || inputs.sexualOrientation.length === 0
+      || inputs.sexualPreference.length === 0
       || inputs.description.trim() === ''
       || inputs.interests.length < 3
     ) {
@@ -124,19 +131,18 @@ export default function GeneralSettingsForm({
       <FormControl fullWidth className={classes.formControl}>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
-            initialFocusedDate={subYears(new Date(), 25)}
+            id="birthdate"
+            label="Birthdate"
+            variant="inline"
             disableToolbar
+            autoOk
+            initialFocusedDate={subYears(new Date(), 25)}
             maxDate={subYears(new Date(), 18)}
             minDate={subYears(new Date(), 80)}
             format="MM/dd/yyyy"
-            id="birthdate"
-            label="Birthdate"
             value={inputs.birthdate}
             onChange={handleInputChange}
             onError={handleBirthdateError}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
           />
         </MuiPickersUtilsProvider>
       </FormControl>
@@ -150,7 +156,7 @@ export default function GeneralSettingsForm({
           value={inputs.gender}
           onChange={handleInputChange}
         >
-          <MenuItem value="">None</MenuItem>
+          <MenuItem value={0}>None</MenuItem>
           {genders.map((gender) => (
             <MenuItem key={gender.value} value={gender.value}>{gender.name}</MenuItem>
           ))}
@@ -158,19 +164,21 @@ export default function GeneralSettingsForm({
       </FormControl>
 
       <FormControl fullWidth className={classes.formControl}>
-        <InputLabel id="sexual-orientation-label">Interested in</InputLabel>
+        <InputLabel id="sexual-preference-label">Interested in</InputLabel>
         <Select
-          labelId="sexual-orientation-label"
-          id="sexual-orientation"
-          name="sexualOrientation"
+          labelId="sexual-preference-label"
+          id="sexual-preference"
+          name="sexualPreference"
           multiple
-          value={inputs.sexualOrientation}
-          renderValue={(selected) => selected.join(', ')}
+          value={inputs.sexualPreference}
+          renderValue={(selected) => selected.map(
+            (el2) => genders.find((el) => el.value === el2).name,
+          ).join(', ')}
           onChange={handleInputChange}
         >
           {genders.map((gender) => (
-            <MenuItem key={gender.name} value={gender.name}>
-              <Checkbox checked={inputs.sexualOrientation.indexOf(gender.name) > -1} />
+            <MenuItem key={gender.name} value={gender.value}>
+              <Checkbox checked={inputs.sexualPreference.indexOf(gender.value) > -1} />
               <ListItemText primary={gender.name} />
             </MenuItem>
           ))}
@@ -211,7 +219,12 @@ export default function GeneralSettingsForm({
         <Chip
           size="small"
           className={classes.chip}
-          label={label}
+          key={label}
+          label={
+            label
+              .replace(/^[a-z]|\.[a-z]|-[a-z]|_[a-z]|'[a-z]/g, (el) => el.toUpperCase())
+              .replace(/_/g, ' ')
+          }
           onDelete={handleInterestDelete(label)}
           color="primary"
         />

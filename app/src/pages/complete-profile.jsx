@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useReducer } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -11,9 +11,11 @@ import {
   Paper,
 } from '@material-ui/core';
 
-import GeneralSettingsForm from '../components/GeneralSettingsForm';
-import PicturesUpload from '../components/PicturesUpload';
-import LocationStep from '../components/LocationStep';
+import GeneralSettings from '../components/settings/GeneralSettings';
+import PicturesSettings from '../components/settings/PicturesSettings';
+import LocationSettings from '../components/settings/LocationSettings';
+
+import { ApiContext } from '../api/Api';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -26,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
   },
   alignRight: {
     textAlign: 'right',
+  },
+  previousButton: {
+    marginRight: theme.spacing(2),
   },
 }));
 
@@ -46,14 +51,107 @@ async function getLabelFromPos(latitude, longitude) {
     + '&maxresults=1'
     + '&jsonattributes=1';
 
+  console.log(query);
   const res = await axios.get(query);
+  console.log(res);
 
+  if (!res.data.response) {
+    throw new Error('Unable to get area from selected position');
+  }
   const { country, city, district } = res.data.response.view[0].result[0].location.address;
 
   return `${countryToFlag(country)} ${city}, ${district}`;
 }
 
+function picturesReducer(state, action) {
+  switch (action.type) {
+    case 'addPicture':
+      return [
+        ...state,
+        ...[{
+          originalPicture: action.payload.originalPicture,
+          croppedPicture: '',
+          croppedAreaPixels: '',
+          crop: { x: 0, y: 0 },
+          zoom: 1,
+          isProfile: (state.length === 0),
+        }],
+      ];
+    case 'removePicture':
+      return state
+        .slice(0, action.payload.index)
+        .concat(state.slice(action.payload.index + 1, state.length));
+    case 'setAsProfile':
+      return state.map((picture, index) => {
+        if (index === action.payload.index) {
+          return { ...picture, isProfile: true };
+        }
+        return { ...picture, isProfile: false };
+      });
+    case 'updateCroppedPicture':
+      return state
+        .slice(0, action.payload.index)
+        .concat({
+          ...state[action.payload.index],
+          croppedPicture: action.payload.croppedPicture,
+        })
+        .concat(
+          state.slice(action.payload.index + 1, state.length),
+        );
+    case 'updateCrop':
+      return state
+        .slice(0, action.payload.index)
+        .concat({
+          ...state[action.payload.index],
+          crop: action.payload.crop,
+        })
+        .concat(
+          state.slice(action.payload.index + 1, state.length),
+        );
+    case 'updateZoom':
+      return state
+        .slice(0, action.payload.index)
+        .concat({
+          ...state[action.payload.index],
+          zoom: action.payload.zoom,
+        })
+        .concat(
+          state.slice(action.payload.index + 1, state.length),
+        );
+    default:
+      return state;
+  }
+}
+function locationReducer(state, action) {
+  switch (action.type) {
+    case 'addLocation':
+      return {
+        ...state,
+        label: action.payload.label,
+        latitude: action.payload.latitude,
+        longitude: action.payload.longitude,
+        type: action.payload.type,
+      };
+    case 'updateLocationName':
+      return {
+        ...state,
+        name: action.payload.name,
+      };
+    case 'resetLocation':
+      return {
+        ...state,
+        label: '',
+        latitude: 0,
+        longitude: 0,
+        type: 'custom',
+      };
+    default:
+      return state;
+  }
+}
+
 export default function CompleteProfilePage({ ipLocation }) {
+  // const { patchProfile } = useContext(ApiContext);
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [disabled, setDisabled] = useState(true);
@@ -62,9 +160,16 @@ export default function CompleteProfilePage({ ipLocation }) {
   const [inputs, setInputs] = useState({
     birthdate: null,
     gender: '',
-    sexualOrientation: [],
+    sexualPreference: [],
     description: '',
     interests: [],
+  });
+  const [pictures, dispatchPictures] = useReducer(picturesReducer, []);
+  const [location, dispatchLocation] = useReducer(locationReducer, {
+    ...ipLocation,
+    name: 'Default',
+    type: 'ip',
+    isActive: true,
   });
 
   const propsToPass = {
@@ -72,25 +177,25 @@ export default function CompleteProfilePage({ ipLocation }) {
       inputs, setInputs, disabled, setDisabled,
     },
     picturesProps: {
-      disabled, setDisabled,
+      disabled, setDisabled, pictures, dispatchPictures,
     },
     locationProps: {
-      ipLocation, getLabelFromPos,
+      getLabelFromPos, disabled, setDisabled, location, dispatchLocation,
     },
   };
 
   const steps = ({ generalProps, picturesProps, locationProps }) => [
     {
-      name: 'Location',
-      component: <LocationStep props={locationProps} />,
-    },
-    {
       name: 'General',
-      component: <GeneralSettingsForm props={generalProps} />,
+      component: <GeneralSettings props={generalProps} />,
     },
     {
       name: 'Pictures',
-      component: <PicturesUpload props={picturesProps} />,
+      component: <PicturesSettings props={picturesProps} />,
+    },
+    {
+      name: 'Location',
+      component: <LocationSettings props={locationProps} />,
     },
   ];
 
@@ -101,15 +206,32 @@ export default function CompleteProfilePage({ ipLocation }) {
     }
   };
   const goToNextStep = () => {
-    if (activeStep + 1 < steps({}, {}, {}).length - 1) {
+    if (activeStep + 1 < steps({}, {}, {}).length) {
       setActiveStep(activeStep + 1);
       setDisabled(true);
     }
   };
 
   const completeProfile = async () => {
-    console.log('completeProfile');
-    console.log(inputs);
+    const data = {
+      locations: [{
+        latitude: location.latitude,
+        longitude: location.longitude,
+        name: location.name,
+        isActive: location.isActive,
+        type: location.type,
+      }],
+      pictures: pictures.map((pic) => ({ data: pic.croppedPicture, isProfile: pic.isProfile })),
+      user: {
+        birthdate: inputs.birthdate,
+        gender: inputs.gender,
+        sexualPreference: inputs.sexualPreference.reduce((acc, curr) => acc + curr, 0),
+        description: inputs.description,
+      },
+      interests: inputs.interests,
+    };
+
+    // await patchProfile(data);
   };
 
   return (
@@ -123,37 +245,37 @@ export default function CompleteProfilePage({ ipLocation }) {
           ))}
         </Stepper>
         <Paper elevation={0} className={classes.paper}>
-          {/* <div> */}
           {steps(propsToPass)[activeStep].component}
-          {/* </div> */}
         </Paper>
         <Paper elevation={0} className={`${classes.paper} ${classes.alignRight}`}>
           {activeStep > 0 && (
-          <Button
-            // disabled={disabled}
-            onClick={goToPrevStep}
-          >
+            <Button
+              onClick={goToPrevStep}
+              variant="contained"
+              className={classes.previousButton}
+            >
             PREVIOUS
-          </Button>
+            </Button>
           )}
           {activeStep < 2 && (
             <Button
-              // disabled={disabled}
+              disabled={disabled}
               onClick={goToNextStep}
+              variant="contained"
             >
             NEXT
             </Button>
           )}
-          {/* {activeStep === 2 && ( */}
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={false}
-            onClick={completeProfile}
-          >
+          {activeStep === 2 && (
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={false}
+              onClick={completeProfile}
+            >
             FINISH
-          </Button>
-          {/* )} */}
+            </Button>
+          )}
         </Paper>
       </Paper>
     </Container>
@@ -161,15 +283,20 @@ export default function CompleteProfilePage({ ipLocation }) {
 }
 
 CompleteProfilePage.getInitialProps = async () => {
-  const res = await axios('http://ip-api.com/json');
-  const latitude = res.data.lat;
-  const longitude = res.data.lon;
-  const label = await getLabelFromPos(latitude, longitude);
-  return {
-    ipLocation: {
-      label,
-      latitude,
-      longitude,
-    },
-  };
+  try {
+    const res = await axios('http://ip-api.com/json');
+    const latitude = res.data.lat;
+    const longitude = res.data.lon;
+    const label = await getLabelFromPos(latitude, longitude);
+    return {
+      ipLocation: {
+        label,
+        latitude,
+        longitude,
+      },
+    };
+  } catch (err) {
+    console.error(err.message);
+    return {};
+  }
 };
