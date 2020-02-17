@@ -1,22 +1,19 @@
 import { makeStyles } from '@material-ui/core/styles';
 import router from 'next/router';
 import Card from '@material-ui/core/Card';
-import Icon from '@material-ui/core/Icon';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Chip, Container, Paper } from '@material-ui/core';
-import { useEffect, useContext } from 'react';
+import { Chip, Container } from '@material-ui/core';
+import { useEffect } from 'react';
 import SimpleSlider from './simpleSlider';
-
 
 
 const useStyles = makeStyles((theme) => ({
   image: {
   },
   card: {
-
-    margin: theme.spacing(3),
+    margin: theme.spacing(3, 0),
   },
   typo: {
     marginBottom: theme.spacing(2),
@@ -110,7 +107,7 @@ export default function ProfileCard(
           See
             {' '}
             {profileData.first_name}
-          's profile
+            `&apos;`s profile
           </Button>
         </Grid>
       </Grid>
