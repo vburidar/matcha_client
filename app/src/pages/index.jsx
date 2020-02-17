@@ -91,8 +91,6 @@ HomePage.getInitialProps = async (ctx) => {
   }
   try {
     const suggestionList = await apiObj.get('users/getSuggestionList');
-    //console.log(suggestionList.data.rows);
-    console.log('data=', ret.data);
     return { data: suggestionList.data.rows, userId: ret.data.user_id };
   } catch (err) {
     console.log('error: couldn\'t fetch suggestion list');

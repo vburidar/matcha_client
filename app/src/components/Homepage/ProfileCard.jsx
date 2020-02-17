@@ -6,9 +6,8 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Chip, Container, Paper } from '@material-ui/core';
-import { useEffect, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import SimpleSlider from './simpleSlider';
-
 
 
 const useStyles = makeStyles((theme) => ({
@@ -59,7 +58,13 @@ export default function ProfileCard(
   { profileData },
 ) {
   const classes = useStyles();
+  const [imageTab, setImageTab] = useState('');
   useEffect(() => {
+    if (profileData.list_images) {
+      setImageTab(`${profileData.path},${profileData.list_images}`);
+    } else {
+      setImageTab(profileData.path);
+    }
   }, []);
 
   function clickToProfile() {
@@ -70,7 +75,7 @@ export default function ProfileCard(
     <Card className={classes.card}>
       <Grid container className={classes.gridContainer}>
         <Grid className={classes.sliderContainer} item xs={11} sm={7} md={5} lg={5} xl={5}>
-          <SimpleSlider imageList={profileData.path} />
+          <SimpleSlider imageList={imageTab} />
         </Grid>
         <Grid className={classes.cardContent} item xs={12} sm={12} md={10} lg={6} xl={6}>
           <Typography color="textPrimary" variant="h4" component="h4">
