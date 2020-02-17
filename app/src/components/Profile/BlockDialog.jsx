@@ -30,17 +30,14 @@ export default function ReportDialog({ props }) {
     router.push('/homepage');
   };
 
-  const unblockUser = () => {
-    async function sendUnblock() {
-      await deleteBlock({
-        data: {
-          user_id: props.id,
-        },
-      });
-    }
-    sendUnblock();
+  async function unblockUser() {
+    await deleteBlock({
+      data: {
+        user_id: props.id,
+      },
+    });
     router.push(`/profile/${props.id}`);
-  };
+  }
   if (props.visitor_blocked_visited) {
     return (
       <Dialog open={open} onClose={handleCloseDialog} aria-labelledby="form-dialog-title">

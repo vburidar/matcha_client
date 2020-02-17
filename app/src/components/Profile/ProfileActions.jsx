@@ -25,24 +25,18 @@ export default function ProfileAction({ props }) {
   const { state } = useContext(StoreContext);
 
   async function handleLikeProfile() {
-    async function sendLike() {
-      await likeProfile({
-        user_id: props.id,
-      });
-    }
-    sendLike();
+    await likeProfile({
+      user_id: props.id,
+    });
     router.push(`/profile/${props.id}`);
   }
 
-  function handleUnlikeProfile() {
-    async function sendUnlike() {
-      await unlikeProfile({
-        data: {
-          user_id: props.id,
-        },
-      });
-    }
-    sendUnlike();
+  async function handleUnlikeProfile() {
+    await unlikeProfile({
+      data: {
+        user_id: props.id,
+      },
+    });
     router.push(`/profile/${props.id}`);
   }
 
