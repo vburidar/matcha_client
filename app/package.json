@@ -19,6 +19,7 @@
     "@material-ui/pickers": "^3.2.9",
     "axios": "^0.19.1",
     "css-loader": "^3.4.2",
+    "date-fns": "^2.9.0",
     "next": "^9.1.7",
     "pure-react-carousel": "^1.24.1",
     "react": "^16.12.0",

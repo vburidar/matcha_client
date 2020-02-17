@@ -1,4 +1,6 @@
-import { useState, useReducer, useContext } from 'react';
+import {
+  useState, useReducer, useContext, useEffect,
+} from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -15,7 +17,8 @@ import GeneralSettings from '../components/settings/GeneralSettings';
 import PicturesSettings from '../components/settings/PicturesSettings';
 import LocationSettings from '../components/settings/LocationSettings';
 
-import { ApiContext } from '../api/Api';
+import { StoreContext } from '../store/Store';
+import { createApiRequester, IsSessionAuthOnPage, ApiContext } from '../api/Api';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -148,11 +151,16 @@ function locationReducer(state, action) {
   }
 }
 
-export default function CompleteProfilePage({ ipLocation }) {
+export default function CompleteProfilePage({ ipLocation, userId }) {
   const { patchProfile } = useContext(ApiContext);
+  const { dispatch } = useContext(StoreContext);
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
+  }, []);
 
   /** General settings form state */
   const [inputs, setInputs] = useState({
@@ -280,11 +288,21 @@ export default function CompleteProfilePage({ ipLocation }) {
   );
 }
 
-CompleteProfilePage.getInitialProps = async () => {
+CompleteProfilePage.getInitialProps = async (ctx) => {
+  const { req, res } = ctx;
+  const apiObj = createApiRequester(req);
+  const ret = await IsSessionAuthOnPage('private', apiObj);
+  if (ret === false) {
+    res.writeHead(302, {
+      Location: '/signin',
+    });
+    res.end();
+  }
+
   try {
-    const res = await axios('http://ip-api.com/json');
-    const latitude = res.data.lat;
-    const longitude = res.data.lon;
+    const ipLoc = await axios('http://ip-api.com/json');
+    const latitude = ipLoc.data.lat;
+    const longitude = ipLoc.data.lon;
     const label = await getLabelFromPos(latitude, longitude);
     return {
       ipLocation: {
@@ -292,9 +310,10 @@ CompleteProfilePage.getInitialProps = async () => {
         latitude,
         longitude,
       },
+      userId: ret.data.user_id,
     };
   } catch (err) {
     console.error(err.message);
-    return {};
+    return { type: 'error', id: 'Unable to get user data' };
   }
 };
