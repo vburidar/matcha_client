@@ -18,14 +18,24 @@ function ButtonListConnected() {
     router.push('/signin');
   }
 
+  async function handleMyProfile() {
+    // console.log('handleMyProfile', state);
+    router.push(`/profile/${state.user_id}`);
+  }
+
+  async function handleActivity() {
+    console.log('click');
+    router.push('/activity');
+  }
+
   useEffect(() => {
   }, [state.inSession]);
   if (state.inSession === true) {
     return (
       <div>
-        <Button color="inherit">MyProfile</Button>
+        <Button color="inherit" onClick={handleMyProfile}>MyProfile</Button>
         <Button color="inherit">Chat</Button>
-        <Button color="inherit">Activity</Button>
+        <Button color="inherit" onClick={handleActivity}>Activity</Button>
         <Button color="inherit" onClick={handleLogout}>Logout</Button>
       </div>
     );

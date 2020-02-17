@@ -120,6 +120,12 @@ export function ApiProvider({ children }) {
     validateAccount: async (data) => (showNotification(await api.post('auth/accountValidation', data).catch(handleError), 'validateAccount')),
     patchProfile: async (data) => (showNotification(await api.patch('profile', data).catch(handleError), 'patchProfile')),
     sessionDelete: () => (api.delete('auth/deleteSession').catch(handleError)),
+    likeProfile: async (data) => (showNotification(await api.post('event/like', data).catch(handleError), 'likeProfile')),
+    unlikeProfile: async (data) => (showNotification(await api.delete('event/like', data).catch(handleError), 'unlikeProfile')),
+    createBlock: async (data) => (showNotification(await api.post('event/block', data).catch(handleError), 'blockUser')),
+    deleteBlock: async (data) => (showNotification(await api.delete('event/block', data).catch(handleError), 'deleteBlock')),
+    createReport: async (data) => (showNotification(await api.post('event/report', data).catch(handleError), 'reportUser')),
+    deleteReport: async (data) => (showNotification(await api.delete('event/report', data).catch(handleError), 'deleteReport')),
   };
 
   return (

@@ -35,8 +35,6 @@ function ResetPwdForm(
   };
 
   const handleChangePasswordConf = (event) => {
-    console.log(code);
-    console.log(login);
     setSubmitDisabled(true);
     setPasswordConf(event.target.value);
     if (password !== event.target.value && messagePwd === '') {

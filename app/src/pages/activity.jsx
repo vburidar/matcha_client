@@ -31,10 +31,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-around',
   },
   mainContainer: {
-    //display: 'flex',
-    //textAlign: 'center',
-    //flexDirection: 'column',
-    //alignItems: 'center',
+    // display: 'flex',
+    // textAlign: 'center',
+    // flexDirection: 'column',
+    // alignItems: 'center',
   },
   gridContainer: {
     display: 'flex',
@@ -56,30 +56,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const HomePage = (props) => {
-  const classes = useStyles();
-  const { state, dispatch } = useContext(StoreContext);
-  const { data, userId } = props;
-
-  useEffect(() => {
-    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
-  }, []);
-
-  return (
-    <Container className={classes.mainContainer}>
+const ActivityPage = (props) => {
+  //const classes = useStyles();
+  //const { data } = props;
+  return (null);
+  /* <Container className={classes.mainContainer}>
       <Typography color="textPrimary" variant="h6" component="h4">
-                Our crafted selection of profile just for you to see!
+              Our crafted selection of profile just for you to see!
       </Typography>
       {data.map((element) => (
-        <ProfileCard
-          profileData={element}
-          key={element.user_id}
-        />
+        <
       ))}
     </Container>
   );
-};
-HomePage.getInitialProps = async (ctx) => {
+      */ };
+
+ActivityPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
   const ret = await IsSessionAuthOnPage('private', apiObj);
@@ -89,15 +81,7 @@ HomePage.getInitialProps = async (ctx) => {
     });
     res.end();
   }
-  try {
-    const suggestionList = await apiObj.get('users/getSuggestionList');
-    //console.log(suggestionList.data.rows);
-    console.log('data=', ret.data);
-    return { data: suggestionList.data.rows, userId: ret.data.user_id };
-  } catch (err) {
-    console.log('error: couldn\'t fetch suggestion list');
-  }
-  return ({ type: 'error', id: 'Unable to fetch suggestion list' });
+  return (ret.data);
 };
 
-export default HomePage;
+export default (ActivityPage);
