@@ -60,7 +60,7 @@ resetPwdPage.getInitialProps = async (ctx) => {
   }
   if (ret === false || testLink === false) {
     res.writeHead(302, {
-      Location: '/homepage',
+      Location: '/',
     });
     res.end();
   }

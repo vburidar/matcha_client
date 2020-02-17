@@ -52,7 +52,7 @@ export default function SigninForm() {
       if (response.type !== 'error') {
         console.log('add id to store =', response.data.id);
         myStore.dispatch({ type: 'UPDATE_CONNECTION_STATUS', user_id: response.data.id, inSession: true });
-        router.push('/homepage');
+        router.push('/');
       }
     }
     readUser();

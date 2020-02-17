@@ -27,7 +27,7 @@ export default function ReportDialog({ props }) {
   }
 
   const backToHome = () => {
-    router.push('/homepage');
+    router.push('/');
   };
 
   async function unblockUser() {

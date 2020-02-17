@@ -32,7 +32,7 @@ ValidateAccountPage.getInitialProps = async (ctx) => {
   const ret = await IsSessionAuthOnPage('public_only', apiObj);
   if (ret === false && res) {
     res.writeHead(302, {
-      Location: '/homepage',
+      Location: '/',
     });
     res.end();
   }
