@@ -1,42 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FormControl, FormHelperText } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import FlatButton from '@material-ui/core/Button';
 
-class ForgottenPwdForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      submitDisable: 1,
-    };
-    this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+function ForgottenPwdForm(
+  { submitEmail },
+) {
+  const [email, setEmail] = useState('');
+  const [submitDisable, setSubmitDisable] = useState(true);
+  const [messageEmail, setMessageEmail] = useState('');
 
-
-  handleSubmit(event) {
-    const { email } = this.state;
-    const { parentCallback } = this.props;
-    parentCallback([email]);
+  const handleSubmit = (event) => {
+    submitEmail([email]);
     event.preventDefault();
-  }
+  };
 
-  handleChangeEmail(event) {
-    this.setState({ email: event.target.value });
-    this.state.submitDisable = 1;
-    if (event.target.value.match(/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/) && event.target.value.length > 0) {
-      this.state.submitDisable = 0;
+  const handleChangeEmail = (event) => {
+    setEmail(event.target.value);
+    setSubmitDisable(true);
+    if (event.target.value.length > 0) {
+      setMessageEmail('This email is invalid');
+    } else {
+      setMessageEmail('');
     }
-  }
+    if (event.target.value.match(/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/) && event.target.value.length > 0) {
+      setMessageEmail('');
+      setSubmitDisable(false);
+    }
+  };
 
-  render() {
-    const { email, submitDisable } = this.state;
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input type="email" name="email" placeholder="email" value={email} onChange={this.handleChangeEmail} />
-        <input type="submit" name="submit" disabled={submitDisable} onChange={this.handleSubmit} />
-      </form>
+  return (
+    <form onSubmit={handleSubmit} noValidate>
+      <FormControl fullWidth>
+        <TextField
+          type="email"
+          name="email"
+          placeholder="email"
+          value={email}
+          onChange={handleChangeEmail}
+        />
+      </FormControl>
+      <FormHelperText error>{messageEmail}</FormHelperText>
+      <FormControl fullWidth>
+        <FlatButton
+          type="submit"
+          name="submit"
+          disabled={submitDisable}
+          onChange={handleSubmit}
+        >
+          SUBMIT
+        </FlatButton>
+      </FormControl>
+    </form>
 
-    );
-  }
+  );
 }
 
 export default ForgottenPwdForm;

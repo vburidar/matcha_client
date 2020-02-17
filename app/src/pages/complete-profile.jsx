@@ -1,4 +1,4 @@
-import { useState, useReducer } from 'react';
+import { useState, useReducer, useContext } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -51,9 +51,7 @@ async function getLabelFromPos(latitude, longitude) {
     + '&maxresults=1'
     + '&jsonattributes=1';
 
-  console.log(query);
   const res = await axios.get(query);
-  console.log(res);
 
   if (!res.data.response) {
     throw new Error('Unable to get area from selected position');
@@ -151,7 +149,7 @@ function locationReducer(state, action) {
 }
 
 export default function CompleteProfilePage({ ipLocation }) {
-  // const { patchProfile } = useContext(ApiContext);
+  const { patchProfile } = useContext(ApiContext);
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [disabled, setDisabled] = useState(true);
@@ -231,7 +229,7 @@ export default function CompleteProfilePage({ ipLocation }) {
       interests: inputs.interests,
     };
 
-    // await patchProfile(data);
+    await patchProfile(data);
   };
 
   return (

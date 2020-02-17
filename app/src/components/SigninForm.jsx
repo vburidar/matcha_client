@@ -1,55 +1,92 @@
-import React from 'react';
+import { useState, useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
-class SigninForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      login: '',
-      password: '',
-      submitDisable: 1,
-    };
-    this.updateSubmitAbility = this.updateSubmitAbility.bind(this);
-    this.handleChangeLogin = this.handleChangeLogin.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+import TextField from '@material-ui/core/TextField';
+import FlatButton from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import router from 'next/router';
+import { ApiContext } from '../api/Api';
 
-  updateSubmitAbility() {
-    const { login, password } = this.state;
-    if (login.length > 0 && password.length > 0) {
-      this.state.submitDisable = 0;
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1, 0),
+  },
+}));
+
+
+export default function SigninForm() {
+  const { signin } = useContext(ApiContext);
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const [submitDisable, setSubmitDisable] = useState(true);
+
+  const classes = useStyles();
+
+  const updateSubmitAbility = () => {
+    if (login.length > 1 && password.length > 1) {
+      setSubmitDisable(false);
+    } else {
+      setSubmitDisable(true);
     }
-  }
+  };
 
-  handleChangeLogin(event) {
-    this.setState({ login: event.target.value });
-    this.updateSubmitAbility();
-  }
+  const handleChangeLogin = (event) => {
+    setLogin(event.target.value);
+    updateSubmitAbility();
+  };
 
-  handleChangePassword(event) {
-    this.setState({ password: event.target.value });
-    this.updateSubmitAbility();
-  }
+  const handleChangePassword = (event) => {
+    setPassword(event.target.value);
+    updateSubmitAbility();
+  };
 
-  handleSubmit(event) {
-    const { login, password } = this.state;
-    const { parentCallback } = this.props;
-    parentCallback([login, password]);
+  const submitSigninForm = (event) => {
     event.preventDefault();
-  }
+    async function readUser() {
+      const response = await signin({
+        login,
+        password,
+      });
+      if (response.type !== 'error') {
+        router.push('/homepage');
+      }
+    }
+    readUser();
+  };
 
-  render() {
-    const { login, password, submitDisable } = this.state;
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" placeholder="login" value={login} onChange={this.handleChangeLogin} />
-          <input type="password" placeholder="password" value={password} onChange={this.handleChangePassword} />
-          <input type="submit" disabled={submitDisable} />
-        </form>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <form onSubmit={submitSigninForm}>
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            id="login"
+            name="login"
+            label="login"
+            value={login}
+            onChange={handleChangeLogin}
+          />
+        </FormControl>
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            id="password"
+            name="password"
+            label="password"
+            type="password"
+            value={password}
+            onChange={handleChangePassword}
+          />
+        </FormControl>
+        <FormControl fullWidth className={classes.formControl}>
+          <FlatButton
+            type="submit"
+            label="submit"
+            value="submit"
+            disabled={submitDisable}
+          >
+            SUBMIT
+          </FlatButton>
+        </FormControl>
+      </form>
+    </div>
+  );
 }
-
-export default SigninForm;

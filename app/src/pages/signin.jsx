@@ -1,39 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import api from '../api';
+import { makeStyles } from '@material-ui/core/styles';
+import Link from 'next/link';
+import { Container, Paper } from '@material-ui/core';
+import { useContext, useEffect } from 'react';
 import SigninForm from '../components/SigninForm';
+import { createApiRequester, IsSessionAuthOnPage } from '../api/Api';
+import { StoreContext } from '../store/Store';
 
-function HomePage() {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  paper: {
+    padding: theme.spacing(3),
+  },
+}));
 
-  const callbackSigninData = async ([childLogin, childPassword]) => {
-    setLogin(childLogin);
-    setPassword(childPassword);
-  };
+const SigninPage = () => {
+  const classes = useStyles();
+  const { state, dispatch } = useContext(StoreContext);
 
   useEffect(() => {
-    async function readUser() {
-      if (login !== '' && password !== '') {
-        const user = await api.post('auth/signin', {
-          login,
-          password,
-        });
-        console.log(user);
-      }
-    }
-    readUser();
-  });
-
+    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: false });
+  }, []);
 
   return (
-    <div>
-      <h1>Sign in</h1>
-      <SigninForm parentCallback={callbackSigninData} />
-      <a href="/forgotPwd">Forgot your password?</a>
-      <p>{login}</p>
-      <p>{password}</p>
-    </div>
+    <Container maxWidth="md" className={classes.container}>
+      <Paper className={classes.paper}>
+        <div>
+          <h2>
+            Sign in
+            {' '}
+            {state.login}
+          </h2>
+          <SigninForm />
+          <Link href="/forgotPwd">
+            <a>Forgot your password?</a>
+          </Link>
+        </div>
+      </Paper>
+    </Container>
   );
-}
+};
 
-export default HomePage;
+SigninPage.getInitialProps = async (ctx) => {
+  const { req, res } = ctx;
+  const apiObj = createApiRequester(req);
+  const ret = await IsSessionAuthOnPage('public_only', apiObj);
+  if (ret === false && res) {
+    res.writeHead(302, {
+      Location: '/homepage',
+    });
+    res.end();
+  }
+  return (ret.data);
+};
+
+export default SigninPage;

@@ -1,12 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import api from '../api';
+import React, { useState, useEffect, useContext } from 'react';
+import {
+  Container, Paper,
+} from '@material-ui/core';
+import router from 'next/router';
+import { makeStyles } from '@material-ui/core/styles';
+import { createApiRequester, IsSessionAuthOnPage, ApiContext } from '../api/Api';
 import SignupForm from '../components/SignupForm';
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  paper: {
+    padding: theme.spacing(3),
+  },
+  button: {
+    color: theme.palette.primary,
+  },
+}));
 
-function HomePage() {
+function SignupPage() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const { signup } = useContext(ApiContext);
+  const classes = useStyles();
 
   const callbackSignupData = async ([childLogin, childPassword, childEmail]) => {
     setLogin(childLogin);
@@ -17,26 +37,42 @@ function HomePage() {
   useEffect(() => {
     async function createUser() {
       if (login !== '' && password !== '' && email !== '') {
-        const user = await api.post('auth/signup', {
+        const response = await signup({
           login,
           password,
           email,
         });
-        console.log('User created!', user);
+        if (response.type !== 'error') {
+          router.push('/signin');
+        }
       }
     }
     createUser();
-  });
+  }, [login]);
 
   return (
-    <div>
-      <h1>Sign up today</h1>
-      <SignupForm parentCallback={callbackSignupData} />
-      <p>{login}</p>
-      <p>{password}</p>
-      <p>{email}</p>
-    </div>
+    <Container maxWidth="md" className={classes.container}>
+      <Paper className={classes.paper}>
+        <div>
+          <h1>Sign up</h1>
+          <SignupForm signupData={callbackSignupData} />
+        </div>
+      </Paper>
+    </Container>
   );
 }
 
-export default HomePage;
+SignupPage.getInitialProps = async (ctx) => {
+  const { req, res } = ctx;
+  const apiObj = createApiRequester(req);
+  const ret = await IsSessionAuthOnPage('public_only', apiObj);
+  if (ret === false) {
+    res.writeHead(302, {
+      Location: '/homepage',
+    });
+    res.end();
+  }
+  return (ret.data);
+};
+
+export default SignupPage;

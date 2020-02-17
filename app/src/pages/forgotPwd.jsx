@@ -1,9 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import api from '../api';
+import { useState, useEffect, useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  Container, Paper,
+} from '@material-ui/core';
+import { createApiRequester, IsSessionAuthOnPage, ApiContext } from '../api/Api';
 import ForgottenPwdForm from '../components/ForgottenPwdForm';
 
-function HomePage() {
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  paper: {
+    padding: theme.spacing(3),
+  },
+}));
+
+function forgotPwdPage() {
+  const { forgotPwd } = useContext(ApiContext);
   const [email, setEmail] = useState('');
+  const classes = useStyles();
 
   const callbackEmail = async ([childEmail]) => {
     setEmail(childEmail);
@@ -12,21 +29,35 @@ function HomePage() {
   useEffect(() => {
     async function readUser() {
       if (email !== '') {
-        const reset = await api.post('/auth/forgotPwd',
-          { email });
-        console.log(reset);
+        await forgotPwd({ email });
       }
     }
     readUser();
-  });
+  }, [email]);
 
   return (
-    <div>
-      <h1>Forgot your password?</h1>
-      <ForgottenPwdForm parentCallback={callbackEmail} />
-      <p>{email}</p>
-    </div>
+    <Container maxWidth="md" className={classes.container}>
+      <Paper className={classes.paper}>
+        <div>
+          <h1>Forgot your password?</h1>
+          <ForgottenPwdForm submitEmail={callbackEmail} />
+        </div>
+      </Paper>
+    </Container>
   );
 }
 
-export default HomePage;
+forgotPwdPage.getInitialProps = async (ctx) => {
+  const { req, res } = ctx;
+  const apiObj = createApiRequester(req);
+  const ret = await IsSessionAuthOnPage('public_only', apiObj);
+  if (ret === false) {
+    res.writeHead(302, {
+      Location: '/homepage',
+    });
+    res.end();
+  }
+  return (ret.data);
+};
+
+export default forgotPwdPage;

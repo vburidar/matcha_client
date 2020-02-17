@@ -7,6 +7,8 @@ export const StoreContext = createContext();
 const initialState = {
   message: '',
   severity: '',
+  inSession: false,
+  login: '',
   open: false,
 };
 

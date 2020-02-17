@@ -1,10 +1,14 @@
 import { makeStyles } from '@material-ui/core/styles';
+import router from 'next/router';
 import {
   Button,
   AppBar,
   Toolbar,
   Typography,
 } from '@material-ui/core';
+import ButtonListConnected from '../Header/ButtonListConnected';
+import ButtonListDisconnected from '../Header/ButtonListDisconnected';
+
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -21,7 +25,8 @@ export default function Header() {
         <Typography variant="h6" className={classes.title}>
           Match point
         </Typography>
-        <Button color="inherit">Login</Button>
+        <ButtonListConnected />
+        <ButtonListDisconnected />
       </Toolbar>
     </AppBar>
   );

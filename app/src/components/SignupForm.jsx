@@ -1,161 +1,206 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
-class SignupForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      login: '',
-      password: '',
-      passwordConf: '',
-      email: '',
-      emailConf: '',
-      messagePwd: '',
-      messageEmail: '',
-      pwdIsValid: 0,
-      emailIsValid: 0,
-      disableSubmit: 1,
-    };
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
 
-    this.updateSubmitAbility = this.updateSubmitAbility.bind(this);
-    this.allFieldsAreSet = this.allFieldsAreSet.bind(this);
-    this.handleChangeLogin = this.handleChangeLogin.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.handleChangePasswordConf = this.handleChangePasswordConf.bind(this);
-    this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    this.handleChangeEmailConf = this.handleChangeEmailConf.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+import { FormHelperText } from '@material-ui/core';
 
-  allFieldsAreSet() {
-    const {
-      login, password, passwordConf, email, emailConf,
-    } = this.state;
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1, 0),
+  },
+  button: {
+    color: theme.palette.primary,
+  },
+}));
+export default function SignupForm(
+  { signupData },
+) {
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConf, setPasswordConf] = useState('');
+  const [email, setEmail] = useState('');
+  const [messageEmail, setMessageEmail] = useState('');
+  const [emailConf, setEmailConf] = useState('');
+  const [messagePwd, setMessagePwd] = useState('');
+  const [pwdIsValid, setPwdIsValid] = useState(false);
+  const [emailIsValid, setEmailIsValid] = useState(false);
+  const [loginIsValid, setLoginIsValid] = useState(false);
+  const [messageLogin, setMessageLogin] = useState('');
+  const [disableSubmit, setDisableSubmit] = useState(true);
+  const classes = useStyles();
+
+  const allFieldsAreSet = () => {
     let test = 0;
     const tabParams = [login, password, passwordConf, email, emailConf];
     tabParams.forEach((item) => {
       if (item.length === 0) {
-        test = 1;
+        test = true;
       }
     });
-    if (test > 0) {
-      return (0);
+    if (test) {
+      return (false);
     }
-    return (1);
-  }
+    return (true);
+  };
 
-  updateSubmitAbility() {
-    const { pwdIsValid, emailIsValid } = this.state;
-    this.state.disableSubmit = 1;
-    if (pwdIsValid && emailIsValid && this.allFieldsAreSet()) {
-      this.state.disableSubmit = 0;
+  const handleChangeLogin = (event) => {
+    setLoginIsValid(false);
+    setDisableSubmit(true);
+    setLogin(event.target.value);
+    if (event.target.value.length > 3) {
+      setLoginIsValid(true);
+      setDisableSubmit(!(allFieldsAreSet() && pwdIsValid && emailIsValid));
+      setMessageLogin('');
+    } else {
+      setMessageLogin('Login should be at least 4 characters long');
     }
-  }
+  };
 
-  handleChangeLogin(event) {
-    this.setState({ login: event.target.value });
-  }
-
-  handleChangePassword(event) {
-    let { messagePwd } = this.state;
-    this.setState({ password: event.target.value });
-    const { passwordConf } = this.state;
-    const password = event.target.value;
-    this.state.pwdIsValid = 0;
-    if (password.toUpperCase() === password && password.length > 0) {
-      messagePwd = 'Password must contain one lower case';
-    } else if (password.toLowerCase() === password && password.length > 0) {
-      messagePwd = 'Password must contain one upper case';
-    } else if (!password.match(/\d+/) && password.length > 0) {
-      messagePwd = 'Password must contain one digit';
-    } else if (password.length < 9 && password.length > 0) {
-      messagePwd = 'Password should be at least 9 characters long';
+  const handleChangePassword = (event) => {
+    setPassword(event.target.value);
+    setPwdIsValid(false);
+    setDisableSubmit(true);
+    if (event.target.value.toUpperCase() === event.target.value && event.target.value.length > 0) {
+      setMessagePwd('Password must contain one lowercase character');
+    } else if (event.target.value.toLowerCase() === event.target.value && event.target.value.length > 0) {
+      setMessagePwd('Password must contain one uppercase character');
+    } else if (!event.target.value.match(/\d+/) && event.target.value.length > 0) {
+      setMessagePwd('Password must contain one digit');
+    } else if (event.target.value.length < 9 && event.target.value.length > 0) {
+      setMessagePwd('Password should be at least 9 characters long');
     } else if (passwordConf !== event.target.value && passwordConf !== '') {
-      messagePwd = 'Password confirmation is different from password';
+      setMessagePwd('Password is different from password confirmation');
     } else {
-      messagePwd = '';
-      if (password.length > 0 && passwordConf.length > 0) {
-        this.state.pwdIsValid = 1;
+      setMessagePwd('');
+      if (event.target.value.length > 0 && passwordConf.length > 0) {
+        setPwdIsValid(true);
+        setDisableSubmit(!(allFieldsAreSet() && emailIsValid && loginIsValid));
       }
     }
-    this.updateSubmitAbility();
-    this.state.messagePwd = messagePwd;
-  }
+  };
 
-  handleChangePasswordConf(event) {
-    const { password } = this.state;
-    let { messagePwd } = this.state;
-    this.state.pwdIsValid = 0;
-    this.setState({ passwordConf: event.target.value });
+  const handleChangePasswordConf = (event) => {
+    setPwdIsValid(false);
+    setDisableSubmit(true);
+    setPasswordConf(event.target.value);
     if (password !== event.target.value && messagePwd === '') {
-      messagePwd = 'Password confirmation is different from password';
-    } else if (password === event.target.value && messagePwd === 'Password confirmation is different from password') {
-      messagePwd = '';
-      this.state.pwdIsValid = 1;
+      setMessagePwd('Password is different from password confirmation');
+    } else if (password === event.target.value && messagePwd === 'Password is different from password confirmation') {
+      setMessagePwd('');
+      setPwdIsValid(true);
+      setDisableSubmit(!(allFieldsAreSet() && emailIsValid && loginIsValid));
     }
-    this.state.messagePwd = messagePwd;
-    this.updateSubmitAbility();
-  }
+  };
 
-  handleChangeEmail(event) {
-    const { emailConf } = this.state;
-    this.setState({ email: event.target.value });
-    this.state.emailIsValid = 0;
+  const handleChangeEmail = (event) => {
+    setEmail(event.target.value);
+    setEmailIsValid(false);
+    setDisableSubmit(true);
     if (!event.target.value.match(/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/) && event.target.value.length > 0) {
-      this.state.messageEmail = 'This Email address is invalid';
+      setMessageEmail('This Email address is invalid');
     } else if (emailConf !== event.target.value && emailConf !== '') {
-      this.state.messageEmail = 'Email confirmation is different from email';
+      setMessageEmail('Email is different from email confirmation');
     } else {
-      this.state.messageEmail = '';
+      setMessageEmail('');
       if (emailConf.length > 0) {
-        this.state.emailIsValid = 1;
+        setEmailIsValid(true);
+        setDisableSubmit(!(allFieldsAreSet() && pwdIsValid && loginIsValid));
       }
     }
-    this.updateSubmitAbility();
-  }
+  };
 
-  handleChangeEmailConf(event) {
-    const { email } = this.state;
-    let { messageEmail } = this.state;
-    this.state.emailIsValid = 0;
-    this.setState({ emailConf: event.target.value });
-    if (email !== event.target.value) {
-      messageEmail = 'Email confirmation is different from email';
-    } else if (email === event.target.value && messageEmail === 'Email confirmation is different from email') {
-      messageEmail = '';
-      this.state.emailIsValid = 1;
+  const handleChangeEmailConf = (event) => {
+    setEmailIsValid(false);
+    setDisableSubmit(true);
+    setEmailConf(event.target.value);
+    if (email !== event.target.value && messageEmail === '') {
+      setMessageEmail('Email is different from email confirmation');
+    } else if (email === event.target.value && messageEmail === 'Email is different from email confirmation') {
+      setMessageEmail('');
+      setEmailIsValid(true);
+      setDisableSubmit(!(allFieldsAreSet() && pwdIsValid && loginIsValid));
     }
-    this.state.messageEmail = messageEmail;
-    this.updateSubmitAbility();
-  }
+  };
 
-  handleSubmit(event) {
-    const { login, password, email } = this.state;
-    const { parentCallback } = this.props;
-    parentCallback([login, password, email]);
+  const handleSubmit = (event) => {
+    signupData([login, password, email]);
     event.preventDefault();
-  }
+  };
 
-  render() {
-    const {
-      login, password, passwordConf, email, emailConf, messagePwd, messageEmail, disableSubmit,
-    } = this.state;
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" name="login" placeholder="login" value={login} onChange={this.handleChangeLogin} required />
-          <br />
-          <p>{messagePwd}</p>
-          <input type="password" name="pwd" placeholder="password" value={password} onChange={this.handleChangePassword} required />
-          <input type="password" name="pwd" placeholder="confirm password" value={passwordConf} onChange={this.handleChangePasswordConf} required />
-          <p>{messageEmail}</p>
-          <input type="email" name="email" placeholder="email" value={email} onChange={this.handleChangeEmail} required />
-          <input type="email" name="email" placeholder="confirm email" value={emailConf} onChange={this.handleChangeEmailConf} required />
-          <br />
-          <input type="submit" name="submit" value="submit" disabled={disableSubmit} />
-        </form>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <form onSubmit={handleSubmit} noValidate>
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            type="text"
+            name="login"
+            label="login"
+            value={login}
+            onChange={handleChangeLogin}
+            required
+          />
+        </FormControl>
+        <FormHelperText error>{messageLogin}</FormHelperText>
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            type="password"
+            name="pwd"
+            label="password"
+            value={password}
+            onChange={handleChangePassword}
+            required
+          />
+        </FormControl>
+        <FormHelperText error>{messagePwd}</FormHelperText>
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            type="password"
+            name="pwd"
+            label="confirm password"
+            value={passwordConf}
+            onChange={handleChangePasswordConf}
+            required
+          />
+        </FormControl>
+        <br />
+        <br />
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            fullWidth
+            type="email"
+            name="email"
+            label="email"
+            value={email}
+            onChange={handleChangeEmail}
+            required
+          />
+        </FormControl>
+        <FormHelperText error>{messageEmail}</FormHelperText>
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            type="email"
+            name="email"
+            label="confirm email"
+            value={emailConf}
+            onChange={handleChangeEmailConf}
+            required
+          />
+        </FormControl>
+        <FormControl fullWidth className={classes.formControl}>
+          <Button
+            className={classes.button}
+            type="submit"
+            id="submit"
+            name="submit"
+            disabled={disableSubmit}
+          >
+          SUBMIT
+          </Button>
+        </FormControl>
+      </form>
+    </div>
+  );
 }
-
-export default SignupForm;
