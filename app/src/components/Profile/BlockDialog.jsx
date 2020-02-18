@@ -11,7 +11,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import {
   Radio, FormControlLabel, FormControl, RadioGroup, FormLabel, Chip, IconButton, Menu, MenuItem,
 } from '@material-ui/core';
-import ReportIcon from '@material-ui/icons/Report';
 import { ApiContext, ApiProvider } from '../../api/Api';
 
 const useStyles = makeStyles((theme) => ({

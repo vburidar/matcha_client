@@ -1,24 +1,30 @@
+import router from 'next/router';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import Icon from '@material-ui/core/Icon';
-import Grid from '@material-ui/core/Grid';
+import Tab from '@material-ui/core/Tab';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { Avatar, Chip, Container, Paper } from '@material-ui/core';
-import { useEffect, useContext } from 'react';
+import {
+  Avatar, Typography, Container, Paper, Box,
+} from '@material-ui/core';
+import { useEffect, useContext, useState } from 'react';
+import Timetypo from '../components/Activity/TimeTypo';
 import { StoreContext } from '../store/Store';
 import { createApiRequester, IsSessionAuthOnPage } from '../api/Api';
-import SimpleSlider from '../components/Homepage/simpleSlider';
-import ProfileCard from '../components/Homepage/ProfileCard';
+import IconAction from '../components/Activity/IconAction';
+import MessageTypo from '../components/Activity/MessageTypo';
+import ListEvent from '../components/Activity/ListEvent';
 
 
 const useStyles = makeStyles((theme) => ({
   image: {
   },
 
-  paper:{
+  paper: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     margin: theme.spacing(1),
   },
 
@@ -30,70 +36,87 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
 
-  card: {
-
-    margin: theme.spacing(3),
-  },
-  typo: {
-    margin: theme.spacing(2),
-  },
-  container: {
-    textAlign: 'justify',
-  },
-  cardContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-  },
-  mainContainer: {
-    // display: 'flex',
-    // textAlign: 'center',
-    // flexDirection: 'column',
-    // alignItems: 'center',
-  },
-  gridContainer: {
-    display: 'flex',
-    textAlign: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  chip: {
-    margin: theme.spacing(1),
-  },
   button: {
+    display: 'flex',
+    margin: theme.spacing(2),
+    alignSelf: 'end',
+  },
+  icon: {
     margin: theme.spacing(2),
   },
-  sliderContainer: {
+
+  div: {
     display: 'flex',
-    textAlign: 'center',
-    flexDirection: 'column',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  AppBar: {
+    justifyContent: 'space-around',
     margin: theme.spacing(2),
+  },
+
+  tabs: {
+    display: 'flex',
   },
 }));
 
+function TabPanel(props) {
+  const {
+    children, value, index, ...other
+  } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box p={3}>{children}</Box>}
+    </Typography>
+  );
+}
+
 const ActivityPage = (props) => {
   const classes = useStyles();
-  const { data } = props;
+  const { data, userId } = props;
   const { dispatch } = useContext(StoreContext);
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   useEffect(() => {
-    console.log(props);
-    // dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
+    console.log('in activity', data);
+    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
   }, []);
 
   return (
     <Container>
-      <Typography color="textPrimary" variant="h6" component="h4">
-              Your recent activity
-      </Typography>
-      {data.map((element) => (
-        <Paper className={classes.paper} key={element.created_at}>
-          <Avatar className={classes.avatar} alt={element.first_name} src={element.path} />
-          <Typography className={classes.typo} color="textPrimary" variant="h6" component="h4">
-            {element.type} from {element.first_name} on {element.created_at}
-          </Typography>
-        </Paper>
-      ))}
+      <AppBar className={classes.AppBar} position="static">
+        <Tabs centered value={value} onChange={handleChange} aria-label="simple tabs example">
+          <Tab label="All events" />
+          <Tab label="Matches" />
+          <Tab label="Likes" />
+          <Tab label="Visits" />
+        </Tabs>
+      </AppBar>
+      <TabPanel value={value} index={0}>
+        <ListEvent props={{ data, type: 'all' }} />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <ListEvent props={{ data, type: 'match' }} />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <ListEvent props={{ data, type: 'like' }} />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <ListEvent props={{ data, type: 'visit' }} />
+      </TabPanel>
     </Container>
   );
 };
@@ -110,7 +133,7 @@ ActivityPage.getInitialProps = async (ctx) => {
   }
   try {
     const listEvent = await apiObj.get('/event');
-    return ({ data: listEvent.data.rows });
+    return ({ data: listEvent.data.rows, userId: ret.data.user_id });
   } catch (err) {
     console.log('error');
     return ({ type: 'error' });
