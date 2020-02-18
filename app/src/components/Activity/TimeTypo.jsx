@@ -8,21 +8,21 @@ const Timetypo = (props) => {
 
   if (data.years_since > 0) {
     return (
-      <Typography color="textPrimary" component="h4">
+      <Typography color="textSecondary" component="h4">
         {data.years_since}
         {' year(s) ago'}
       </Typography>
     );
-  } if (data.month_since > 0) {
+  } if (data.months_since > 0) {
     return (
-      <Typography color="textPrimary" component="h4">
+      <Typography color="textSecondary" component="h4">
         {data.months_since}
         {' month(s) ago'}
       </Typography>
     );
-  } if (data.day_since > 0) {
+  } if (data.days_since > 0) {
     return (
-      <Typography color="textPrimary" component="h4">
+      <Typography color="textSecondary" component="h4">
         {data.days_since}
         {' day(s) ago'}
       </Typography>
