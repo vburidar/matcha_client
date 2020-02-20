@@ -23,9 +23,9 @@ async function getGpsPositionAsync() {
   });
 }
 
-export default function LocationSettings({
+export default function LocationsSettings({
   props: {
-    getLabelFromPos, disabled, setDisabled, location, dispatchLocation,
+    getLabelFromPos, disabled, setDisabled, locations, dispatchLocations,
   },
 }) {
   const classes = useStyles();
@@ -37,13 +37,15 @@ export default function LocationSettings({
         const pos = await getGpsPositionAsync();
         const { latitude, longitude } = pos.coords;
         const label = await getLabelFromPos(latitude, longitude);
-        dispatchLocation({
-          type: 'addLocation',
+        dispatchLocations({
+          type: 'updateLocation',
           payload: {
             label,
             latitude,
             longitude,
             type: 'gps',
+            isActive: true,
+            index: 0,
           },
         });
       } catch (err) {
@@ -55,26 +57,15 @@ export default function LocationSettings({
     init();
   }, []);
 
-  useEffect(() => {
-    let shouldToggleDisabled = false;
-    if (location.latitude === 0 && location.latitude === 0 && disabled === false) {
-      shouldToggleDisabled = true;
-    }
-    if (!(location.latitude === 0 && location.latitude === 0) && disabled === true) {
-      shouldToggleDisabled = true;
-    }
-
-    if (shouldToggleDisabled) {
-      setDisabled(!disabled);
-    }
-  }, [location.latitude, location.longitude]);
-
   return (
     <div>
-      <SingleLocation
-        location={location}
-        dispatchLocation={dispatchLocation}
-      />
+      {locations.map((location, index) => (
+        <SingleLocation
+          key={index}
+          index={index}
+          disabled={false}
+        />
+      ))}
     </div>
   );
 }

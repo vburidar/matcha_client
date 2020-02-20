@@ -10,6 +10,7 @@ import theme from '../theme';
 
 import { StoreProvider } from '../store/Store';
 import { ApiProvider } from '../api/Api';
+import { SettingsProvider } from '../Settings';
 
 import Layout from '../components/Layout';
 
@@ -33,12 +34,14 @@ export default class MyApp extends App {
         </Head>
         <StoreProvider>
           <ApiProvider>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </ThemeProvider>
+            <SettingsProvider>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </ThemeProvider>
+            </SettingsProvider>
           </ApiProvider>
         </StoreProvider>
       </>

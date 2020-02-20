@@ -37,11 +37,11 @@ const useStyles = makeStyles((theme) => ({
 
 const genders = [
   {
-    name: 'Woman',
+    name: 'Man',
     value: 1,
   },
   {
-    name: 'Man',
+    name: 'Woman',
     value: 2,
   },
   {
@@ -56,7 +56,7 @@ const genders = [
 
 export default function GeneralSettings({
   props: {
-    inputs, setInputs, disabled, setDisabled,
+    inputs, setInputs,
   },
 }) {
   const classes = useStyles();
@@ -70,7 +70,7 @@ export default function GeneralSettings({
   };
 
   const handleInterestChange = (event) => {
-    if (/^[a-zA-Z0-9-'. ]+$/.test(event.target.value) === true) {
+    if (/^[a-zA-Z0-9-'. ]*$/.test(event.target.value) === true) {
       setInterest(event.target.value);
     }
   };
@@ -103,31 +103,28 @@ export default function GeneralSettings({
     }
   };
 
-  const handleBirthdateError = (err) => {
-    if (err !== '' && disabled === false) {
-      setDisabled(true);
-    }
-  };
-
-  useEffect(() => {
-    let shouldBeDisabled = false;
-    if (
-      inputs.birthdate === null
-      || genders.findIndex((el) => el.value === inputs.gender) === -1
-      || inputs.sexualPreference.length === 0
-      || inputs.description.trim() === ''
-      || inputs.interests.length < 3
-    ) {
-      shouldBeDisabled = true;
-    }
-
-    if (disabled !== shouldBeDisabled) {
-      setDisabled(!disabled);
-    }
-  }, [inputs]);
-
   return (
     <form className={classes.form} noValidate autoComplete="on">
+      <FormControl fullWidth className={classes.formControl}>
+        <TextField
+          id="first-name"
+          name="firstName"
+          label="First name"
+          value={inputs.firstName}
+          onChange={handleInputChange}
+        />
+      </FormControl>
+
+      <FormControl fullWidth className={classes.formControl}>
+        <TextField
+          id="last-name"
+          name="lastName"
+          label="Last name"
+          value={inputs.lastName}
+          onChange={handleInputChange}
+        />
+      </FormControl>
+
       <FormControl fullWidth className={classes.formControl}>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
@@ -142,7 +139,6 @@ export default function GeneralSettings({
             format="MM/dd/yyyy"
             value={inputs.birthdate}
             onChange={handleInputChange}
-            onError={handleBirthdateError}
           />
         </MuiPickersUtilsProvider>
       </FormControl>
@@ -156,7 +152,6 @@ export default function GeneralSettings({
           value={inputs.gender}
           onChange={handleInputChange}
         >
-          <MenuItem value={0}>None</MenuItem>
           {genders.map((gender) => (
             <MenuItem key={gender.value} value={gender.value}>{gender.name}</MenuItem>
           ))}

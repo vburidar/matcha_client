@@ -98,7 +98,7 @@ async function getCroppedImg(imageSrc, pixelCrop) {
 
 export default function PicturesSettings({
   props: {
-    disabled, setDisabled, pictures, dispatchPictures,
+    pictures, dispatchPictures,
   },
 }) {
   const classes = useStyles();
@@ -203,14 +203,14 @@ export default function PicturesSettings({
     });
   };
 
-  useEffect(() => {
-    console.log(pictures);
-    const shouldBeDisabled = !(pictures.length > 0 && pictures[0].croppedPicture);
+  // useEffect(() => {
+  //   console.log(pictures);
+  //   const shouldBeDisabled = !(pictures.length > 0 && pictures[0].croppedPicture);
 
-    if (disabled !== shouldBeDisabled) {
-      setDisabled(!disabled);
-    }
-  }, [pictures]);
+  //   if (disabled !== shouldBeDisabled) {
+  //     setDisabled(!disabled);
+  //   }
+  // }, [pictures]);
 
   return (
     <div>
@@ -274,13 +274,16 @@ export default function PicturesSettings({
               />
               <CardActions disableSpacing>
                 <Tooltip title="Crop">
-                  <IconButton
-                    size="small"
-                    color="primary"
-                    onClick={() => crop(key)}
-                  >
-                    <CropIcon />
-                  </IconButton>
+                  <span>
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => crop(key)}
+                      disabled={/^data:image\/(png|jpeg|gif);base64,/.test(picture.croppedPicture) === false}
+                    >
+                      <CropIcon />
+                    </IconButton>
+                  </span>
                 </Tooltip>
 
                 {!picture.isProfile && (

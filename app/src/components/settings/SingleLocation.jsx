@@ -11,8 +11,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { StoreContext } from '../../store/Store';
 import { newNotification } from '../../store/actions';
 
-const useStyles = makeStyles((theme) => ({
-}));
+import { SettingsContext } from '../../Settings';
 
 const alpha3toalpha2 = {
   AFG: 'AF',
@@ -266,13 +265,11 @@ const alpha3toalpha2 = {
   ZWE: 'ZW',
 };
 
-export default function SingleLocation({
-  disabled, location, dispatchLocation,
-}) {
-  const classes = useStyles();
+export default function SingleLocation({ index, disabled }) {
   const { dispatch } = useContext(StoreContext);
+  const { locations, dispatchLocations } = useContext(SettingsContext);
   const [timeoutId, setTimeoutId] = useState(-1);
-  const [locationSuggestions, setLocationSuggestions] = useState([location]);
+  const [locationSuggestions, setLocationSuggestions] = useState([locations[index]]);
 
   function countryToFlag(a3Code) {
     const a2Code = alpha3toalpha2[a3Code];
@@ -313,7 +310,7 @@ export default function SingleLocation({
   }
 
   function clearAutocomplete() {
-    dispatchLocation({ type: 'resetLocation' });
+    dispatchLocations({ type: 'resetLocation', payload: { index } });
     setLocationSuggestions([]);
   }
 
@@ -336,13 +333,14 @@ export default function SingleLocation({
           res.data.response.view[0].result[0].location.displayPosition.longitude,
         ];
 
-        dispatchLocation({
-          type: 'addLocation',
+        dispatchLocations({
+          type: 'updateLocation',
           payload: {
             label: selectedSuggestion.label,
             latitude,
             longitude,
             type: 'custom',
+            index,
           },
         });
       }
@@ -360,13 +358,14 @@ export default function SingleLocation({
   }
   function handleOnInputChange(e, value, reason) {
     if (reason === 'input') {
-      dispatchLocation({
-        type: 'addLocation',
+      dispatchLocations({
+        type: 'updateLocation',
         payload: {
           label: value,
           latitude: 0,
           longitude: 0,
           type: 'custom',
+          index,
         },
       });
     }
@@ -380,13 +379,13 @@ export default function SingleLocation({
 
     setTimeoutId(
       setTimeout(() => {
-        if (location.latitude === 0 && location.longitude === 0) {
-          getLocationSuggestions(location.label);
+        if (locations[index].latitude === 0 && locations[index].longitude === 0) {
+          getLocationSuggestions(locations[index].label);
           setTimeoutId(-1);
         }
       }, 400),
     );
-  }, [location.label]);
+  }, [locations[index].label]);
 
   return (
     <Grid container spacing={2} justify="center" alignItems="center">
@@ -396,11 +395,12 @@ export default function SingleLocation({
           label="Location Name"
           fullWidth
           disabled={disabled}
-          value={location.name}
-          onChange={(e) => dispatchLocation({
+          value={locations[index].name}
+          onChange={(e) => dispatchLocations({
             type: 'updateLocationName',
             payload: {
               name: e.target.value,
+              index,
             },
           })}
         />
@@ -412,7 +412,7 @@ export default function SingleLocation({
           disabled={disabled}
           options={locationSuggestions}
           autoHighlight
-          value={location}
+          value={locations[index]}
           onInputChange={handleOnInputChange}
           onChange={handleOnChange}
           getOptionLabel={(suggestion) => suggestion.label}
