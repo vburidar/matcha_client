@@ -101,26 +101,20 @@ export default function reportDialog({ props }) {
     setOpenDialogBlock(false);
   };
 
-  function blockUser() {
-    async function sendBlock() {
-      await createBlock({
-        user_id: props.id,
-      });
-    }
-    sendBlock();
+  async function blockUser() {
+    await createBlock({
+      user_id: props.id,
+    });
     setOpenDialogBlock(false);
     router.push(`/profile/${props.id}`);
   }
 
-  function reportUser() {
-    async function sendReport() {
-      await createReport({
-        user_id: props.id,
-        type: value,
-      });
-      setOpenDialogReport(false);
-    }
-    sendReport();
+  async function reportUser() {
+    await createReport({
+      user_id: props.id,
+      type: value,
+    });
+    setOpenDialogReport(false);
   }
 
   const handleChange = (event) => {
