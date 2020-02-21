@@ -214,7 +214,9 @@ export function SettingsProvider({ children }) {
         lastName: inputs.lastName,
         birthdate: inputs.birthdate,
         gender: inputs.gender,
-        sexualPreference: inputs.sexualPreference.reduce((acc, curr) => acc + curr, 0),
+        sexualPreference: (inputs.sexualPreference.length > 0)
+          ? inputs.sexualPreference.reduce((acc, curr) => acc + curr, 0)
+          : 15,
         description: inputs.description,
       },
       interests: inputs.interests,
@@ -268,7 +270,6 @@ export function SettingsProvider({ children }) {
       || compareAsc(subYears(new Date(), 18), inputs.birthdate) === -1
       || compareDesc(subYears(new Date(), 80), inputs.birthdate) === -1
       || genders.findIndex((el) => el.value === inputs.gender) === -1
-      || inputs.sexualPreference.length === 0
       || inputs.description.trim() === ''
       || inputs.interests.length < 3
     ) {

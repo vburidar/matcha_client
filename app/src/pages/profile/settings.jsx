@@ -108,7 +108,7 @@ export default function SettingsPage({ user }) {
   }, []);
 
   const credentialsProps = {
-    credentials, setCredentials,
+    credentials, setCredentials, email: user.email,
   };
   const generalProps = {
     inputs, setInputs, disabled: false, setDisabled: () => {},
