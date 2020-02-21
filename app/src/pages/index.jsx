@@ -1,16 +1,15 @@
+import { useEffect, useContext, useReducer } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import Icon from '@material-ui/core/Icon';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { Chip, Container, Paper } from '@material-ui/core';
-import { useEffect, useContext } from 'react';
+import {
+  Typography,
+  Container,
+} from '@material-ui/core';
+
 import { StoreContext } from '../store/Store';
 import { createApiRequester, IsSessionAuthOnPage } from '../api/Api';
-import SimpleSlider from '../components/Homepage/simpleSlider';
-import ProfileCard from '../components/Homepage/ProfileCard';
 
+import ProfileCard from '../components/Homepage/ProfileCard';
+import FiltersAndOrders from '../components/Homepage/FiltersAndOrders';
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -31,10 +30,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-around',
   },
   mainContainer: {
-    //display: 'flex',
-    //textAlign: 'center',
-    //flexDirection: 'column',
-    //alignItems: 'center',
+    // display: 'flex',
+    // textAlign: 'center',
+    // flexDirection: 'column',
+    // alignItems: 'center',
   },
   gridContainer: {
     display: 'flex',
@@ -56,10 +55,71 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const HomePage = (props) => {
+function filtersReducer(state, action) {
+  switch (action.type) {
+    case 'initialise':
+      return {
+        age: action.age,
+        distance: action.distance,
+        popularity: action.popularity,
+        commonInterests: action.commonInterests,
+      };
+    case 'setAge':
+      return {
+        ...state,
+        age: action.age,
+      };
+    case 'setDistance':
+      return {
+        ...state,
+        distance: action.distance,
+      };
+    case 'setPopularity':
+      return {
+        ...state,
+        popularity: action.popularity,
+      };
+    case 'setCommonInterests':
+      return {
+        ...state,
+        commonInterests: action.commonInterests,
+      };
+    default:
+      return state;
+  }
+}
+
+function usersReducer(state, action) {
+  switch (action.type) {
+    case 'relevance':
+      return [].concat(state).sort((first, second) => first.score < second.score);
+    case 'agedesc':
+      return [].concat(state).sort((first, second) => first.age < second.age);
+    case 'ageasc':
+      return [].concat(state).sort((first, second) => first.age > second.age);
+    case 'distance':
+      return [].concat(state).sort((first, second) => first.distance > second.distance);
+    // case 'popularity':
+    //   return [].concat(state).sort((first, second) => first.popularity < second.popularity);
+    case 'commoninterests':
+      return [].concat(state).sort(
+        (first, second) => first.common_interests < second.common_interests,
+      );
+    default:
+      return state;
+  }
+}
+
+const HomePage = ({ data, userId }) => {
   const classes = useStyles();
-  const { state, dispatch } = useContext(StoreContext);
-  const { data, userId } = props;
+  const { dispatch } = useContext(StoreContext);
+  const [filters, dispatchFilters] = useReducer(filtersReducer, {
+    age: [18, 80],
+    distance: 100,
+    popularity: [0, 100],
+    commonInterests: 7,
+  });
+  const [users, dispatchUsers] = useReducer(usersReducer, data);
 
   useEffect(() => {
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
@@ -70,12 +130,25 @@ const HomePage = (props) => {
       <Typography color="textPrimary" variant="h6" component="h4">
                 Our crafted selection of profile just for you to see!
       </Typography>
-      {data.map((element) => (
-        <ProfileCard
-          profileData={element}
-          key={element.user_id}
-        />
-      ))}
+      <FiltersAndOrders
+        filters={filters}
+        dispatchFilters={dispatchFilters}
+        users={users}
+        dispatchUsers={dispatchUsers}
+      />
+      {users
+        .filter((user) => (user.age >= filters.age[0])
+          && (user.age <= filters.age[1])
+          && (Math.floor(user.distance) <= filters.distance)
+          // && (user.popularity > filters.popularity[0])
+          // && (user.popularity < filters.popularity[1])
+          && (user.common_interests >= filters.commonInterests))
+        .map((user) => (
+          <ProfileCard
+            profileData={user}
+            key={user.user_id}
+          />
+        ))}
     </Container>
   );
 };
