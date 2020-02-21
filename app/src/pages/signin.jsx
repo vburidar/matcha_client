@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { Container, Paper } from '@material-ui/core';
 import { useContext, useEffect } from 'react';
 import SigninForm from '../components/SigninForm';
-import { createApiRequester, IsSessionAuthOnPage } from '../api/Api';
+import { createApiRequester } from '../api/Api';
 import { StoreContext } from '../store/Store';
+import redirectTo from '../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -47,14 +48,11 @@ const SigninPage = () => {
 SigninPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('public_only', apiObj);
-  if (ret === false && res) {
-    res.writeHead(302, {
-      Location: '/',
-    });
-    res.end();
+  const { data } = await apiObj.get('users/status', req, res);
+  if (data.connected === true && res) {
+    redirectTo('/', req, res);
   }
-  return (ret.data);
+  return (data);
 };
 
 export default SigninPage;

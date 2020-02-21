@@ -7,7 +7,8 @@ import { StoreContext } from '../../store/Store';
 import ProfilePic from '../../components/Profile/ProfilePic';
 import ProfileInfos from '../../components/Profile/ProfileInfo';
 import BlockDialog from '../../components/Profile/BlockDialog';
-import { createApiRequester, IsSessionAuthOnPage } from '../../api/Api';
+import { createApiRequester } from '../../api/Api';
+import redirectTo from '../../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
   containerMain: {
@@ -56,19 +57,18 @@ const profile = (props) => {
 profile.getInitialProps = async (ctx) => {
   const { req, res, query } = ctx;
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('private', apiObj);
-  if (ret === false) {
-    res.writeHead(302, {
-      Location: '/signin',
-    });
-    res.end();
+  const { data } = await apiObj.get('users/status');
+  if (data.connected === false) {
+    redirectTo('signin', req, res);
+  }
+  if (data.profileIsComplete === false) {
+    redirectTo('/complete-profile', req, res);
   }
   const { url } = req;
   const code = url.split(/\//)[2];
-  console.log('code', code);
-  const visit = await apiObj.post('event/visits', { user_id: code });
+  await apiObj.post('event/visits', { user_id: code });
   const user = await apiObj.get(`users/getProfileInfo/${code}`);
-  return ({ data: user.data.rows[0], userId: ret.data.user_id });
+  return ({ data: user.data.rows[0], userId: data.user_id });
 };
 
 export default profile;

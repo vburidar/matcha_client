@@ -4,8 +4,9 @@ import {
 } from '@material-ui/core';
 import router from 'next/router';
 import { makeStyles } from '@material-ui/core/styles';
-import { createApiRequester, IsSessionAuthOnPage, ApiContext } from '../api/Api';
+import { createApiRequester, ApiContext } from '../api/Api';
 import SignupForm from '../components/SignupForm';
+import redirectTo from '../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -71,14 +72,11 @@ function SignupPage() {
 SignupPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('public_only', apiObj);
-  if (ret === false) {
-    res.writeHead(302, {
-      Location: '/',
-    });
-    res.end();
+  const { data } = await apiObj.get('users/status', req, res);
+  if (data.connected === true) {
+    redirectTo('/', req, res);
   }
-  return (ret.data);
+  return (data);
 };
 
 export default SignupPage;

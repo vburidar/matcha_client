@@ -17,9 +17,10 @@ import GeneralSettings from '../../components/settings/GeneralSettings';
 import PicturesSettings from '../../components/settings/PicturesSettings';
 import LocationsSettings from '../../components/settings/LocationsSettings';
 
-import { createApiRequester, IsSessionAuthOnPage } from '../../api/Api';
+import { createApiRequester } from '../../api/Api';
 import { StoreContext } from '../../store/Store';
 import { getLabelFromPos, SettingsContext } from '../../Settings';
+import redirectTo from '../../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -179,26 +180,15 @@ export default function SettingsPage({ user }) {
 
 SettingsPage.getInitialProps = async ({ req, res }) => {
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('private', apiObj);
-  if (ret === false) {
-    res.writeHead(302, {
-      Location: '/signin',
-    });
-    res.end();
+  const { data } = await apiObj.get('users/status');
+  if (data.connected === false) {
+    redirectTo('/signin', req, res);
   }
 
+  if (data.profileIsComplete === false) {
+    redirectTo('complete-profile', req, res);
+  }
   const u = await apiObj.get('users/getProfileInfo/current');
   const user = u.data;
-
-  if (
-    !user.firstName || !user.lastName || !user.birthdate || !user.gender
-    || !user.sexualPreference || !user.description /** || !user.popularityScore */
-  ) {
-    res.writeHead(302, {
-      Location: '/complete-profile',
-    });
-    res.end();
-  }
-
   return ({ user });
 };

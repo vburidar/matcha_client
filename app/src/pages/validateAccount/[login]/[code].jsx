@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { ApiContext, createApiRequester, IsSessionAuthOnPage } from '../../../api/Api';
+import { ApiContext, createApiRequester } from '../../../api/Api';
+import redirectTo from '../../../initialServices/initialServices';
 
 function ValidateAccountPage() {
   const router = useRouter();
@@ -29,14 +30,11 @@ function ValidateAccountPage() {
 ValidateAccountPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('public_only', apiObj);
-  if (ret === false && res) {
-    res.writeHead(302, {
-      Location: '/',
-    });
-    res.end();
+  const { data } = await apiObj.get('users/status');
+  if (data.connected === true && res) {
+    redirectTo('/', req, res);
   }
-  return (ret.data);
+  return (data);
 };
 
 export default ValidateAccountPage;

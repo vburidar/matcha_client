@@ -25,7 +25,7 @@ function ButtonListConnected() {
 
   async function handleActivity() {
     console.log('click');
-    router.push('/activity');
+    router.push('/activity', { shallow: false });
   }
 
   useEffect(() => {

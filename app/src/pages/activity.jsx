@@ -10,10 +10,11 @@ import {
 import { useEffect, useContext, useState } from 'react';
 import Timetypo from '../components/Activity/TimeTypo';
 import { StoreContext } from '../store/Store';
-import { createApiRequester, IsSessionAuthOnPage } from '../api/Api';
+import { createApiRequester } from '../api/Api';
 import IconAction from '../components/Activity/IconAction';
 import MessageTypo from '../components/Activity/MessageTypo';
 import ListEvent from '../components/Activity/ListEvent';
+import redirectTo from '../initialServices/initialServices';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -95,6 +96,7 @@ const ActivityPage = (props) => {
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
   }, []);
 
+
   return (
     <Container>
       <AppBar className={classes.AppBar} position="static">
@@ -124,18 +126,17 @@ const ActivityPage = (props) => {
 ActivityPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('private', apiObj);
-  if (ret === false) {
-    res.writeHead(302, {
-      Location: '/signin',
-    });
-    res.end();
+  const { data } = await apiObj.get('users/status');
+  if (data.connected === false) {
+    redirectTo('/signin', req, res);
+  }
+  if (data.profileIsComplete === false) {
+    redirectTo('/complete-profile', req, res);
   }
   try {
     const listEvent = await apiObj.get('/event');
-    return ({ data: listEvent.data.rows, userId: ret.data.user_id });
+    return ({ data: listEvent.data.rows, userId: data.user_id });
   } catch (err) {
-    console.log('error');
     return ({ type: 'error' });
   }
 };
