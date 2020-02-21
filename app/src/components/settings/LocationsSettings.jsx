@@ -1,13 +1,9 @@
 import { useEffect, useContext } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 
 import { StoreContext } from '../../store/Store';
 import { newNotification } from '../../store/actions';
 
 import SingleLocation from './SingleLocation';
-
-const useStyles = makeStyles((theme) => ({
-}));
 
 async function getGpsPositionAsync() {
   return new Promise((resolve, reject) => {
@@ -25,10 +21,9 @@ async function getGpsPositionAsync() {
 
 export default function LocationsSettings({
   props: {
-    getLabelFromPos, disabled, setDisabled, locations, dispatchLocations,
+    locations, dispatchLocations, getLabelFromPos,
   },
 }) {
-  const classes = useStyles();
   const { dispatch } = useContext(StoreContext);
 
   useEffect(() => {

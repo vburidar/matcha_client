@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CredentialsSettings({
   props: {
-    credentials, setCredentials,
+    credentials, setCredentials, email,
   },
 }) {
   const classes = useStyles();
@@ -71,7 +71,7 @@ export default function CredentialsSettings({
       <Button
         color="primary"
         variant="contained"
-        // onClick={forgotPwd}
+        onClick={() => forgotPwd({ email })}
       >
         Send reset password email
       </Button>
