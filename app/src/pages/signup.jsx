@@ -25,11 +25,15 @@ function SignupPage() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const { signup } = useContext(ApiContext);
   const classes = useStyles();
 
-  const callbackSignupData = async ([childLogin, childPassword, childEmail]) => {
+  const callbackSignupData = async ([childLogin, childFirstName, childLastName, childPassword, childEmail]) => {
     setLogin(childLogin);
+    setFirstName(childFirstName);
+    setLastName(childLastName);
     setPassword(childPassword);
     setEmail(childEmail);
   };
@@ -39,6 +43,8 @@ function SignupPage() {
       if (login !== '' && password !== '' && email !== '') {
         const response = await signup({
           login,
+          firstName,
+          lastName,
           password,
           email,
         });
