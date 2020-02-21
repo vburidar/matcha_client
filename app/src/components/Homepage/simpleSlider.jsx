@@ -1,6 +1,6 @@
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Button';
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -49,19 +49,26 @@ export default function simpleSlider({ imageList }) {
     ButtonBack.click();
   };
 
+  if (imageList.split(',')[1] !== undefined) {
+    return (
+      <CarouselProvider
+        className={classes.carousel}
+        naturalSlideWidth={100}
+        naturalSlideHeight={125}
+        totalSlides={imageList.split(',').length}
+        infinite
+      >
+        <Slider>
+          {imageList.split(',').map((element, index) => <Slide key={element} index={index}><img className={classes.image} src={element} alt="Not found" /></Slide>)}
+        </Slider>
+        <ButtonBack className={classes.prev}><ArrowBackIosIcon /></ButtonBack>
+        <ButtonNext className={classes.next}><ArrowForwardIosIcon /></ButtonNext>
+      </CarouselProvider>
+    );
+  }
   return (
-    <CarouselProvider
-      className={classes.carousel}
-      naturalSlideWidth={100}
-      naturalSlideHeight={125}
-      totalSlides={imageList.split(',').length}
-      infinite
-    >
-      <Slider>
-        {imageList.split(',').map((element, index) => <Slide key={element} index={index}><img className={classes.image} src={element} alt='Not found' /></Slide>)}
-      </Slider>
-      <ButtonBack className={classes.prev}><ArrowBackIosIcon /></ButtonBack>
-      <ButtonNext className={classes.next}><ArrowForwardIosIcon /></ButtonNext>
-    </CarouselProvider>
+    <Container>
+      <img width="100%" src={imageList} alt="Not found" />
+    </Container>
   );
 }

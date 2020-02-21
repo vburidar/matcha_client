@@ -54,7 +54,7 @@ const profile = (props) => {
   );
 };
 profile.getInitialProps = async (ctx) => {
-  const { req, res } = ctx;
+  const { req, res, query } = ctx;
   const apiObj = createApiRequester(req);
   const ret = await IsSessionAuthOnPage('private', apiObj);
   if (ret === false) {
@@ -65,6 +65,8 @@ profile.getInitialProps = async (ctx) => {
   }
   const { url } = req;
   const code = url.split(/\//)[2];
+  console.log('code', code);
+  const visit = await apiObj.post('event/visits', { user_id: code });
   const user = await apiObj.get(`users/getProfileInfo/${code}`);
   return ({ data: user.data.rows[0], userId: ret.data.user_id });
 };

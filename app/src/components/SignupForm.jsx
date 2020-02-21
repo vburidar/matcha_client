@@ -19,6 +19,8 @@ export default function SignupForm(
   { signupData },
 ) {
   const [login, setLogin] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConf, setPasswordConf] = useState('');
   const [email, setEmail] = useState('');
@@ -27,14 +29,18 @@ export default function SignupForm(
   const [messagePwd, setMessagePwd] = useState('');
   const [pwdIsValid, setPwdIsValid] = useState(false);
   const [emailIsValid, setEmailIsValid] = useState(false);
+  const [firstNameIsValid, setFirstNameIsValid] = useState(false);
+  const [lastNameIsValid, setLastNameIsValid] = useState(false);
   const [loginIsValid, setLoginIsValid] = useState(false);
   const [messageLogin, setMessageLogin] = useState('');
+  const [messageFirstName, setMessageFirstName] = useState('');
+  const [messageLastName, setMessageLastName] = useState('');
   const [disableSubmit, setDisableSubmit] = useState(true);
   const classes = useStyles();
 
   const allFieldsAreSet = () => {
     let test = 0;
-    const tabParams = [login, password, passwordConf, email, emailConf];
+    const tabParams = [firstName, lastName, login, password, passwordConf, email, emailConf];
     tabParams.forEach((item) => {
       if (item.length === 0) {
         test = true;
@@ -56,6 +62,32 @@ export default function SignupForm(
       setMessageLogin('');
     } else {
       setMessageLogin('Login should be at least 4 characters long');
+    }
+  };
+
+  const handleChangeFirstName = (event) => {
+    setFirstNameIsValid(false);
+    setDisableSubmit(true);
+    setFirstName(event.target.value);
+    if (event.target.value.length > 1) {
+      setFirstNameIsValid(true);
+      setDisableSubmit(!(allFieldsAreSet() && pwdIsValid && emailIsValid && loginIsValid && lastNameIsValid));
+      setMessageFirstName('');
+    } else {
+      setMessageFirstName('First Name should be at least 2 characters long');
+    }
+  };
+
+  const handleChangeLastName = (event) => {
+    setLastNameIsValid(false);
+    setDisableSubmit(true);
+    setLastName(event.target.value);
+    if (event.target.value.length > 1) {
+      setLastNameIsValid(true);
+      setDisableSubmit(!(allFieldsAreSet() && pwdIsValid && emailIsValid && loginIsValid && firstNameIsValid));
+      setMessageLastName('');
+    } else {
+      setMessageLastName('Last Name should be at least 2 characters long');
     }
   };
 
@@ -126,7 +158,8 @@ export default function SignupForm(
   };
 
   const handleSubmit = (event) => {
-    signupData([login, password, email]);
+    console.log({login, firstName, lastName, password, email});
+    signupData([login, firstName, lastName, password, email]);
     event.preventDefault();
   };
 
@@ -144,6 +177,28 @@ export default function SignupForm(
           />
         </FormControl>
         <FormHelperText error>{messageLogin}</FormHelperText>
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            type="text"
+            name="last name"
+            label="last name"
+            value={lastName}
+            onChange={handleChangeLastName}
+            required
+          />
+        </FormControl>
+        <FormHelperText error>{messageLastName}</FormHelperText>
+        <FormControl fullWidth className={classes.formControl}>
+          <TextField
+            type="text"
+            name="first name"
+            label="first name"
+            value={firstName}
+            onChange={handleChangeFirstName}
+            required
+          />
+        </FormControl>
+        <FormHelperText error>{messageFirstName}</FormHelperText>
         <FormControl fullWidth className={classes.formControl}>
           <TextField
             type="password"
