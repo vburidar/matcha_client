@@ -4,7 +4,6 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
-  Grid,
   Container,
   Paper,
   Typography,
@@ -13,6 +12,7 @@ import {
   Button,
 } from '@material-ui/core';
 
+import CredentialsSettings from '../../components/settings/CredentialsSettings';
 import GeneralSettings from '../../components/settings/GeneralSettings';
 import PicturesSettings from '../../components/settings/PicturesSettings';
 import LocationsSettings from '../../components/settings/LocationsSettings';
@@ -46,12 +46,15 @@ export default function SettingsPage({ user }) {
   const classes = useStyles();
   const { dispatch } = useContext(StoreContext);
   const {
+    credentials,
+    setCredentials,
     inputs,
     setInputs,
     pictures,
     dispatchPictures,
     locations,
     dispatchLocations,
+    credentialsDisabled,
     generalDisabled,
     picturesDisabled,
     locationsDisabled,
@@ -62,6 +65,11 @@ export default function SettingsPage({ user }) {
   useEffect(() => {
     async function init() {
       dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: user.id });
+      setCredentials({
+        ...credentials,
+        login: user.login,
+        email: user.email,
+      });
       setInputs({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -97,34 +105,35 @@ export default function SettingsPage({ user }) {
     init();
   }, []);
 
-  useEffect(() => {
-    console.log('pictures', pictures);
-  }, [pictures]);
-
-  const propsToPass = {
-    generalProps: {
-      inputs, setInputs, disabled: false, setDisabled: () => {},
-    },
-    picturesProps: {
-      pictures, dispatchPictures, disabled: false, setDisabled: () => {},
-    },
-    locationProps: {
-      locations, dispatchLocations, getLabelFromPos, disabled: false, setDisabled: () => {},
-    },
+  const credentialsProps = {
+    credentials, setCredentials,
+  };
+  const generalProps = {
+    inputs, setInputs, disabled: false, setDisabled: () => {},
+  };
+  const picturesProps = {
+    pictures, dispatchPictures, disabled: false, setDisabled: () => {},
+  };
+  const locationProps = {
+    locations, dispatchLocations, getLabelFromPos, disabled: false, setDisabled: () => {},
   };
 
   const tabs = [
     {
+      name: 'Credentials',
+      component: <CredentialsSettings props={credentialsProps} />,
+    },
+    {
       name: 'General',
-      component: <GeneralSettings props={propsToPass.generalProps} />,
+      component: <GeneralSettings props={generalProps} />,
     },
     {
       name: 'Pictures',
-      component: <PicturesSettings props={propsToPass.picturesProps} />,
+      component: <PicturesSettings props={picturesProps} />,
     },
     {
       name: 'Locations',
-      component: <LocationsSettings props={propsToPass.locationProps} />,
+      component: <LocationsSettings props={locationProps} />,
 
     },
   ];
@@ -152,7 +161,7 @@ export default function SettingsPage({ user }) {
 
         <Paper elevation={0} className={`${classes.paper} ${classes.alignRight}`}>
           <Button
-            disabled={generalDisabled || picturesDisabled || locationsDisabled}
+            disabled={credentialsDisabled || generalDisabled || picturesDisabled || locationsDisabled}
             onClick={updateProfile}
             variant="contained"
             color="primary"

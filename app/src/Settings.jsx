@@ -178,6 +178,12 @@ export const SettingsContext = createContext(null);
 export function SettingsProvider({ children }) {
   const { patchProfile } = useContext(ApiContext);
 
+  const [credentials, setCredentials] = useState({
+    login: '',
+    email: '',
+    emailConfirmation: '',
+  });
+
   const [inputs, setInputs] = useState({
     firstName: '',
     lastName: '',
@@ -188,6 +194,7 @@ export function SettingsProvider({ children }) {
     interests: [],
   });
 
+  const [credentialsDisabled, setCredentialsDisabled] = useState(true);
   const [generalDisabled, setGeneralDisabled] = useState(true);
   const [picturesDisabled, setPicturesDisabled] = useState(true);
   const [locationsDisabled, setLocationsDisabled] = useState(true);
@@ -201,6 +208,7 @@ export function SettingsProvider({ children }) {
       locations,
       pictures: pictures.map((pic) => ({ data: pic.croppedPicture, isProfile: pic.isProfile })),
       user: {
+        email: (credentials.emailConfirmation) ? credentials.email : null,
         firstName: inputs.firstName,
         lastName: inputs.lastName,
         birthdate: inputs.birthdate,
@@ -211,22 +219,44 @@ export function SettingsProvider({ children }) {
       interests: inputs.interests,
     };
 
+    if (data.user.email === null) delete data.user.email;
+
+    return console.log(data);
     await patchProfile(data);
   }
 
   const value = {
+    credentials,
+    setCredentials,
     inputs,
     setInputs,
     pictures,
     dispatchPictures,
     locations,
     dispatchLocations,
+    credentialsDisabled,
     generalDisabled,
     picturesDisabled,
     locationsDisabled,
     getLabelFromPos,
     updateProfile,
   };
+
+  useEffect(() => {
+    let shouldBeDisabled = false;
+    if (
+      credentials.login.trim() === ''
+      || (credentials.emailConfirmation.trim() !== ''
+        && (credentials.email !== credentials.emailConfirmation
+          || !(/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/).test(credentials.email)))
+    ) {
+      shouldBeDisabled = true;
+    }
+
+    if (credentialsDisabled !== shouldBeDisabled) {
+      setCredentialsDisabled(!credentialsDisabled);
+    }
+  }, [credentials]);
 
   useEffect(() => {
     let shouldBeDisabled = false;
@@ -278,11 +308,6 @@ export function SettingsProvider({ children }) {
       setLocationsDisabled(!locationsDisabled);
     }
   }, [locations]);
-
-  useEffect(() => {
-    console.log(generalDisabled, picturesDisabled, locationsDisabled);
-    console.log(inputs, pictures, locations);
-  }, [generalDisabled, picturesDisabled, locationsDisabled]);
 
   return (
     <SettingsContext.Provider value={value}>

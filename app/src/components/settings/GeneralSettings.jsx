@@ -117,6 +117,16 @@ export default function GeneralSettings({
 
       <FormControl fullWidth className={classes.formControl}>
         <TextField
+          id="first-name"
+          name="firstName"
+          label="First name"
+          value={inputs.firstName}
+          onChange={handleInputChange}
+        />
+      </FormControl>
+
+      <FormControl fullWidth className={classes.formControl}>
+        <TextField
           id="last-name"
           name="lastName"
           label="Last name"
