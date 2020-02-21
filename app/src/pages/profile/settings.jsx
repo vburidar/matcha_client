@@ -63,6 +63,7 @@ export default function SettingsPage({ user }) {
   const [currentTab, setCurrentTab] = useState(0);
 
   useEffect(() => {
+    console.log('USER', user);
     async function init() {
       dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: user.id });
       setCredentials({
@@ -161,7 +162,8 @@ export default function SettingsPage({ user }) {
 
         <Paper elevation={0} className={`${classes.paper} ${classes.alignRight}`}>
           <Button
-            disabled={credentialsDisabled || generalDisabled || picturesDisabled || locationsDisabled}
+            disabled={credentialsDisabled || generalDisabled
+              || picturesDisabled || locationsDisabled}
             onClick={updateProfile}
             variant="contained"
             color="primary"

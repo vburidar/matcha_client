@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CompleteProfilePage({ ipLocation, userId }) {
+export default function CompleteProfilePage({ ipLocation, user }) {
   const { dispatch } = useContext(StoreContext);
   const {
     inputs,
@@ -58,17 +58,24 @@ export default function CompleteProfilePage({ ipLocation, userId }) {
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
-    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
-    dispatchLocations({
-      type: 'addLocation',
-      payload: {
-        label: ipLocation.label,
-        latitude: ipLocation.latitude,
-        longitude: ipLocation.latitude,
-        type: 'ip',
-        isActive: true,
-      },
+    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: user.id });
+    setInputs({
+      ...inputs,
+      firstName: user.firstName,
+      lastName: user.lastName,
     });
+    if (locations.length === 0) {
+      dispatchLocations({
+        type: 'addLocation',
+        payload: {
+          label: ipLocation.label,
+          latitude: ipLocation.latitude,
+          longitude: ipLocation.latitude,
+          type: 'ip',
+          isActive: true,
+        },
+      });
+    }
   }, []);
 
   const generalProps = { inputs, setInputs };
@@ -176,7 +183,7 @@ CompleteProfilePage.getInitialProps = async (ctx) => {
         latitude,
         longitude,
       },
-      userId: ret.data.user_id,
+      user,
     };
   } catch (err) {
     console.error(err.message);

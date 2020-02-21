@@ -208,6 +208,7 @@ export function SettingsProvider({ children }) {
       locations,
       pictures: pictures.map((pic) => ({ data: pic.croppedPicture, isProfile: pic.isProfile })),
       user: {
+        login: credentials.login || null,
         email: (credentials.emailConfirmation) ? credentials.email : null,
         firstName: inputs.firstName,
         lastName: inputs.lastName,
@@ -220,8 +221,8 @@ export function SettingsProvider({ children }) {
     };
 
     if (data.user.email === null) delete data.user.email;
+    if (data.user.login === null) delete data.user.login;
 
-    return console.log(data);
     await patchProfile(data);
   }
 
