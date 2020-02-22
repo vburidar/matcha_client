@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ChatPage({ users }) {
+function ChatPage({ users, userId }) {
   const classes = useStyles();
 
   return (
@@ -36,7 +36,7 @@ function ChatPage({ users }) {
               key={user.id}
               alignItems="flex-start"
               button
-              onClick={() => Router.push('/chat/[id]', `/chat/${user.id}`)}
+              onClick={() => Router.push('/chat/[id1]-[id2]', `/chat/${Math.min(user.id, userId)}/${Math.max(user.id, userId)}`)}
             >
               <ListItemAvatar>
                 <Avatar
@@ -77,11 +77,10 @@ ChatPage.getInitialProps = async ({ req, res }) => {
     res.end();
   }
 
-  // localhost:8080/api/users/:id/matches
-
   const u = await apiObj.get('users/current/matches');
   const users = u.data;
-  console.log(users);
 
-  return { users };
+  const userId = 387;
+
+  return { users, userId };
 };
