@@ -6,10 +6,11 @@ import {
 } from '@material-ui/core';
 
 import { StoreContext } from '../store/Store';
-import { createApiRequester, IsSessionAuthOnPage } from '../api/Api';
+import { createApiRequester } from '../api/Api';
 
 import ProfileCard from '../components/Homepage/ProfileCard';
 import FiltersAndOrders from '../components/Homepage/FiltersAndOrders';
+import redirectTo from '../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -155,16 +156,16 @@ const HomePage = ({ data, userId }) => {
 HomePage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('private', apiObj);
-  if (ret === false) {
-    res.writeHead(302, {
-      Location: '/signin',
-    });
-    res.end();
+  const { data } = await apiObj.get('users/status');
+  if (data.connected === false) {
+    redirectTo('/signin', req, res);
+  }
+  if (data.profileIsComplete === false) {
+    redirectTo('/complete-profile', req, res);
   }
   try {
     const suggestionList = await apiObj.get('users/getSuggestionList');
-    return { data: suggestionList.data.rows, userId: ret.data.user_id };
+    return { data: suggestionList.data.rows, userId: data.user_id };
   } catch (err) {
     console.log('error: couldn\'t fetch suggestion list');
   }

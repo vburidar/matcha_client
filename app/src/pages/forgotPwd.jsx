@@ -3,8 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   Container, Paper,
 } from '@material-ui/core';
-import { createApiRequester, IsSessionAuthOnPage, ApiContext } from '../api/Api';
+import { createApiRequester, ApiContext } from '../api/Api';
 import ForgottenPwdForm from '../components/ForgottenPwdForm';
+import redirectTo from '../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -50,14 +51,11 @@ function forgotPwdPage() {
 forgotPwdPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('public_only', apiObj);
-  if (ret === false) {
-    res.writeHead(302, {
-      Location: '/',
-    });
-    res.end();
+  const { data } = await apiObj.get('users/status');
+  if (data.connected === true) {
+    redirectTo('/', req, res);
   }
-  return (ret.data);
+  return (data);
 };
 
 export default forgotPwdPage;

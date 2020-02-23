@@ -7,7 +7,10 @@ import { StoreContext } from '../../store/Store';
 import ProfilePic from '../../components/Profile/ProfilePic';
 import ProfileInfos from '../../components/Profile/ProfileInfo';
 import BlockDialog from '../../components/Profile/BlockDialog';
-import { createApiRequester, IsSessionAuthOnPage } from '../../api/Api';
+import { createApiRequester } from '../../api/Api';
+import redirectTo from '../../initialServices/initialServices';
+
+import { SocketContext } from '../../Socket';
 
 const useStyles = makeStyles((theme) => ({
   containerMain: {
@@ -23,20 +26,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const profile = (props) => {
+const profile = ({ talker, userId }) => {
   const classes = useStyles();
-  const [open] = useState(true);
-  const { data, userId } = props;
   const { dispatch } = useContext(StoreContext);
+  const { socket, createVisit } = useContext(SocketContext);
 
   useEffect(() => {
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
   }, []);
 
-  if (data.visited_blocked_visitor || data.visitor_blocked_visited) {
+  useEffect(() => {
+    if (Object.keys(socket).length > 0) {
+      if (talker.id !== userId) {
+        console.log('NEW VISIT');
+        // createVisit(talker.id);
+      }
+    }
+  }, [socket]);
+
+  if (talker.visited_blocked_visitor || talker.visitor_blocked_visited) {
     return (
       <Container maxWidth="xl" className={classes.container}>
-        <BlockDialog props={data} />
+        <BlockDialog props={talker} />
       </Container>
     );
   }
@@ -44,31 +55,29 @@ const profile = (props) => {
     <Container maxWidth="xl" className={classes.container}>
       <Grid container spacing={3} className={classes.containerMain}>
         <Grid item xs={12} sm={9} md={5}>
-          <ProfilePic props={data} />
+          <ProfilePic props={talker} />
         </Grid>
         <Grid item xs={12} sm={12} md={7} className={classes.container}>
-          <ProfileInfos props={data} />
+          <ProfileInfos props={talker} />
         </Grid>
       </Grid>
     </Container>
   );
 };
-profile.getInitialProps = async (ctx) => {
-  const { req, res, query } = ctx;
+profile.getInitialProps = async ({ req, res, query }) => {
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('private', apiObj);
-  if (ret === false) {
-    res.writeHead(302, {
-      Location: '/signin',
-    });
-    res.end();
+  const { data } = await apiObj.get('users/status');
+  if (data.connected === false) {
+    redirectTo('signin', req, res);
   }
-  const { url } = req;
-  const code = url.split(/\//)[2];
-  console.log('code', code);
-  const visit = await apiObj.post('event/visits', { user_id: code });
-  const user = await apiObj.get(`users/getProfileInfo/${code}`);
-  return ({ data: user.data.rows[0], userId: ret.data.user_id });
+  if (data.profileIsComplete === false) {
+    redirectTo('/complete-profile', req, res);
+  }
+
+  const { id } = query;
+  const talkerQueryRes = await apiObj.get(`users/getProfileInfo/${id}`);
+  const talker = talkerQueryRes.data.rows[0];
+  return ({ talker, userId: data.user_id });
 };
 
 export default profile;

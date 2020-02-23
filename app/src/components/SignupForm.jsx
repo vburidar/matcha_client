@@ -158,7 +158,6 @@ export default function SignupForm(
   };
 
   const handleSubmit = (event) => {
-    console.log({login, firstName, lastName, password, email});
     signupData([login, firstName, lastName, password, email]);
     event.preventDefault();
   };

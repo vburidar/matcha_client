@@ -23,24 +23,6 @@ export function createApiRequester(req) {
   }));
 }
 
-export async function IsSessionAuthOnPage(pageStatus, apiRequester) {
-  try {
-    let inSession = null;
-    const apiResponse = await apiRequester.post('auth/ping');
-    if (apiResponse.data.message === 'in_session') {
-      inSession = true;
-    } else if (apiResponse.data.message === 'not_in_session') {
-      inSession = false;
-    }
-    if ((pageStatus === 'public_only' && inSession === true) || (pageStatus === 'private' && inSession === false)) {
-      return (false);
-    }
-    return (apiResponse);
-  } catch (err) {
-    return ({ error: 'Failed to reach api server' });
-  }
-}
-
 export function ApiProvider({ children }) {
   const { dispatch } = useContext(StoreContext);
 
@@ -126,6 +108,8 @@ export function ApiProvider({ children }) {
     deleteBlock: async (data) => (showNotification(await api.delete('event/block', data).catch(handleError), 'deleteBlock')),
     createReport: async (data) => (showNotification(await api.post('event/report', data).catch(handleError), 'reportUser')),
     deleteReport: async (data) => (showNotification(await api.delete('event/report', data).catch(handleError), 'deleteReport')),
+
+    createMessage: async (data) => (api.post('users/message', data).catch(handleError)),
   };
 
   return (

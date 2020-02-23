@@ -18,8 +18,9 @@ import PicturesSettings from '../components/settings/PicturesSettings';
 import LocationsSettings from '../components/settings/LocationsSettings';
 
 import { StoreContext } from '../store/Store';
-import { createApiRequester, IsSessionAuthOnPage } from '../api/Api';
+import { createApiRequester } from '../api/Api';
 import { getLabelFromPos, SettingsContext } from '../Settings';
+import redirectTo from '../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -155,23 +156,15 @@ export default function CompleteProfilePage({ ipLocation, user }) {
 CompleteProfilePage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('private', apiObj);
-  if (ret === false) {
-    res.writeHead(302, {
-      Location: '/signin',
-    });
-    res.end();
+  const { data } = await apiObj.get('users/status');
+  if (data.connected === false) {
+    redirectTo('/signin', req, res);
   }
-
-  const u = await apiObj.get('users/getProfileInfo/current');
+  if (data.profileIsComplete === true) {
+    redirectTo('/profile/settings', req, res);
+  }
+  const u = await apiObj.get(`users/getProfileInfo/current`);
   const user = u.data;
-  if (user.gender) {
-    res.writeHead(302, {
-      Location: '/profile/settings',
-    });
-    res.end();
-  }
-
   try {
     const ipLoc = await axios('http://ip-api.com/json');
     const latitude = ipLoc.data.lat;

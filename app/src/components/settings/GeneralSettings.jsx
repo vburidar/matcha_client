@@ -88,7 +88,7 @@ export default function GeneralSettings({
     });
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     const interestModified = interest.trim().toLowerCase().replace(/ /g, '_');
     if (
       e.key === 'Enter'
@@ -197,7 +197,7 @@ export default function GeneralSettings({
           id="interest"
           name="interest"
           label="Center of interests"
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           value={interest}
           onChange={handleInterestChange}
           InputProps={{

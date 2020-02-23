@@ -4,10 +4,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   Container, Paper,
 } from '@material-ui/core';
-import { createApiRequester, IsSessionAuthOnPage } from '../../../api/Api';
+import { createApiRequester} from '../../../api/Api';
 import api from '../../../api';
 import SigninPage from '../../signin';
 import ResetPwdForm from '../../../components/ResetPwdForm';
+import redirectTo from '../../../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -45,7 +46,7 @@ function resetPwdPage() {
 resetPwdPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
-  const ret = await IsSessionAuthOnPage('public_only', apiObj);
+  const { data } = await apiObj.get('users/status');
   let testLink = true;
   const { url } = req;
   const login = url.split(/\//)[2];
@@ -58,13 +59,12 @@ resetPwdPage.getInitialProps = async (ctx) => {
   } catch (err) {
     testLink = false;
   }
-  if (ret === false || testLink === false) {
-    res.writeHead(302, {
-      Location: '/',
-    });
-    res.end();
+  if (data.connected === true) {
+    redirectTo('/', req, res);
+  } else if (testLink === false) {
+    redirectTo('signin', req, res);
   }
-  return (ret.data);
+  return (data);
 };
 
 export default resetPwdPage;
