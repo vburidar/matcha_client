@@ -11,9 +11,9 @@ import {
 } from '@material-ui/core';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 
-import { StoreContext } from '../../store/Store';
-import { ApiContext } from '../../api/Api';
-import { SocketContext } from '../../Socket';
+import { StoreContext } from '../../../store/Store';
+import { ApiContext } from '../../../stores/Api';
+import { SocketContext } from '../../../stores/Socket';
 
 function getNotificationMessage(notification) {
   switch (notification.type) {
@@ -68,14 +68,6 @@ function ButtonListConnected() {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
@@ -89,20 +81,10 @@ function ButtonListConnected() {
     router.push('/signin');
   }
 
-  async function handleMyProfile() {
-    router.push(`/profile/${state.user_id}`);
-  }
-
-  async function handleActivity() {
-    router.push('/activity', { shallow: false });
-  }
-
-  useEffect(() => {
-  }, [state.inSession]);
   if (state.inSession === true) {
     return (
       <div>
-        <IconButton color="inherit" onClick={handleClick}>
+        <IconButton color="inherit" onClick={(e) => setAnchorEl(e.currentTarget)}>
           <Badge badgeContent={notifications.length} color="error">
             <NotificationsIcon />
           </Badge>
@@ -111,7 +93,7 @@ function ButtonListConnected() {
           id={id}
           open={open}
           anchorEl={anchorEl}
-          onClose={handleClose}
+          onClose={() => setAnchorEl(null)}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'center',
@@ -122,6 +104,14 @@ function ButtonListConnected() {
           }}
         >
           <List component="nav">
+            {notifications.length === 0 && (
+              <ListItem>
+                <ListItemText
+                  primary="No new notifications"
+                />
+              </ListItem>
+            )}
+
             {notifications.map((notification) => (
               <ListItem
                 key={`${notification.sender_id}${notification.type}${getTimeElapsedMessage(notification)}`}
@@ -137,10 +127,36 @@ function ButtonListConnected() {
             ))}
           </List>
         </Popover>
-        <Button color="inherit" onClick={handleMyProfile}>MyProfile</Button>
-        <Button color="inherit">Chat</Button>
-        <Button color="inherit" onClick={handleActivity}>Activity</Button>
-        <Button color="inherit" onClick={handleLogout}>Logout</Button>
+        <Button
+          color="inherit"
+          onClick={() => router.push('/profile/settings')}
+        >
+          Settings
+        </Button>
+        <Button
+          color="inherit"
+          onClick={() => router.push(`/profile/${state.user_id}`)}
+        >
+          My Profile
+        </Button>
+        <Button
+          color="inherit"
+          onClick={() => router.push('/chat')}
+        >
+          Chat
+        </Button>
+        <Button
+          color="inherit"
+          onClick={() => router.push('/activity', { shallow: false })}
+        >
+          Activity
+        </Button>
+        <Button
+          color="inherit"
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
       </div>
     );
   }

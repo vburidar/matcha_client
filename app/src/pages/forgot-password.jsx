@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   Container, Paper,
 } from '@material-ui/core';
-import { createApiRequester, ApiContext } from '../api/Api';
+import { createApiRequester, ApiContext } from '../stores/Api';
 import ForgottenPwdForm from '../components/ForgottenPwdForm';
 import redirectTo from '../initialServices/initialServices';
 
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function forgotPwdPage() {
+function ForgotPasswordPage() {
   const { forgotPwd } = useContext(ApiContext);
   const [email, setEmail] = useState('');
   const classes = useStyles();
@@ -48,7 +48,7 @@ function forgotPwdPage() {
   );
 }
 
-forgotPwdPage.getInitialProps = async (ctx) => {
+ForgotPasswordPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
   const { data } = await apiObj.get('users/status');
@@ -58,4 +58,4 @@ forgotPwdPage.getInitialProps = async (ctx) => {
   return (data);
 };
 
-export default forgotPwdPage;
+export default ForgotPasswordPage;

@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import { useState, useContext } from 'react';
 import router from 'next/router';
 import { FormControl, FormHelperText } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
-import api from '../api';
+import { ApiContext } from '../stores/Api';
 
-function ResetPwdForm(
-  { login, code },
-) {
+export default function ResetPasswordForm({ login, code }) {
+  const { resetPassword } = useContext(ApiContext);
   const [password, setPassword] = useState('');
   const [passwordConf, setPasswordConf] = useState('');
   const [messagePwd, setMessagePwd] = useState('');
@@ -49,11 +48,7 @@ function ResetPwdForm(
     async function readUser() {
       if (login) {
         try {
-          await api.post('auth/resetPwd', {
-            login,
-            password,
-            code,
-          });
+          await resetPassword({ login, password, code });
           router.push('/signin');
         } catch (err) {
           console.log(err);
@@ -100,4 +95,3 @@ function ResetPwdForm(
 
   );
 }
-export default ResetPwdForm;

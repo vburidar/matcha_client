@@ -48,6 +48,7 @@ export function SocketProvider({ children }) {
     });
 
     sock.on('messageReceived', ({ message }) => {
+      console.log('messageReceived', message)
       dispatchMessages({
         type: 'addMessage',
         message,

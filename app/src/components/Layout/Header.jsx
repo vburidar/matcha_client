@@ -1,14 +1,13 @@
-import { makeStyles } from '@material-ui/core/styles';
-import router from 'next/router';
 import {
-  Button,
   AppBar,
   Toolbar,
   Typography,
+  Button,
 } from '@material-ui/core';
-import ButtonListConnected from '../Header/ButtonListConnected';
-import ButtonListDisconnected from '../Header/ButtonListDisconnected';
+import { makeStyles } from '@material-ui/core/styles';
 
+import ButtonListConnected from './Header/ButtonListConnected';
+import ButtonListDisconnected from './Header/ButtonListDisconnected';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -22,8 +21,10 @@ export default function Header() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" className={classes.title}>
-          See You
+        <Typography component="div" className={classes.title} onClick={() => { console.log('coucou'); }}>
+          <Button color="inherit">
+            See You
+          </Button>
         </Typography>
         <ButtonListConnected />
         <ButtonListDisconnected />

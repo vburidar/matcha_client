@@ -18,8 +18,8 @@ import PicturesSettings from '../components/settings/PicturesSettings';
 import LocationsSettings from '../components/settings/LocationsSettings';
 
 import { StoreContext } from '../store/Store';
-import { createApiRequester } from '../api/Api';
-import { getLabelFromPos, SettingsContext } from '../Settings';
+import { createApiRequester } from '../stores/Api';
+import { getLabelFromPos, SettingsContext } from '../stores/Settings';
 import redirectTo from '../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
@@ -59,6 +59,7 @@ export default function CompleteProfilePage({ ipLocation, user }) {
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
+    console.log(user, 'user')
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: user.id });
     setInputs({
       ...inputs,
@@ -163,7 +164,7 @@ CompleteProfilePage.getInitialProps = async (ctx) => {
   if (data.profileIsComplete === true) {
     redirectTo('/profile/settings', req, res);
   }
-  const u = await apiObj.get(`users/getProfileInfo/current`);
+  const u = await apiObj.get('users/getProfileInfo/current');
   const user = u.data;
   try {
     const ipLoc = await axios('http://ip-api.com/json');

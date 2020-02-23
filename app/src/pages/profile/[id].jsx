@@ -7,10 +7,10 @@ import { StoreContext } from '../../store/Store';
 import ProfilePic from '../../components/Profile/ProfilePic';
 import ProfileInfos from '../../components/Profile/ProfileInfo';
 import BlockDialog from '../../components/Profile/BlockDialog';
-import { createApiRequester } from '../../api/Api';
+import { createApiRequester } from '../../stores/Api';
 import redirectTo from '../../initialServices/initialServices';
 
-import { SocketContext } from '../../Socket';
+import { SocketContext } from '../../stores/Socket';
 
 const useStyles = makeStyles((theme) => ({
   containerMain: {
@@ -68,7 +68,7 @@ profile.getInitialProps = async ({ req, res, query }) => {
   const apiObj = createApiRequester(req);
   const { data } = await apiObj.get('users/status');
   if (data.connected === false) {
-    redirectTo('signin', req, res);
+    redirectTo('/signin', req, res);
   }
   if (data.profileIsComplete === false) {
     redirectTo('/complete-profile', req, res);

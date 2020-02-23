@@ -1,9 +1,10 @@
+/* eslint jsx-a11y/anchor-is-valid: 0 */
 import { makeStyles } from '@material-ui/core/styles';
 import Link from 'next/link';
 import { Container, Paper } from '@material-ui/core';
 import { useContext, useEffect } from 'react';
 import SigninForm from '../components/SigninForm';
-import { createApiRequester } from '../api/Api';
+import { createApiRequester } from '../stores/Api';
 import { StoreContext } from '../store/Store';
 import redirectTo from '../initialServices/initialServices';
 
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SigninPage = () => {
+export default function SigninPage() {
   const classes = useStyles();
   const { state, dispatch } = useContext(StoreContext);
 
@@ -36,14 +37,14 @@ const SigninPage = () => {
             {state.login}
           </h2>
           <SigninForm />
-          <Link href="/forgotPwd">
+          <Link href="/forgot-password">
             <a>Forgot your password?</a>
           </Link>
         </div>
       </Paper>
     </Container>
   );
-};
+}
 
 SigninPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
@@ -54,5 +55,3 @@ SigninPage.getInitialProps = async (ctx) => {
   }
   return (data);
 };
-
-export default SigninPage;

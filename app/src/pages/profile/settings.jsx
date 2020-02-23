@@ -17,9 +17,9 @@ import GeneralSettings from '../../components/settings/GeneralSettings';
 import PicturesSettings from '../../components/settings/PicturesSettings';
 import LocationsSettings from '../../components/settings/LocationsSettings';
 
-import { createApiRequester } from '../../api/Api';
+import { createApiRequester } from '../../stores/Api';
 import { StoreContext } from '../../store/Store';
-import { getLabelFromPos, SettingsContext } from '../../Settings';
+import { getLabelFromPos, SettingsContext } from '../../stores/Settings';
 import redirectTo from '../../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({

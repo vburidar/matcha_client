@@ -9,15 +9,15 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../theme';
 
 import { StoreProvider } from '../store/Store';
-import { ApiProvider } from '../api/Api';
-import { SocketProvider } from '../Socket';
-import { SettingsProvider } from '../Settings';
+import { ApiProvider } from '../stores/Api';
+import { SocketProvider } from '../stores/Socket';
+import { SettingsProvider } from '../stores/Settings';
 
 import Layout from '../components/Layout';
 
 export default class MyApp extends App {
   componentDidMount() {
-    // Remove the server-side injected CSS.
+    /** Remove the server-side injected CSS. */
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
@@ -30,7 +30,7 @@ export default class MyApp extends App {
     return (
       <>
         <Head>
-          <title>My page</title>
+          <title>See You</title>
           <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         </Head>
         <StoreProvider>

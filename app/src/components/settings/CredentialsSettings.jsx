@@ -7,7 +7,7 @@ import {
   Button,
 } from '@material-ui/core';
 
-import { ApiContext } from '../../api/Api';
+import { ApiContext } from '../../stores/Api';
 
 const useStyles = makeStyles((theme) => ({
   form: {

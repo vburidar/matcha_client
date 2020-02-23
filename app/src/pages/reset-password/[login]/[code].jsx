@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import Router, { useRouter } from 'next/router';
-import { makeStyles } from '@material-ui/core/styles';
+import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 import {
   Container, Paper,
 } from '@material-ui/core';
-import { createApiRequester} from '../../../api/Api';
-import api from '../../../api';
-import SigninPage from '../../signin';
-import ResetPwdForm from '../../../components/ResetPwdForm';
+import { makeStyles } from '@material-ui/core/styles';
+
+import { createApiRequester } from '../../../stores/Api';
+import ResetPasswordForm from '../../../components/ResetPasswordForm';
 import redirectTo from '../../../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,10 +20,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function resetPwdPage() {
+function ResetPasswordPage() {
   const router = useRouter();
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [failureUrl, setFailureUrl] = useState(true);
   const classes = useStyles();
 
   return (
@@ -32,10 +29,9 @@ function resetPwdPage() {
       <Paper className={classes.paper}>
         <div>
           <h1>Reset your password</h1>
-          <ResetPwdForm
+          <ResetPasswordForm
             code={router.query.code}
             login={router.query.login}
-            isSubmitted={isSubmitted}
           />
         </div>
       </Paper>
@@ -43,28 +39,28 @@ function resetPwdPage() {
   );
 }
 
-resetPwdPage.getInitialProps = async (ctx) => {
-  const { req, res } = ctx;
+ResetPasswordPage.getInitialProps = async ({ req, res, query }) => {
   const apiObj = createApiRequester(req);
   const { data } = await apiObj.get('users/status');
   let testLink = true;
-  const { url } = req;
-  const login = url.split(/\//)[2];
-  const code = url.split(/\//)[3];
+  const { login, code } = query;
+
   try {
-    await api.post('auth/testLinkResetPwd', {
+    await apiObj.post('auth/testLinkResetPwd', {
       login,
       code,
     });
   } catch (err) {
     testLink = false;
   }
+
   if (data.connected === true) {
     redirectTo('/', req, res);
   } else if (testLink === false) {
-    redirectTo('signin', req, res);
+    redirectTo('/signin', req, res);
   }
+
   return (data);
 };
 
-export default resetPwdPage;
+export default ResetPasswordPage;

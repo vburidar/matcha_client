@@ -21,12 +21,12 @@ export default function Footer() {
     <footer className={classes.footer}>
       <Container maxWidth="sm">
         <Typography variant="body1" align="center">
-          Made with brain by tbailly- and vburidar
+          Made with &#x1F9E0; by vburidar and tbailly-
         </Typography>
         <Typography variant="body2" color="textSecondary" align="center">
           {'Copyright © '}
           <Link color="inherit" href="https://material-ui.com/">
-          Match point
+            See You
           </Link>
           {` ${new Date().getFullYear()}.`}
         </Typography>

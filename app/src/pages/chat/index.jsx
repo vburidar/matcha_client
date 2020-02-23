@@ -11,7 +11,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import Router, { useRouter } from 'next/router';
 
-import { createApiRequester } from '../../api/Api';
+import { createApiRequester } from '../../stores/Api';
 import redirectTo from '../../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({

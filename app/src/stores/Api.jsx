@@ -43,6 +43,7 @@ export function ApiProvider({ children }) {
       account_not_validated: 'Your account is not validated yet. Please wait for an email with further instructions',
       value_already_exist: 'Those credentials are already in use',
       email_invalid: 'This email didn\'nt show up in our database. Are you sure you registered with this address?',
+      validation_code_invalid: 'This account can\'t be validated',
     };
     if (key.match('invalid-password')) {
       return ('Wrong login or password');
@@ -69,7 +70,7 @@ export function ApiProvider({ children }) {
       signup: 'Your account was successfully created! Wait for our email with our validation link',
       signin: 'Welcome back!',
       forgotPwd: 'An Email with a reset link has been sent to your email address',
-      resetPwd: 'Your password wa successfully updated. You can now log in with your new credentials',
+      resetPassword: 'Your password wa successfully updated. You can now log in with your new credentials',
       validateAccount: 'Your account was successfully validated. You can now log in',
       patchProfile: 'Your profile is now complete, you can now find the true love',
     };
@@ -96,7 +97,7 @@ export function ApiProvider({ children }) {
     getToto: () => (api.get('auth/toto').catch(handleError)),
     getUsers: () => (api.get('users').catch(handleError)),
     forgotPwd: async (data) => (showNotification(await api.post('auth/forgotPwd', data).catch(handleError), 'forgotPwd')),
-    resetPwd: async (data) => (showNotification(await api.post('auth/resetPwd', data).catch(handleError), 'resetPwd')),
+    resetPassword: async (data) => (showNotification(await api.post('auth/resetPwd', data).catch(handleError), 'resetPassword')),
     signin: async (data) => (showNotification(await api.post('auth/signin', data).catch(handleError), 'signin')),
     signup: async (data) => (showNotification(await api.post('auth/signup', data).catch(handleError), 'signup')),
     validateAccount: async (data) => (showNotification(await api.post('auth/accountValidation', data).catch(handleError), 'validateAccount')),

@@ -11,7 +11,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { StoreContext } from '../../store/Store';
 import { newNotification } from '../../store/actions';
 
-import { SettingsContext } from '../../Settings';
+import { SettingsContext } from '../../stores/Settings';
 
 const alpha3toalpha2 = {
   AFG: 'AF',

@@ -4,7 +4,7 @@ import {
 import axios from 'axios';
 import { subYears, compareAsc, compareDesc } from 'date-fns';
 
-import { ApiContext } from './api/Api';
+import { ApiContext } from './Api';
 
 function picturesReducer(state, action) {
   switch (action.type) {

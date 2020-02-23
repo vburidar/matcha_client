@@ -4,7 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { Chip, Button } from '@material-ui/core';
 import { useEffect, useContext } from 'react';
-import { ApiContext } from '../../api/Api';
+import { ApiContext } from '../../stores/Api';
 import { StoreContext } from '../../store/Store';
 
 const useStyles = makeStyles((theme) => ({

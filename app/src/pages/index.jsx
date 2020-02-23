@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 
 import { StoreContext } from '../store/Store';
-import { createApiRequester } from '../api/Api';
+import { createApiRequester } from '../stores/Api';
 
 import ProfileCard from '../components/Homepage/ProfileCard';
 import FiltersAndOrders from '../components/Homepage/FiltersAndOrders';

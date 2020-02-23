@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import router from 'next/router';
 import { makeStyles } from '@material-ui/core/styles';
-import { createApiRequester, ApiContext } from '../api/Api';
+import { createApiRequester, ApiContext } from '../stores/Api';
 import SignupForm from '../components/SignupForm';
 import redirectTo from '../initialServices/initialServices';
 
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SignupPage() {
+export default function SignupPage() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -69,8 +69,7 @@ function SignupPage() {
   );
 }
 
-SignupPage.getInitialProps = async (ctx) => {
-  const { req, res } = ctx;
+SignupPage.getInitialProps = async ({ req, res }) => {
   const apiObj = createApiRequester(req);
   const { data } = await apiObj.get('users/status', req, res);
   if (data.connected === true) {
@@ -78,5 +77,3 @@ SignupPage.getInitialProps = async (ctx) => {
   }
   return (data);
 };
-
-export default SignupPage;

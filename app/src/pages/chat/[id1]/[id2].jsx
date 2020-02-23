@@ -17,9 +17,9 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { createApiRequester } from '../../../api/Api';
+import { createApiRequester } from '../../../stores/Api';
 import redirectTo from '../../../initialServices/initialServices';
-import { SocketContext } from '../../../Socket';
+import { SocketContext } from '../../../stores/Socket';
 
 const useStyles = makeStyles((theme) => ({
   container: {

@@ -1,26 +1,21 @@
-import router from 'next/router';
-import { makeStyles } from '@material-ui/core/styles';
-import Tab from '@material-ui/core/Tab';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Button from '@material-ui/core/Button';
-import {
-  Avatar, Typography, Container, Paper, Box,
-} from '@material-ui/core';
 import { useEffect, useContext, useState } from 'react';
-import Timetypo from '../components/Activity/TimeTypo';
+import {
+  Tab,
+  AppBar,
+  Tabs,
+  Typography,
+  Container,
+  Box,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
 import { StoreContext } from '../store/Store';
-import { createApiRequester } from '../api/Api';
-import IconAction from '../components/Activity/IconAction';
-import MessageTypo from '../components/Activity/MessageTypo';
+import { createApiRequester } from '../stores/Api';
+
 import ListEvent from '../components/Activity/ListEvent';
 import redirectTo from '../initialServices/initialServices';
 
-
 const useStyles = makeStyles((theme) => ({
-  image: {
-  },
-
   paper: {
     display: 'flex',
     flexDirection: 'row',
@@ -81,7 +76,7 @@ function TabPanel(props) {
   );
 }
 
-const ActivityPage = (props) => {
+export default function ActivityPage(props) {
   const classes = useStyles();
   const { data, userId } = props;
   const { dispatch } = useContext(StoreContext);
@@ -121,10 +116,9 @@ const ActivityPage = (props) => {
       </TabPanel>
     </Container>
   );
-};
+}
 
-ActivityPage.getInitialProps = async (ctx) => {
-  const { req, res } = ctx;
+ActivityPage.getInitialProps = async ({ req, res }) => {
   const apiObj = createApiRequester(req);
   const { data } = await apiObj.get('users/status');
   if (data.connected === false) {
@@ -140,5 +134,3 @@ ActivityPage.getInitialProps = async (ctx) => {
     return ({ type: 'error' });
   }
 };
-
-export default (ActivityPage);
