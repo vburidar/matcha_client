@@ -100,8 +100,8 @@ function usersReducer(state, action) {
       return [].concat(state).sort((first, second) => first.age > second.age);
     case 'distance':
       return [].concat(state).sort((first, second) => first.distance > second.distance);
-    // case 'popularity':
-    //   return [].concat(state).sort((first, second) => first.popularity < second.popularity);
+    case 'popularity':
+      return [].concat(state).sort((first, second) => first.score_popularity < second.score_popularity);
     case 'commoninterests':
       return [].concat(state).sort(
         (first, second) => first.common_interests < second.common_interests,
@@ -117,7 +117,7 @@ const HomePage = ({ data, userId }) => {
   const [filters, dispatchFilters] = useReducer(filtersReducer, {
     age: [18, 80],
     distance: 100,
-    popularity: [0, 100],
+    popularity: [0, 1],
     commonInterests: 7,
   });
   const [users, dispatchUsers] = useReducer(usersReducer, data);
@@ -129,7 +129,7 @@ const HomePage = ({ data, userId }) => {
   return (
     <Container className={classes.mainContainer}>
       <Typography color="textPrimary" variant="h6" component="h4">
-                Our crafted selection of profile just for you to see!
+        Our crafted selection of profile just for you to see!
       </Typography>
       <FiltersAndOrders
         filters={filters}
@@ -141,8 +141,8 @@ const HomePage = ({ data, userId }) => {
         .filter((user) => (user.age >= filters.age[0])
           && (user.age <= filters.age[1])
           && (Math.floor(user.distance) <= filters.distance)
-          // && (user.popularity > filters.popularity[0])
-          // && (user.popularity < filters.popularity[1])
+          && (parseInt(user.score_popularity * 100, 10) >= filters.popularity[0])
+          && (parseInt(user.score_popularity * 100, 10) <= filters.popularity[1])
           && (user.common_interests >= filters.commonInterests))
         .map((user) => (
           <ProfileCard

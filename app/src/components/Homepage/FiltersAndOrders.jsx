@@ -30,10 +30,10 @@ const orders = [
     value: 'distance',
     name: 'Distance',
   },
-  // {
-  //   value: 'popularity',
-  //   name: 'Popularity',
-  // },
+  {
+    value: 'popularity',
+    name: 'Popularity',
+  },
   {
     value: 'commoninterests',
     name: 'Common Interests',
@@ -50,10 +50,13 @@ export default function Filter({
     distance: 0,
     maxInterests: 0,
     minInterests: 100,
+    maxPopularity: 0,
+    minPopularity: 100,
   });
 
   useEffect(() => {
     const newSlidersData = users.reduce((acc, curr) => {
+      const popularity = parseInt(curr.score_popularity * 100, 10);
       acc.maxAge = (curr.age > acc.maxAge)
         ? curr.age
         : acc.maxAge;
@@ -74,6 +77,14 @@ export default function Filter({
         ? parseInt(curr.common_interests, 10)
         : acc.minInterests;
 
+      acc.maxPopularity = (popularity > acc.maxPopularity)
+        ? popularity
+        : acc.maxPopularity;
+
+      acc.minPopularity = (popularity < acc.minPopularity)
+        ? popularity
+        : acc.minPopularity;
+
       return acc;
     }, slidersData);
 
@@ -83,7 +94,7 @@ export default function Filter({
       type: 'initialise',
       age: [slidersData.minAge, slidersData.maxAge],
       distance: newSlidersData.distance,
-      popularity: [0, 100],
+      popularity: [slidersData.minPopularity, slidersData.maxPopularity],
       commonInterests: slidersData.minInterests,
     });
   }, []);
@@ -134,9 +145,9 @@ export default function Filter({
                     // valueLabelFormat={(val) => `${val} km`}
                     aria-labelledby="distance-slider"
                     valueLabelDisplay="auto"
-                    step={1}
                     min={1}
                     max={slidersData.distance}
+                    step={1}
                   />
                 </Grid>
               </Grid>
@@ -152,8 +163,8 @@ export default function Filter({
                     valueLabelDisplay="auto"
                     aria-labelledby="popularity-range-slider"
                     getAriaValueText={(val) => `${val} popularity score`}
-                    max={100}
-                    min={0}
+                    max={slidersData.maxPopularity}
+                    min={slidersData.minPopularity}
                   />
                 </Grid>
               </Grid>

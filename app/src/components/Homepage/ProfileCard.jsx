@@ -113,7 +113,7 @@ export default function ProfileCard(
           See
             {' '}
             {profileData.first_name}
-            `&apos;`s profile
+            &apos;s profile
           </Button>
         </Grid>
       </Grid>
