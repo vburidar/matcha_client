@@ -4,7 +4,12 @@ import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Chip, Container } from '@material-ui/core';
+import { Chip, Container, Tooltip } from '@material-ui/core';
+import SpeedIcon from '@material-ui/icons/Speed';
+import Stars from '@material-ui/icons/Stars';
+import Navigation from '@material-ui/icons/Navigation';
+import LocalMovies from '@material-ui/icons/LocalMovies';
+import Height from '@material-ui/icons/Height';
 import { useEffect, useState } from 'react';
 import SimpleSlider from './simpleSlider';
 
@@ -50,6 +55,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     margin: theme.spacing(2),
   },
+  containerIcon: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    margin: theme.spacing(2),
+  },
 }));
 
 export default function ProfileCard(
@@ -85,6 +96,44 @@ export default function ProfileCard(
             {Math.floor(profileData.distance)}
             {' km away'}
           </Typography>
+          <Container className={classes.containerIcon}>
+            <Tooltip title="Localisation">
+              <span className={classes.containerIcon}>
+                <Navigation className={classes.icon} />
+                <Typography>
+                  {parseInt(profileData.score_distance * 100, 10)}
+                  %
+                </Typography>
+              </span>
+            </Tooltip>
+            <Tooltip title="Popularity">
+              <span className={classes.containerIcon}>
+                <Stars className={classes.icon} />
+                <Typography>
+                  {parseInt(profileData.score_popularity * 100, 10)}
+                  %
+                </Typography>
+              </span>
+            </Tooltip>
+            <Tooltip title="Age proximity">
+              <div className={classes.containerIcon}>
+                <Height />
+                <Typography>
+                  {parseInt(profileData.score_age * 100, 10)}
+                  %
+                </Typography>
+              </div>
+            </Tooltip>
+            <Tooltip title="Centers of interests">
+              <div className={classes.containerIcon}>
+                <LocalMovies />
+                <Typography>
+                  {parseInt(profileData.score_interest * 100, 10)}
+                  %
+                </Typography>
+              </div>
+            </Tooltip>
+          </Container>
           <Container className={classes.container}>
             <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">
               {profileData.description}
@@ -110,7 +159,7 @@ export default function ProfileCard(
             ))}
           </Container>
           <Button onClick={clickToProfile} className={classes.button} variant="contained" color="primary">
-          See
+            See
             {' '}
             {profileData.first_name}
             &apos;s profile
