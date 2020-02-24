@@ -50,7 +50,7 @@ SigninPage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
   const { data } = await apiObj.get('users/status', req, res);
-  if (data.connected === true && res) {
+  if (data.connected === true) {
     redirectTo('/', req, res);
   }
   return (data);
