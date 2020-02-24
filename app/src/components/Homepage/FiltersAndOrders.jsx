@@ -1,5 +1,8 @@
-import { useState, useEffect } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import {
   ExpansionPanel,
   ExpansionPanelSummary,
@@ -12,6 +15,7 @@ import {
   Box,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 const orders = [
   {
@@ -40,10 +44,41 @@ const orders = [
   },
 ];
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
+  icon: {
+    marginRight: theme.spacing(1),
+  },
+}));
+
+function TabPanel(props) {
+  const {
+    children, value, index, ...other
+  } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box p={3}>{children}</Box>}
+    </Typography>
+  );
+}
+
 export default function Filter({
   filters, dispatchFilters, users, dispatchUsers,
 }) {
   const [order, setOrder] = useState('relevance');
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
   const [slidersData, setSlidersData] = useState({
     maxAge: 0,
     minAge: 100,
@@ -103,6 +138,10 @@ export default function Filter({
     dispatchUsers({ type: order });
   }, [order]);
 
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   return (
     <div>
       <ExpansionPanel>
@@ -111,101 +150,115 @@ export default function Filter({
           aria-controls="filter-content"
           id="filter-header"
         >
-          <Typography>Filtering and ordering</Typography>
+          <SettingsIcon className={classes.icon}/>
+          <Typography>Options</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Grid container>
-            <Grid item container xs={12} sm={8}>
-              <Grid item container xs={12} alignItems="center">
-                <Grid item xs={3} align="right">
-                  <Box pr={2}><Typography>Age</Typography></Box>
-                </Grid>
-                <Grid item xs>
-                  <Slider
-                    value={filters.age}
-                    onChange={(e, val) => dispatchFilters({ type: 'setAge', age: val })}
-                    valueLabelDisplay="auto"
-                    aria-labelledby="age-range-slider"
-                    getAriaValueText={(val) => `${val} years old`}
-                    min={slidersData.minAge}
-                    max={slidersData.maxAge}
-                  />
-                </Grid>
-              </Grid>
+          <div className={classes.root}>
+            <AppBar position="static">
+              <Tabs centered value={value} onChange={handleChange} aria-label="simple tabs example">
+                <Tab label="Filtering and ordering" />
+                <Tab label="Search" />
+              </Tabs>
+            </AppBar>
+            <TabPanel value={value} onChange={handleChange} index={0}>
+              <Grid container>
+                <Grid item container xs={12} sm={8}>
+                  <Grid item container xs={12} alignItems="center">
+                    <Grid item xs={3} align="right">
+                      <Box pr={2}><Typography>Age</Typography></Box>
+                    </Grid>
+                    <Grid item xs>
+                      <Slider
+                        value={filters.age}
+                        onChange={(e, val) => dispatchFilters({ type: 'setAge', age: val })}
+                        valueLabelDisplay="auto"
+                        aria-labelledby="age-range-slider"
+                        getAriaValueText={(val) => `${val} years old`}
+                        min={slidersData.minAge}
+                        max={slidersData.maxAge}
+                      />
+                    </Grid>
+                  </Grid>
 
-              <Grid item container xs={12} alignItems="center">
-                <Grid item xs={3} align="right">
-                  <Box pr={2}><Typography>Distance</Typography></Box>
-                </Grid>
-                <Grid item xs>
-                  <Slider
-                    value={filters.distance}
-                    onChange={(e, val) => dispatchFilters({ type: 'setDistance', distance: val })}
-                    getAriaValueText={(val) => `${val} kilometers away`}
+                  <Grid item container xs={12} alignItems="center">
+                    <Grid item xs={3} align="right">
+                      <Box pr={2}><Typography>Distance</Typography></Box>
+                    </Grid>
+                    <Grid item xs>
+                      <Slider
+                        value={filters.distance}
+                        onChange={(e, val) => dispatchFilters({ type: 'setDistance', distance: val })}
+                        getAriaValueText={(val) => `${val} kilometers away`}
                     // valueLabelFormat={(val) => `${val} km`}
-                    aria-labelledby="distance-slider"
-                    valueLabelDisplay="auto"
-                    min={1}
-                    max={slidersData.distance}
-                    step={1}
-                  />
-                </Grid>
-              </Grid>
+                        aria-labelledby="distance-slider"
+                        valueLabelDisplay="auto"
+                        min={1}
+                        max={slidersData.distance}
+                        step={1}
+                      />
+                    </Grid>
+                  </Grid>
 
-              <Grid item container xs={12} alignItems="center">
-                <Grid item xs={3} align="right">
-                  <Box pr={2}><Typography>Popularity</Typography></Box>
-                </Grid>
-                <Grid item xs>
-                  <Slider
-                    value={filters.popularity}
-                    onChange={(e, val) => dispatchFilters({ type: 'setPopularity', popularity: val })}
-                    valueLabelDisplay="auto"
-                    aria-labelledby="popularity-range-slider"
-                    getAriaValueText={(val) => `${val} popularity score`}
-                    max={slidersData.maxPopularity}
-                    min={slidersData.minPopularity}
-                  />
-                </Grid>
-              </Grid>
+                  <Grid item container xs={12} alignItems="center">
+                    <Grid item xs={3} align="right">
+                      <Box pr={2}><Typography>Popularity</Typography></Box>
+                    </Grid>
+                    <Grid item xs>
+                      <Slider
+                        value={filters.popularity}
+                        onChange={(e, val) => dispatchFilters({ type: 'setPopularity', popularity: val })}
+                        valueLabelDisplay="auto"
+                        aria-labelledby="popularity-range-slider"
+                        getAriaValueText={(val) => `${val} popularity score`}
+                        max={slidersData.maxPopularity}
+                        min={slidersData.minPopularity}
+                      />
+                    </Grid>
+                  </Grid>
 
-              <Grid item container xs={12} alignItems="center">
-                <Grid item xs={3} align="right">
-                  <Box pr={2}><Typography>Common interests</Typography></Box>
+                  <Grid item container xs={12} alignItems="center">
+                    <Grid item xs={3} align="right">
+                      <Box pr={2}><Typography>Common interests</Typography></Box>
+                    </Grid>
+                    <Grid item xs>
+                      <Slider
+                        value={filters.commonInterests}
+                        onChange={(e, val) => dispatchFilters({ type: 'setCommonInterests', commonInterests: val })}
+                        track="inverted"
+                        disabled={slidersData.minInterests === slidersData.maxInterests}
+                        getAriaValueText={(val) => `${val} common interests`}
+                        aria-labelledby="common-interests-slider"
+                        valueLabelDisplay="auto"
+                        step={1}
+                        min={slidersData.minInterests}
+                        max={slidersData.maxInterests}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid item xs>
-                  <Slider
-                    value={filters.commonInterests}
-                    onChange={(e, val) => dispatchFilters({ type: 'setCommonInterests', commonInterests: val })}
-                    track="inverted"
-                    disabled={slidersData.minInterests === slidersData.maxInterests}
-                    getAriaValueText={(val) => `${val} common interests`}
-                    aria-labelledby="common-interests-slider"
-                    valueLabelDisplay="auto"
-                    step={1}
-                    min={slidersData.minInterests}
-                    max={slidersData.maxInterests}
-                  />
+
+                <Grid item container xs={12} sm={4} justify="center" alignItems="center">
+                  <Grid item>
+                    <Select
+                      labelId="ordering-label"
+                      id="ordering"
+                      value={order}
+                      onChange={(e) => setOrder(e.target.value)}
+                    >
+                      {orders.map((ordering) => (
+                        <MenuItem key={ordering.value} value={ordering.value}>{ordering.name}</MenuItem>
+                      ))}
+                    </Select>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Grid>
 
-            <Grid item container xs={12} sm={4} justify="center" alignItems="center">
-              <Grid item>
-                <Select
-                  labelId="ordering-label"
-                  id="ordering"
-                  value={order}
-                  onChange={(e) => setOrder(e.target.value)}
-                >
-                  {orders.map((ordering) => (
-                    <MenuItem value={ordering.value}>{ordering.name}</MenuItem>
-                  ))}
-                </Select>
               </Grid>
-            </Grid>
-
-          </Grid>
+            </TabPanel>
+            <TabPanel value={value} onChange={handleChange} index={1}>
+              search
+            </TabPanel>
+          </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>

@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   Typography,
   Container,
+  Paper,
 } from '@material-ui/core';
 
 import { StoreContext } from '../store/Store';
@@ -53,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     flexDirection: 'column',
     margin: theme.spacing(2),
+  },
+  paper: {
+    margin: theme.spacing(2),
+    textAlign: 'center',
   },
 }));
 
@@ -128,9 +133,11 @@ const HomePage = ({ data, userId }) => {
 
   return (
     <Container className={classes.mainContainer}>
-      <Typography color="textPrimary" variant="h6" component="h4">
-        Our crafted selection of profile just for you to see!
-      </Typography>
+      <div className={classes.paper}>
+        <Typography variant="h4" color="TextSecondary">
+          Welcome back! Here are some profiles we found just for you.
+        </Typography>
+      </div>
       <FiltersAndOrders
         filters={filters}
         dispatchFilters={dispatchFilters}
@@ -147,7 +154,7 @@ const HomePage = ({ data, userId }) => {
         .map((user) => (
           <ProfileCard
             profileData={user}
-            key={user.user_id}
+            key={user.id}
           />
         ))}
     </Container>
