@@ -10,7 +10,7 @@ import { StoreContext } from '../store/Store';
 import { createApiRequester } from '../stores/Api';
 
 import ProfileCard from '../components/Homepage/ProfileCard';
-import FiltersAndOrders from '../components/Homepage/FiltersAndOrders';
+import FiltersAndOrders from '../components/Homepage/OptionPanel';
 import redirectTo from '../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
@@ -134,7 +134,7 @@ const HomePage = ({ data, userId }) => {
   return (
     <Container className={classes.mainContainer}>
       <div className={classes.paper}>
-        <Typography variant="h4" color="TextSecondary">
+        <Typography variant="h4" color="textSecondary" component="h4">
           Welcome back! Here are some profiles we found just for you.
         </Typography>
       </div>

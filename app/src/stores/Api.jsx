@@ -109,7 +109,7 @@ export function ApiProvider({ children }) {
     deleteBlock: async (data) => (showNotification(await api.delete('event/block', data).catch(handleError), 'deleteBlock')),
     createReport: async (data) => (showNotification(await api.post('event/report', data).catch(handleError), 'reportUser')),
     deleteReport: async (data) => (showNotification(await api.delete('event/report', data).catch(handleError), 'deleteReport')),
-
+    searchUsers: async (data) => (showNotification(await api.get('users/custom', data).catch(handleError), 'searchUsers')),
     createMessage: async (data) => (api.post('users/message', data).catch(handleError)),
   };
 
