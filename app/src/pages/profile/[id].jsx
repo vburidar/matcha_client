@@ -56,7 +56,7 @@ export default function ProfilePage({ talker, userId }) {
           <ProfilePic props={talker} />
         </Grid>
         <Grid item xs={12} sm={12} md={7} className={classes.container}>
-          <ProfileInfos props={talker} />
+          <ProfileInfos props={talker} userId={userId} />
         </Grid>
       </Grid>
     </Container>

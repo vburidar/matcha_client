@@ -79,13 +79,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ProfileInfos({ props }) {
+function ProfileInfos({ props, userId }) {
   const classes = useStyles();
 
   return (
     <div>
       <Paper className={classes.paper}>
-        <ReportDialog props={props} />
+        {userId !== props.id && (
+          <ReportDialog props={props} />
+        )}
         <Typography variant="h4" component="h4">
           {props.first_name}
           {' '}

@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
 export default function reportDialog({ props }) {
   const [openReportDialog, setOpenDialogReport] = useState(false);
   const [openBlockDialog, setOpenDialogBlock] = useState(false);
-  const [value, setValue] = React.useState('harassment');
+  const [value, setValue] = useState('harassment');
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const { createBlock, createReport } = useContext(ApiContext);

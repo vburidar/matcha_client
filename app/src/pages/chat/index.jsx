@@ -52,7 +52,6 @@ function ChatPage({ users, userId }) {
                 <Avatar
                   alt={user.firstName}
                   src={user.profilePicture}
-                  // className={user.isOnline ? classes.online : ''}
                   className={usersConnected[user.id] === true ? classes.online : ''}
                 />
               </ListItemAvatar>
