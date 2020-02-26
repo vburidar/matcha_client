@@ -100,7 +100,7 @@ function filtersReducer(state, action) {
 function usersReducer(state, action) {
   switch (action.type) {
     case 'relevance':
-      return [].concat(state).sort((first, second) => first.score - second.score);
+      return [].concat(state).sort((first, second) => second.score - first.score);
     case 'agedesc':
       return [].concat(state).sort((first, second) => second.age - first.age);
     case 'ageasc':

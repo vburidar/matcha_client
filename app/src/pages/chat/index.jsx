@@ -37,41 +37,52 @@ function ChatPage({ users, userId }) {
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
   }, []);
 
+  if (users.length !== 0) {
+    return (
+      <Container maxWidth="md" className={classes.container}>
+        <Paper>
+          <List>
+            {users.map((user) => (
+              <ListItem
+                key={user.id}
+                alignItems="flex-start"
+                button
+                onClick={() => Router.push('/chat/[id1]/[id2]', `/chat/${Math.min(user.id, userId)}/${Math.max(user.id, userId)}`)}
+              >
+                <ListItemAvatar>
+                  <Avatar
+                    alt={user.firstName}
+                    src={user.profilePicture}
+                  // className={user.isOnline ? classes.online : ''}
+                    className={usersConnected[user.id] === true ? classes.online : ''}
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={user.firstName}
+                  secondary={(
+                    <>
+                      <Typography component="span" variant="body2">
+                        {user.lastMessage.receiverId === user.id && (
+                        <span>Vous: </span>
+                        )}
+                        {user.lastMessage.content}
+                      </Typography>
+                    </>
+                )}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
+      </Container>
+    );
+  }
   return (
     <Container maxWidth="md" className={classes.container}>
       <Paper>
-        <List>
-          {users.map((user) => (
-            <ListItem
-              key={user.id}
-              alignItems="flex-start"
-              button
-              onClick={() => Router.push('/chat/[id1]/[id2]', `/chat/${Math.min(user.id, userId)}/${Math.max(user.id, userId)}`)}
-            >
-              <ListItemAvatar>
-                <Avatar
-                  alt={user.firstName}
-                  src={user.profilePicture}
-                  // className={user.isOnline ? classes.online : ''}
-                  className={usersConnected[user.id] === true ? classes.online : ''}
-                />
-              </ListItemAvatar>
-              <ListItemText
-                primary={user.firstName}
-                secondary={(
-                  <>
-                    <Typography component="span" variant="body2">
-                      {user.lastMessage.receiverId === user.id && (
-                        <span>Vous: </span>
-                      )}
-                      {user.lastMessage.content}
-                    </Typography>
-                  </>
-                )}
-              />
-            </ListItem>
-          ))}
-        </List>
+        <Typography>
+          {'You didn\'t receive any message yet. Keep trying!'}
+        </Typography>
       </Paper>
     </Container>
   );
