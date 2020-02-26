@@ -109,15 +109,16 @@ export default function ProfileCard(
             </Typography>
           </Container>
           <Container>
-            {profileData.list_interests.split(',').map((label) => (
-              <Chip
-                key={label}
-                size="small"
-                className={classes.chip}
-                label={label}
-                color="secondary"
-              />
-            ))}
+            {profileData.list_interests
+              && profileData.list_interests.split(',').map((label) => (
+                <Chip
+                  key={label}
+                  size="small"
+                  className={classes.chip}
+                  label={label}
+                  color="secondary"
+                />
+              ))}
             {profileData.list_all_interests.split(',').map((label) => (
               <Chip
                 key={label}
