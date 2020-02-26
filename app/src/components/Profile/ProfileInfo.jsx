@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Chip,
-  IconButton,
-  Menu,
-  MenuItem,
   Paper,
   Typography,
+  Tooltip,
+  Container,
 } from '@material-ui/core';
+import Stars from '@material-ui/icons/Stars';
+import Navigation from '@material-ui/icons/Navigation';
+import LocalMovies from '@material-ui/icons/LocalMovies';
+import Height from '@material-ui/icons/Height';
 
 import ProfileActions from './ProfileActions';
 import ReportDialog from './reportDialog';
@@ -62,6 +65,18 @@ const useStyles = makeStyles((theme) => ({
     top: '10px',
     left: '10px',
   },
+  sliderContainer: {
+    display: 'flex',
+    textAlign: 'center',
+    flexDirection: 'column',
+    margin: theme.spacing(2),
+  },
+  containerIcon: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    margin: theme.spacing(2),
+  },
 }));
 
 function ProfileInfos({ props }) {
@@ -85,10 +100,48 @@ function ProfileInfos({ props }) {
           {Math.floor(props.distance)}
           {' kilometers away'}
         </Typography>
+        <Container className={classes.containerIcon}>
+          <Tooltip title="Localisation">
+            <span className={classes.containerIcon}>
+              <Navigation className={classes.icon} />
+              <Typography>
+                {parseInt(props.score_distance * 100, 10)}
+                %
+              </Typography>
+            </span>
+          </Tooltip>
+          <Tooltip title="Popularity">
+            <span className={classes.containerIcon}>
+              <Stars className={classes.icon} />
+              <Typography>
+                {parseInt(props.popularity_score, 10)}
+                %
+              </Typography>
+            </span>
+          </Tooltip>
+          <Tooltip title="Age proximity">
+            <div className={classes.containerIcon}>
+              <Height />
+              <Typography>
+                {parseInt(props.score_age * 100, 10)}
+                %
+              </Typography>
+            </div>
+          </Tooltip>
+          <Tooltip title="Centers of interests">
+            <div className={classes.containerIcon}>
+              <LocalMovies />
+              <Typography>
+                {parseInt(props.score_interest * 100, 10)}
+                %
+              </Typography>
+            </div>
+          </Tooltip>
+        </Container>
       </Paper>
       <Paper className={classes.paper}>
         <Typography color="textSecondary" variant="h6" component="h4">
-            Description
+          Description
         </Typography>
         <Typography className={classes.justifiedText} color="textPrimary" variant="h6" component="h4">
           {props.description}
@@ -96,7 +149,7 @@ function ProfileInfos({ props }) {
       </Paper>
       <Paper className={classes.paper}>
         <Typography color="textSecondary" variant="h6" component="h4">
-            Centers of interest
+          Centers of interest
         </Typography>
         {props.list_interests.split(',').map((element) => (
           <Chip
