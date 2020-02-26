@@ -72,14 +72,10 @@ function ProfilePic({ props }) {
     }
   }, []);
 
-  const handleChangePic = () => {
-    console.log('you clicked on the button to change the profile pic');
-  };
-
   return (
     <Paper className={classes.paper}>
       <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">
-                Picture
+        Picture
       </Typography>
       <SimpleSlider imageList={imageTab} />
     </Paper>

@@ -2,7 +2,6 @@ import { useEffect, useContext, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import Dialog from '@material-ui/core/Dialog';
 import { StoreContext } from '../../store/Store';
 import ProfilePic from '../../components/Profile/ProfilePic';
 import ProfileInfos from '../../components/Profile/ProfileInfo';
@@ -26,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const profile = ({ talker, userId }) => {
+export default function ProfilePage({ talker, userId }) {
   const classes = useStyles();
   const { dispatch } = useContext(StoreContext);
   const { socket, createVisit } = useContext(SocketContext);
@@ -62,8 +61,9 @@ const profile = ({ talker, userId }) => {
       </Grid>
     </Container>
   );
-};
-profile.getInitialProps = async ({ req, res, query }) => {
+}
+
+ProfilePage.getInitialProps = async ({ req, res, query }) => {
   const apiObj = createApiRequester(req);
   const { data } = await apiObj.get('users/status');
   if (data.connected === false) {
@@ -78,5 +78,3 @@ profile.getInitialProps = async ({ req, res, query }) => {
   const talker = talkerQueryRes.data.rows[0];
   return ({ talker, userId: data.user_id });
 };
-
-export default profile;

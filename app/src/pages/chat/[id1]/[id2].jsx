@@ -82,6 +82,7 @@ function ChatPage({ messagesData, userId, talker }) {
   }
 
   useEffect(() => {
+    console.log(talker);
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
     dispatchMessages({
       type: 'initialiseMessages',
@@ -103,7 +104,7 @@ function ChatPage({ messagesData, userId, talker }) {
               <ListItem>
                 <ListItemAvatar>
                   <Avatar
-                    src="http://placehol.it/60x60"
+                    src={talker.path}
                     alt="profile picture"
                   />
                 </ListItemAvatar>

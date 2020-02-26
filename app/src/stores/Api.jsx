@@ -55,7 +55,6 @@ export function ApiProvider({ children }) {
   }
 
   const handleError = (err) => {
-    console.log(err.response);
     const message = getErrorDict(err.response.data);
     const severity = 'error';
     newNotification(
@@ -81,7 +80,6 @@ export function ApiProvider({ children }) {
   }
 
   const showNotification = (data, requestName) => {
-    console.log('notification', data);
     if (data.type !== 'error') {
       const message = getNotificationDict(requestName);
       const severity = 'success';
@@ -94,7 +92,6 @@ export function ApiProvider({ children }) {
   };
 
   const routes = {
-    getToto: () => (api.get('auth/toto').catch(handleError)),
     getUsers: () => (api.get('users').catch(handleError)),
     forgotPwd: async (data) => (showNotification(await api.post('auth/forgotPwd', data).catch(handleError), 'forgotPwd')),
     resetPassword: async (data) => (showNotification(await api.post('auth/resetPwd', data).catch(handleError), 'resetPassword')),
@@ -103,12 +100,9 @@ export function ApiProvider({ children }) {
     validateAccount: async (data) => (showNotification(await api.post('auth/accountValidation', data).catch(handleError), 'validateAccount')),
     patchProfile: async (data) => (showNotification(await api.patch('profile', data).catch(handleError), 'patchProfile')),
     sessionDelete: () => (api.delete('auth/deleteSession').catch(handleError)),
-    likeProfile: async (data) => (showNotification(await api.post('event/like', data).catch(handleError), 'likeProfile')),
-    unlikeProfile: async (data) => (showNotification(await api.delete('event/like', data).catch(handleError), 'unlikeProfile')),
     createBlock: async (data) => (showNotification(await api.post('event/block', data).catch(handleError), 'blockUser')),
     deleteBlock: async (data) => (showNotification(await api.delete('event/block', data).catch(handleError), 'deleteBlock')),
     createReport: async (data) => (showNotification(await api.post('event/report', data).catch(handleError), 'reportUser')),
-    deleteReport: async (data) => (showNotification(await api.delete('event/report', data).catch(handleError), 'deleteReport')),
 
     createMessage: async (data) => (api.post('users/message', data).catch(handleError)),
   };

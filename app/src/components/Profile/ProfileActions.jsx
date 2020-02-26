@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ProfileAction({ props }) {
   const classes = useStyles();
-  const { unlikeProfile, likeProfile } = useContext(ApiContext);
   const { state } = useContext(StoreContext);
   const { createLike, deleteLike } = useContext(SocketContext);
 

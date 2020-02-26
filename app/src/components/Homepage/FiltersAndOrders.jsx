@@ -199,7 +199,7 @@ export default function Filter({
                   onChange={(e) => setOrder(e.target.value)}
                 >
                   {orders.map((ordering) => (
-                    <MenuItem value={ordering.value}>{ordering.name}</MenuItem>
+                    <MenuItem key={ordering.value} value={ordering.value}>{ordering.name}</MenuItem>
                   ))}
                 </Select>
               </Grid>
