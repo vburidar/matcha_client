@@ -55,6 +55,7 @@ export default function ListEvent({ props }) {
   }
 
   useEffect(() => {
+    console.log(data);
     setTab(data.filter(testType));
   }, []);
 
@@ -66,7 +67,7 @@ export default function ListEvent({ props }) {
     return (
       <Container>
         {data.map((element) => (
-          <Paper className={classes.paper} key={element.created_at}>
+          <Paper className={classes.paper} key={`${element.type}/${element.receiver_id}/${element.sender_id}/${element.created_at}`}>
             <div className={classes.div}>
               <IconAction props={element} />
               <Avatar className={classes.avatar} alt={element.first_name} src={element.path} />
@@ -88,7 +89,7 @@ export default function ListEvent({ props }) {
   return (
     <Container>
       {tab.map((element) => (
-        <Paper className={classes.paper} key={element.created_at}>
+        <Paper className={classes.paper} key={`${element.typ}/${element.receiver_id}/${element.sender_id}/${element.created_at}`}>
           <div className={classes.div}>
             <IconAction props={element} />
             <Avatar className={classes.avatar} alt={element.first_name} src={element.path} />
@@ -96,7 +97,7 @@ export default function ListEvent({ props }) {
           </div>
           <TimeTypo props={element} />
           <Button variant="contained" id={element.id} className={classes.button} onClick={() => clickToProfile(element.sender_id)}>
-          See
+            See
             {' '}
             {element.first_name}
             {' '}

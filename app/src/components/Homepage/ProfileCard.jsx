@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProfileCard(
-  { profileData },
+  { profileData, userId },
 ) {
   const classes = useStyles();
   const [imageTab, setImageTab] = useState('');
@@ -102,6 +102,8 @@ export default function ProfileCard(
             scoreDistance={profileData.score_distance}
             scoreAge={profileData.score_age}
             scoreInterest={profileData.score_interest}
+            visitorId={profileData.user_id}
+            userId={userId}
           />
           <Container className={classes.container}>
             <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">

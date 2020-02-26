@@ -271,7 +271,7 @@ export function SettingsProvider({ children }) {
       || compareDesc(subYears(new Date(), 80), inputs.birthdate) === -1
       || genders.findIndex((el) => el.value === inputs.gender) === -1
       || inputs.description.trim() === ''
-      || inputs.interests.length < 3
+      || inputs.interests.length < 3 || inputs.interests.length > 7
     ) {
       shouldBeDisabled = true;
     }

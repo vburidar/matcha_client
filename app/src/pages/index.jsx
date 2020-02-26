@@ -178,6 +178,7 @@ export default function HomePage({ data, userId }) {
           .map((user) => (
             <ProfileCard
               profileData={user}
+              userId={userId}
               key={user.user_id}
             />
           ))

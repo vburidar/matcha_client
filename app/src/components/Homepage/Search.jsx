@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import {
-  Grid, Slider, Box, Typography, TextField, Button, Container, Select, MenuItem, Chip,
+  Grid, Slider, Box, Typography, TextField, Button, Container, Select, MenuItem, Chip, FormControl,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import LocationPicker from './LocationPicker';
@@ -58,9 +58,12 @@ const useStyles = makeStyles((theme) => ({
   buttonAdd: {
     margin: theme.spacing(1),
   },
+  chip: {
+    marginRight: theme.spacing(1),
+  },
 }));
 
-export default function Search({listUsers, setListUsers}) {
+export default function Search({ listUsers, setListUsers }) {
   const { searchUsers } = useContext(ApiContext);
   const [order, setOrder] = useState('distance');
   const [slidersData, setSlidersData] = useState({
@@ -133,10 +136,14 @@ export default function Search({listUsers, setListUsers}) {
   };
 
   function addInterest() {
-    if (interestList.length === 1 && interestList[0] === 'any interest') {
-      setInterestList([searchInterest]);
-    } else {
-      setInterestList([...interestList, searchInterest]);
+    if (!interestList.includes(searchInterest)) {
+      if (interestList.length === 1
+      && interestList[0] === 'any interest') {
+        setInterestList([searchInterest]);
+      } else {
+        setInterestList([...interestList, searchInterest]);
+      }
+      setSearchInterest('');
     }
   }
 
@@ -152,6 +159,7 @@ export default function Search({listUsers, setListUsers}) {
               id="interest"
               name="interest"
               value={searchInterest}
+              onKeyDown={(e) => { if (e.key === 'Enter') { addInterest(); } }}
               onChange={(e) => setSearchInterest(e.target.value)}
             />
             <Button className={classes.buttonAdd} onClick={addInterest} variant="outlined">ADD</Button>
