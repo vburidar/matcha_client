@@ -100,18 +100,18 @@ function filtersReducer(state, action) {
 function usersReducer(state, action) {
   switch (action.type) {
     case 'relevance':
-      return [].concat(state).sort((first, second) => first.score < second.score);
+      return [].concat(state).sort((first, second) => first.score - second.score);
     case 'agedesc':
-      return [].concat(state).sort((first, second) => first.age < second.age);
+      return [].concat(state).sort((first, second) => second.age - first.age);
     case 'ageasc':
-      return [].concat(state).sort((first, second) => first.age > second.age);
+      return [].concat(state).sort((first, second) => first.age - second.age);
     case 'distance':
-      return [].concat(state).sort((first, second) => first.distance > second.distance);
+      return [].concat(state).sort((first, second) => first.distance - second.distance);
     case 'popularity':
-      return [].concat(state).sort((first, second) => first.score_popularity < second.score_popularity);
+      return [].concat(state).sort((first, second) => first.score_popularity - second.score_popularity);
     case 'commoninterests':
       return [].concat(state).sort(
-        (first, second) => first.common_interests < second.common_interests,
+        (first, second) => first.common_interests - second.common_interests,
       );
     default:
       return state;

@@ -1,5 +1,6 @@
 import router from 'next/router';
 import { useState, useEffect, useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Button,
   IconButton,
@@ -18,15 +19,15 @@ import { SocketContext } from '../../../stores/Socket';
 function getNotificationMessage(notification) {
   switch (notification.type) {
     case 'like':
-      return `${notification.first_name} sent you a like`;
+      return `${notification.firstName} sent you a like`;
     case 'match':
-      return `Matched with ${notification.first_name}`;
+      return `Matched with ${notification.firstName}`;
     case 'message':
-      return `New message from ${notification.first_name}`;
+      return `New message from ${notification.firstName}`;
     case 'unlike':
-      return `${notification.first_name} unliked you`;
+      return `${notification.firstName} unliked you`;
     case 'visit':
-      return `${notification.first_name} visited your profile`;
+      return `${notification.firstName} visited your profile`;
     default:
       return '';
   }
@@ -34,37 +35,45 @@ function getNotificationMessage(notification) {
 
 function getNotificationLink(notification) {
   if (['like', 'unlike', 'visit'].indexOf(notification.type) > -1) {
-    return `http://localhost:3000/profile/${notification.sender_id}`;
+    return `http://localhost:3000/profile/${notification.senderId}`;
   }
   if (['match', 'message'].indexOf(notification.type) > -1) {
-    return `http://localhost:3000/chat/${Math.min(notification.sender_id, notification.receiver_id)}/${Math.max(notification.sender_id, notification.receiver_id)}`;
+    return `http://localhost:3000/chat/${Math.min(notification.senderId, notification.receiverId)}/${Math.max(notification.senderId, notification.receiverId)}`;
   }
   return '/';
 }
 
 function getTimeElapsedMessage(notification) {
-  if (notification.years_since > 0) {
-    return `${notification.years_since} years ago`;
+  if (notification.yearsSince > 0) {
+    return `${notification.yearsSince} years ago`;
   }
-  if (notification.months_since > 0) {
-    return `${notification.months_since} months ago`;
+  if (notification.monthsSince > 0) {
+    return `${notification.monthsSince} months ago`;
   }
-  if (notification.days_since > 0) {
-    return `${notification.days_since} days ago`;
+  if (notification.daysSince > 0) {
+    return `${notification.daysSince} days ago`;
   }
-  if (notification.hours_since > 0) {
-    return `${notification.hours_since} hours ago`;
+  if (notification.hoursSince > 0) {
+    return `${notification.hoursSince} hours ago`;
   }
-  if (notification.minute_since > 0) {
-    return `${notification.minute_since} minutes ago`;
+  if (notification.minuteSince > 0) {
+    return `${notification.minuteSince} minutes ago`;
   }
   return 'A few seconds ago';
 }
 
-function ButtonListConnected() {
+const useStyles = makeStyles((theme) => ({
+  notificationList: {
+    maxHeight: '50vh',
+    overflowY: 'scroll',
+  },
+}));
+
+export default function ButtonListConnected() {
+  const classes = useStyles();
   const { state, dispatch } = useContext(StoreContext);
   const { sessionDelete } = useContext(ApiContext);
-  const { notifications } = useContext(SocketContext);
+  const { notifications, markAllNotificationsAsRead } = useContext(SocketContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -81,11 +90,23 @@ function ButtonListConnected() {
     router.push('/signin');
   }
 
+  function handleNotificationButtonClick(e) {
+    setAnchorEl(e.currentTarget);
+    markAllNotificationsAsRead();
+  }
+
+  useEffect(() => {
+    console.log('notifications', notifications);
+  }, [notifications]);
+
   if (state.inSession === true) {
     return (
       <div>
-        <IconButton color="inherit" onClick={(e) => setAnchorEl(e.currentTarget)}>
-          <Badge badgeContent={notifications.length} color="error">
+        <IconButton color="inherit" onClick={handleNotificationButtonClick}>
+          <Badge
+            badgeContent={notifications.filter((el) => el.read === false).length}
+            color="error"
+          >
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -103,18 +124,18 @@ function ButtonListConnected() {
             horizontal: 'center',
           }}
         >
-          <List component="nav">
+          <List component="nav" className={classes.notificationList}>
             {notifications.length === 0 && (
               <ListItem>
                 <ListItemText
-                  primary="No new notifications"
+                  primary="No notifications"
                 />
               </ListItem>
             )}
 
             {notifications.map((notification) => (
               <ListItem
-                key={`${notification.sender_id}${notification.type}${getTimeElapsedMessage(notification)}`}
+                key={notification.id}
                 button
                 component="a"
                 href={getNotificationLink(notification)}
@@ -162,6 +183,3 @@ function ButtonListConnected() {
   }
   return (null);
 }
-
-
-export default ButtonListConnected;

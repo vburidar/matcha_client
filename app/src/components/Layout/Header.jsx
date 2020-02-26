@@ -1,3 +1,4 @@
+import router from 'next/router';
 import {
   AppBar,
   Toolbar,

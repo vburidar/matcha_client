@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import {
-  Chip, Tooltip, Container,
+  Chip,
+  Paper,
+  Typography,
+  Tooltip,
+  Container,
 } from '@material-ui/core';
 import Stars from '@material-ui/icons/Stars';
 import Navigation from '@material-ui/icons/Navigation';
 import LocalMovies from '@material-ui/icons/LocalMovies';
 import Height from '@material-ui/icons/Height';
+
 import ProfileActions from './ProfileActions';
 import ReportDialog from './reportDialog';
 

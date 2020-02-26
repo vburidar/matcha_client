@@ -38,8 +38,7 @@ const profile = ({ talker, userId }) => {
   useEffect(() => {
     if (Object.keys(socket).length > 0) {
       if (talker.id !== userId) {
-        console.log('NEW VISIT');
-        // createVisit(talker.id);
+        createVisit(talker.id);
       }
     }
   }, [socket]);

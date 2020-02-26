@@ -20,6 +20,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { createApiRequester } from '../../../stores/Api';
 import redirectTo from '../../../initialServices/initialServices';
 import { SocketContext } from '../../../stores/Socket';
+import { StoreContext } from '../../../store/Store';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -54,18 +55,21 @@ const useStyles = makeStyles((theme) => ({
 function ChatPage({ messagesData, userId, talker }) {
   const classes = useStyles();
   const {
-    sendMessage,
     messages,
     dispatchMessages,
+    createMessage,
   } = useContext(SocketContext);
+  const { dispatch } = useContext(StoreContext);
 
   const [messageText, setMessageText] = useState('');
 
   const messagesContainerDiv = createRef();
 
   function send() {
-    setMessageText('');
-    sendMessage(messageText, talker.id);
+    if (messageText.trim() !== '') {
+      setMessageText('');
+      createMessage(talker.id, messageText);
+    }
   }
 
   function handleKeyDown(e) {
@@ -78,15 +82,17 @@ function ChatPage({ messagesData, userId, talker }) {
   }
 
   useEffect(() => {
+    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
     dispatchMessages({
       type: 'initialiseMessages',
       messages: messagesData,
+      userId: talker.id,
     });
   }, []);
 
   useEffect(() => {
     messagesContainerDiv.current.scrollTop = messagesContainerDiv.current.scrollHeight;
-  }, [messages]);
+  }, [messages[talker.id]]);
 
   return (
     <Container maxWidth="md" className={classes.container}>
@@ -117,7 +123,7 @@ function ChatPage({ messagesData, userId, talker }) {
             ref={messagesContainerDiv}
             alignContent="flex-start"
           >
-            {messages.map((message) => (
+            {messages[talker.id] && messages[talker.id].map((message) => (
               <Grid item container xs={12} alignContent="flex-start" className={classes.messageWrapper} key={message.id}>
                 <Grid
                   item
@@ -162,18 +168,30 @@ export default ChatPage;
 ChatPage.getInitialProps = async ({ req, res, query }) => {
   const apiObj = createApiRequester(req);
   const { data } = await apiObj.get('users/status');
+  const id1 = parseInt(query.id1, 10);
+  const id2 = parseInt(query.id2, 10);
+
   if (data.connected === false) {
     redirectTo('/signin', req, res);
   }
   if (data.profileIsComplete === false) {
     redirectTo('/complete-profile', req, res);
   }
-  const id1 = parseInt(query.id1, 10);
-  const id2 = parseInt(query.id2, 10);
+
+  const matchesQueryRes = await apiObj.get('users/current/matches');
+  if (
+    matchesQueryRes.data.findIndex((el) => el.id === id1 || el.id === id2) === -1
+    || [id1, id2].indexOf(data.user_id) === -1
+    || id1 >= id2
+  ) {
+    redirectTo('/chat', req, res);
+  }
 
   const talkerId = (id1 === data.user_id) ? id2 : id1;
+
   const messagesQueryRes = await apiObj.get('users/message', { params: { talkerId } });
   const talkerQueryRes = await apiObj.get(`users/getProfileInfo/${talkerId}`);
+
   return {
     messagesData: messagesQueryRes.data.rows,
     userId: data.user_id,
