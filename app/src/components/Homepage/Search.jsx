@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Search() {
+export default function Search({listUsers, setListUsers}) {
   const { searchUsers } = useContext(ApiContext);
   const [order, setOrder] = useState('distance');
   const [slidersData, setSlidersData] = useState({
@@ -80,7 +80,7 @@ export default function Search() {
   const [searchLocation, setSearchLocation] = useState({ label: '', type: 'default' });
   const classes = useStyles();
 
-  function logScale(value) {
+  function funcLogScale(value) {
     if (value <= 10) {
       return (value);
     }
@@ -101,14 +101,14 @@ export default function Search() {
   }
 
   async function sendSearchRequest() {
-    const distance = logScale(searchDistance);
+    const distance = funcLogScale(searchDistance);
     const interest = [];
     interestList.map((elem) => {
       interest.push(formatInterest(elem));
       return (null);
     });
 
-    await searchUsers({
+    setListUsers(await searchUsers({
       params: {
         age: searchAge,
         distance,
@@ -117,7 +117,7 @@ export default function Search() {
         location: searchLocation,
         order,
       },
-    });
+    }));
   }
 
   useEffect(() => {
@@ -133,10 +133,7 @@ export default function Search() {
   };
 
   function addInterest() {
-    console.log(searchInterest);
-    console.log(interestList[0]);
     if (interestList.length === 1 && interestList[0] === 'any interest') {
-      console.log('exception');
       setInterestList([searchInterest]);
     } else {
       setInterestList([...interestList, searchInterest]);
@@ -190,11 +187,10 @@ export default function Search() {
               getAriaValueText={(val) => `${val} kilometers away`}
               aria-labelledby="distance-slider"
               valueLabelDisplay="auto"
-              scale={(x) => logScale(x)}
+              scale={(x) => funcLogScale(x)}
               step={1}
               min={0}
               max={39}
-              logScale
               marks={marks}
             />
           </Grid>

@@ -5,6 +5,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import router from 'next/router';
 
 import ButtonListConnected from './Header/ButtonListConnected';
 import ButtonListDisconnected from './Header/ButtonListDisconnected';
@@ -21,7 +22,7 @@ export default function Header() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography component="div" className={classes.title} onClick={() => { console.log('coucou'); }}>
+        <Typography component="div" className={classes.title} onClick={() => { router.push('/'); }}>
           <Button color="inherit">
             See You
           </Button>

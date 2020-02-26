@@ -37,10 +37,9 @@ function TabPanel(props) {
 }
 
 export default function OptionPanel({
-  filters, dispatchFilters, users, dispatchUsers,
+  filters, dispatchFilters, users, dispatchUsers, value, setValue, listUsers, setListUsers,
 }) {
   const classes = useStyles();
-  const [value, setValue] = useState(0);
 
 
   const handleChange = (event, newValue) => {
@@ -80,7 +79,7 @@ export default function OptionPanel({
               />
             </TabPanel>
             <TabPanel value={value} onChange={handleChange} index={1}>
-              <Search />
+              <Search listUsers={listUsers} setListUsers={setListUsers} />
             </TabPanel>
           </div>
         </ExpansionPanelDetails>
