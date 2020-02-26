@@ -1,15 +1,18 @@
-import { useEffect, useContext, useReducer } from 'react';
+import {
+  useState, useEffect, useContext, useReducer,
+} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Typography,
   Container,
+  Paper,
 } from '@material-ui/core';
 
 import { StoreContext } from '../store/Store';
 import { createApiRequester } from '../stores/Api';
 
 import ProfileCard from '../components/Homepage/ProfileCard';
-import FiltersAndOrders from '../components/Homepage/FiltersAndOrders';
+import OptionPanel from '../components/Homepage/OptionPanel';
 import redirectTo from '../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
@@ -53,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     flexDirection: 'column',
     margin: theme.spacing(2),
+  },
+  paper: {
+    margin: theme.spacing(2),
+    textAlign: 'center',
   },
 }));
 
@@ -114,6 +121,7 @@ function usersReducer(state, action) {
 export default function HomePage({ data, userId }) {
   const classes = useStyles();
   const { dispatch } = useContext(StoreContext);
+  const [value, setValue] = useState(0);
   const [filters, dispatchFilters] = useReducer(filtersReducer, {
     age: [18, 80],
     distance: 100,
@@ -121,6 +129,11 @@ export default function HomePage({ data, userId }) {
     commonInterests: 7,
   });
   const [users, dispatchUsers] = useReducer(usersReducer, data);
+  const [listUsers, setListUsers] = useState({ data: [] });
+
+  useEffect(() => {
+    console.log(listUsers);
+  }, [listUsers]);
 
   useEffect(() => {
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
@@ -128,28 +141,47 @@ export default function HomePage({ data, userId }) {
 
   return (
     <Container className={classes.mainContainer}>
-      <Typography color="textPrimary" variant="h6" component="h4">
-        Our crafted selection of profile just for you to see!
-      </Typography>
-      <FiltersAndOrders
+      <div className={classes.paper}>
+        <Typography variant="h4" color="textSecondary" component="h4">
+          Welcome back! Here are some profiles we found just for you.
+        </Typography>
+      </div>
+      <OptionPanel
         filters={filters}
         dispatchFilters={dispatchFilters}
         users={users}
         dispatchUsers={dispatchUsers}
+        value={value}
+        setValue={setValue}
+        listUsers={listUsers}
+        setListUsers={setListUsers}
       />
-      {users
-        .filter((user) => (user.age >= filters.age[0])
+      {
+        value === 0
+        && users
+          .filter((user) => (user.age >= filters.age[0])
           && (user.age <= filters.age[1])
           && (Math.floor(user.distance) <= filters.distance)
           && (parseInt(user.score_popularity * 100, 10) >= filters.popularity[0])
           && (parseInt(user.score_popularity * 100, 10) <= filters.popularity[1])
           && (user.common_interests >= filters.commonInterests))
-        .map((user) => (
-          <ProfileCard
-            profileData={user}
-            key={user.user_id}
-          />
-        ))}
+          .map((user) => (
+            <ProfileCard
+              profileData={user}
+              key={user.user_id}
+            />
+          ))
+      }
+      {
+        value === 1
+        && listUsers.data
+          .map((user) => (
+            <ProfileCard
+              profileData={user}
+              key={user.user_id}
+            />
+          ))
+      }
     </Container>
   );
 }

@@ -1,17 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import axios from 'axios';
-
-import {
-  TextField,
-  Grid,
-} from '@material-ui/core';
+import { useState, useEffect } from 'react';
+import { Grid, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-
-import { StoreContext } from '../../store/Store';
-import { newNotification } from '../../store/actions';
-
-import { SettingsContext } from '../../stores/Settings';
+import axios from 'axios';
 
 const alpha3toalpha2 = {
   AFG: 'AF',
@@ -264,18 +254,71 @@ const alpha3toalpha2 = {
   ZMB: 'ZM',
   ZWE: 'ZW',
 };
-
-export default function SingleLocation({ index, disabled }) {
-  const { dispatch } = useContext(StoreContext);
-  const { locations, dispatchLocations } = useContext(SettingsContext);
+export default function LocationPicker({ location, setLocation }) {
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [timeoutId, setTimeoutId] = useState(-1);
-  const [locationSuggestions, setLocationSuggestions] = useState([locations[index]]);
 
   function countryToFlag(a3Code) {
     const a2Code = alpha3toalpha2[a3Code];
     return typeof String.fromCodePoint !== 'undefined'
       ? a2Code.toUpperCase().replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
       : a2Code;
+  }
+
+  function clearAutocomplete() {
+    setLocation({ label: 'default', type: 'default' });
+    setLocationSuggestions([]);
+  }
+
+  async function selectLocation(selectedSuggestion) {
+    try {
+      if (selectedSuggestion !== null) {
+        const query = 'https://geocoder.ls.hereapi.com/6.2/geocode.json'
+          + `?apiKey=${process.env.HERE_API_KEY}`
+          + `&locationid=${selectedSuggestion.locationId}`
+          + '&jsonattributes=1';
+
+        const res = await axios.get(query);
+
+        if (!res.data.response.view.length === 0) {
+          throw new Error('Unable to get area suggestions');
+        }
+
+        const [latitude, longitude] = [
+          res.data.response.view[0].result[0].location.displayPosition.latitude,
+          res.data.response.view[0].result[0].location.displayPosition.longitude,
+        ];
+
+        setLocation({
+          label: selectedSuggestion.label,
+          latitude,
+          longitude,
+          type: 'custom',
+        });
+      }
+    } catch (err) {
+      console.log('error when fetching position');
+      // newNotification(dispatch, { message: err.message, severity: 'error' });
+    }
+  }
+
+  function handleOnChange(e, value) {
+    if (value === null) {
+      clearAutocomplete();
+    } else {
+      selectLocation(value);
+    }
+  }
+
+  function handleOnInputChange(e, value, reason) {
+    if (reason === 'input') {
+      setLocation({
+        label: value,
+        latitude: 0,
+        longitude: 0,
+        type: 'custom',
+      });
+    }
   }
 
   async function getLocationSuggestions(queryText) {
@@ -305,69 +348,9 @@ export default function SingleLocation({ index, disabled }) {
 
       return setLocationSuggestions(suggestions);
     } catch (err) {
-      return newNotification(dispatch, { message: err.message, severity: 'error' });
-    }
-  }
-
-  function clearAutocomplete() {
-    dispatchLocations({ type: 'resetLocation', payload: { index } });
-    setLocationSuggestions([]);
-  }
-
-  async function selectLocation(selectedSuggestion) {
-    try {
-      if (selectedSuggestion !== null) {
-        const query = 'https://geocoder.ls.hereapi.com/6.2/geocode.json'
-          + `?apiKey=${process.env.HERE_API_KEY}`
-          + `&locationid=${selectedSuggestion.locationId}`
-          + '&jsonattributes=1';
-
-        const res = await axios.get(query);
-
-        if (!res.data.response.view.length === 0) {
-          throw new Error('Unable to get area suggestions');
-        }
-
-        const [latitude, longitude] = [
-          res.data.response.view[0].result[0].location.displayPosition.latitude,
-          res.data.response.view[0].result[0].location.displayPosition.longitude,
-        ];
-
-        dispatchLocations({
-          type: 'updateLocation',
-          payload: {
-            label: selectedSuggestion.label,
-            latitude,
-            longitude,
-            type: 'custom',
-            index,
-          },
-        });
-      }
-    } catch (err) {
-      newNotification(dispatch, { message: err.message, severity: 'error' });
-    }
-  }
-
-  function handleOnChange(e, value) {
-    if (value === null) {
-      clearAutocomplete();
-    } else {
-      selectLocation(value);
-    }
-  }
-  function handleOnInputChange(e, value, reason) {
-    if (reason === 'input') {
-      dispatchLocations({
-        type: 'updateLocation',
-        payload: {
-          label: value,
-          latitude: 0,
-          longitude: 0,
-          type: 'custom',
-          index,
-        },
-      });
+      console.log('error2');
+      return (null);
+      // return newNotification(dispatch, { message: err.message, severity: 'error' });
     }
   }
 
@@ -379,57 +362,34 @@ export default function SingleLocation({ index, disabled }) {
 
     setTimeoutId(
       setTimeout(() => {
-        if (locations[index].latitude === 0 && locations[index].longitude === 0) {
-          getLocationSuggestions(locations[index].label);
+        if (location.latitude === 0 && location.longitude === 0) {
+          getLocationSuggestions(location.label);
           setTimeoutId(-1);
         }
       }, 400),
     );
-  }, [locations[index].label]);
+  }, [location.label]);
 
   return (
-    <Grid container spacing={2} justify="center" alignItems="center">
-      <Grid item xs={12} sm>
+    <Autocomplete
+      id="location"
+      options={locationSuggestions}
+      autoHighlight
+      value={location}
+      onInputChange={handleOnInputChange}
+      onChange={handleOnChange}
+      getOptionLabel={(suggestion) => suggestion.label}
+      renderOption={(suggestion) => (
+        <>
+          <span>{suggestion.label}</span>
+        </>
+      )}
+      renderInput={(params) => (
         <TextField
-          id="location-name"
-          label="Location Name"
+          {...params}
           fullWidth
-          disabled={disabled}
-          value={locations[index].name}
-          onChange={(e) => dispatchLocations({
-            type: 'updateLocationName',
-            payload: {
-              name: e.target.value,
-              index,
-            },
-          })}
         />
-      </Grid>
-
-      <Grid item xs={12} sm>
-        <Autocomplete
-          id="location"
-          disabled={disabled}
-          options={locationSuggestions}
-          autoHighlight
-          value={locations[index]}
-          onInputChange={handleOnInputChange}
-          onChange={handleOnChange}
-          getOptionLabel={(suggestion) => suggestion.label}
-          renderOption={(suggestion) => (
-            <>
-              <span>{suggestion.label}</span>
-            </>
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              placeholder="Choose a place"
-              fullWidth
-            />
-          )}
-        />
-      </Grid>
-    </Grid>
+      )}
+    />
   );
 }

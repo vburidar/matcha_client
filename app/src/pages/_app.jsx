@@ -31,6 +31,7 @@ export default class MyApp extends App {
       <>
         <Head>
           <title>See You</title>
+          <link rel="icon" type="image/x-icon" href="/favicon.ico" />
           <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         </Head>
         <StoreProvider>

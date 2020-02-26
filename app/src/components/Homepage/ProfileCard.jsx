@@ -12,6 +12,7 @@ import LocalMovies from '@material-ui/icons/LocalMovies';
 import Height from '@material-ui/icons/Height';
 import { useEffect, useState } from 'react';
 import SimpleSlider from './simpleSlider';
+import ScoreIcons from './ScoreIcons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -96,44 +97,12 @@ export default function ProfileCard(
             {Math.floor(profileData.distance)}
             {' km away'}
           </Typography>
-          <Container className={classes.containerIcon}>
-            <Tooltip title="Localisation">
-              <span className={classes.containerIcon}>
-                <Navigation className={classes.icon} />
-                <Typography>
-                  {parseInt(profileData.score_distance * 100, 10)}
-                  %
-                </Typography>
-              </span>
-            </Tooltip>
-            <Tooltip title="Popularity">
-              <span className={classes.containerIcon}>
-                <Stars className={classes.icon} />
-                <Typography>
-                  {parseInt(profileData.score_popularity * 100, 10)}
-                  %
-                </Typography>
-              </span>
-            </Tooltip>
-            <Tooltip title="Age proximity">
-              <div className={classes.containerIcon}>
-                <Height />
-                <Typography>
-                  {parseInt(profileData.score_age * 100, 10)}
-                  %
-                </Typography>
-              </div>
-            </Tooltip>
-            <Tooltip title="Centers of interests">
-              <div className={classes.containerIcon}>
-                <LocalMovies />
-                <Typography>
-                  {parseInt(profileData.score_interest * 100, 10)}
-                  %
-                </Typography>
-              </div>
-            </Tooltip>
-          </Container>
+          <ScoreIcons
+            scorePopularity={profileData.score_popularity}
+            scoreDistance={profileData.score_distance}
+            scoreAge={profileData.score_age}
+            scoreInterest={profileData.score_interest}
+          />
           <Container className={classes.container}>
             <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">
               {profileData.description}

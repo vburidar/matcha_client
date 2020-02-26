@@ -22,8 +22,8 @@ export default function Header() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography component="div" className={classes.title}>
-          <Button color="inherit" onClick={() => router.push('/')}>
+        <Typography component="div" className={classes.title} onClick={() => { router.push('/'); }}>
+          <Button color="inherit">
             See You
           </Button>
         </Typography>
