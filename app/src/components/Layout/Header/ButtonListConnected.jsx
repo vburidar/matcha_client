@@ -95,10 +95,6 @@ export default function ButtonListConnected() {
     markAllNotificationsAsRead();
   }
 
-  useEffect(() => {
-    console.log('notifications', notifications);
-  }, [notifications]);
-
   if (state.inSession === true) {
     return (
       <div>
@@ -168,7 +164,7 @@ export default function ButtonListConnected() {
         </Button>
         <Button
           color="inherit"
-          onClick={() => router.push('/activity', { shallow: false })}
+          onClick={() => router.push('/activity')}
         >
           Activity
         </Button>

@@ -59,7 +59,6 @@ export default function CompleteProfilePage({ ipLocation, user }) {
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
-    console.log(user, 'user')
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: user.id });
     setInputs({
       ...inputs,

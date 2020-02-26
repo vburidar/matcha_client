@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import {
   Typography,
   Slider,
@@ -35,16 +34,6 @@ const orders = [
     name: 'Common Interests',
   },
 ];
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  icon: {
-    marginRight: theme.spacing(1),
-  },
-}));
 
 export default function Filter({
   filters, dispatchFilters, users, dispatchUsers,

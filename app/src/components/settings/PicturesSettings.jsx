@@ -204,7 +204,6 @@ export default function PicturesSettings({
   };
 
   // useEffect(() => {
-  //   console.log(pictures);
   //   const shouldBeDisabled = !(pictures.length > 0 && pictures[0].croppedPicture);
 
   //   if (disabled !== shouldBeDisabled) {

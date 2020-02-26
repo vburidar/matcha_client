@@ -64,7 +64,6 @@ export default function SettingsPage({ user }) {
   const [currentTab, setCurrentTab] = useState(0);
 
   useEffect(() => {
-    console.log('USER', user);
     async function init() {
       dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: user.id });
       setCredentials({

@@ -108,7 +108,7 @@ function usersReducer(state, action) {
     case 'distance':
       return [].concat(state).sort((first, second) => first.distance - second.distance);
     case 'popularity':
-      return [].concat(state).sort((first, second) => first.score_popularity - second.score_popularity);
+      return [].concat(state).sort((first, second) => second.score_popularity - first.score_popularity);
     case 'commoninterests':
       return [].concat(state).sort(
         (first, second) => first.common_interests - second.common_interests,
@@ -118,7 +118,7 @@ function usersReducer(state, action) {
   }
 }
 
-const HomePage = ({ data, userId }) => {
+export default function HomePage({ data, userId }) {
   const classes = useStyles();
   const { dispatch } = useContext(StoreContext);
   const [value, setValue] = useState(0);
@@ -184,7 +184,8 @@ const HomePage = ({ data, userId }) => {
       }
     </Container>
   );
-};
+}
+
 HomePage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
@@ -203,5 +204,3 @@ HomePage.getInitialProps = async (ctx) => {
   }
   return ({ type: 'error', id: 'Unable to fetch suggestion list' });
 };
-
-export default HomePage;
