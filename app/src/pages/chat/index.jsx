@@ -1,3 +1,5 @@
+import Router from 'next/router';
+import { useEffect, useContext } from 'react';
 import {
   Container,
   Paper,
@@ -9,9 +11,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Router, { useRouter } from 'next/router';
 
 import { createApiRequester } from '../../stores/Api';
+import { StoreContext } from '../../store/Store';
+import { SocketContext } from '../../stores/Socket';
 import redirectTo from '../../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,10 +29,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ChatPage({ users, userId }) {
-  const router = useRouter();
   const classes = useStyles();
+  const { usersConnected } = useContext(SocketContext);
+  const { dispatch } = useContext(StoreContext);
 
-  console.log(router);
+  useEffect(() => {
+    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
+  }, []);
 
   return (
     <Container maxWidth="md" className={classes.container}>
@@ -46,7 +52,8 @@ function ChatPage({ users, userId }) {
                 <Avatar
                   alt={user.firstName}
                   src={user.profilePicture}
-                  className={user.isOnline ? classes.online : ''}
+                  // className={user.isOnline ? classes.online : ''}
+                  className={usersConnected[user.id] === true ? classes.online : ''}
                 />
               </ListItemAvatar>
               <ListItemText

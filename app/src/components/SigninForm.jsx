@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
-import router from 'next/router';
+import {useRouter} from 'next/router';
 import { ApiContext } from '../stores/Api';
 import { StoreContext } from '../store/Store';
 
@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function SigninForm() {
+  const router = useRouter();
   const { signin } = useContext(ApiContext);
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');

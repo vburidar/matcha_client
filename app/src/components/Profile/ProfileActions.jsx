@@ -1,11 +1,16 @@
 import router from 'next/router';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import { Chip, Button } from '@material-ui/core';
 import { useEffect, useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  Chip,
+  Button,
+  Paper,
+  Typography
+} from '@material-ui/core';
+
 import { ApiContext } from '../../stores/Api';
 import { StoreContext } from '../../store/Store';
+import { SocketContext } from '../../stores/Socket';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -23,20 +28,15 @@ export default function ProfileAction({ props }) {
   const classes = useStyles();
   const { unlikeProfile, likeProfile } = useContext(ApiContext);
   const { state } = useContext(StoreContext);
+  const { createLike, deleteLike } = useContext(SocketContext);
 
   async function handleLikeProfile() {
-    await likeProfile({
-      user_id: props.id,
-    });
+    createLike(props.id);
     router.push(`/profile/${props.id}`);
   }
 
   async function handleUnlikeProfile() {
-    await unlikeProfile({
-      data: {
-        user_id: props.id,
-      },
-    });
+    deleteLike(props.id);
     router.push(`/profile/${props.id}`);
   }
 
@@ -50,8 +50,8 @@ export default function ProfileAction({ props }) {
         <Typography color="textSecondary" variant="h6" component="h4">
           This is a preview of your profile to see how it looks to the others.
         </Typography>
-        <Button className={classes.button} variant="contained" color="primary" onClick={handleUnlikeProfile}>
-          Change your profile
+        <Button className={classes.button} variant="contained" color="primary" onClick={() => router.push('/profile/settings')}>
+          Settings
         </Button>
       </Paper>
     );

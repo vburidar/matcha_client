@@ -87,7 +87,6 @@ export default function ActivityPage(props) {
   };
 
   useEffect(() => {
-    console.log('in activity', data);
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
   }, []);
 

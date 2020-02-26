@@ -1,3 +1,4 @@
+import router from 'next/router';
 import {
   AppBar,
   Toolbar,
@@ -21,8 +22,8 @@ export default function Header() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography component="div" className={classes.title} onClick={() => { console.log('coucou'); }}>
-          <Button color="inherit">
+        <Typography component="div" className={classes.title}>
+          <Button color="inherit" onClick={() => router.push('/')}>
             See You
           </Button>
         </Typography>
