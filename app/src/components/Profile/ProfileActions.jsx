@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProfileAction({ props }) {
+export default function ProfileAction({ props, userId }) {
   const classes = useStyles();
   const { state } = useContext(StoreContext);
   const { createLike, deleteLike } = useContext(SocketContext);
@@ -40,7 +40,7 @@ export default function ProfileAction({ props }) {
   }
 
   function handleGoToChat() {
-    router.push('/chat');
+    router.push(`/chat/${Math.min(props.id, userId)}/${Math.max(props.id, userId)}`);
   }
 
   if (props.id === state.user_id) {

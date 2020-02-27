@@ -55,6 +55,7 @@ export function ApiProvider({ children }) {
   }
 
   const handleError = (err) => {
+    console.log(err.response, err, err.status, err.message)
     const message = getErrorDict(err.response.data);
     const severity = 'error';
     newNotification(

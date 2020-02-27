@@ -55,9 +55,12 @@ const useStyles = makeStyles((theme) => ({
 function ChatPage({ messagesData, userId, talker }) {
   const classes = useStyles();
   const {
+    socket,
     messages,
     dispatchMessages,
     createMessage,
+    subscribeChat,
+    unSubscribeChat,
   } = useContext(SocketContext);
   const { dispatch } = useContext(StoreContext);
 
@@ -82,18 +85,28 @@ function ChatPage({ messagesData, userId, talker }) {
   }
 
   useEffect(() => {
-    console.log(talker);
+    if (Object.keys(socket).length > 0) {
+      console.log('SUBSCRIBE CHAT', talker.id)
+      subscribeChat(talker.id);
+    }
+  }, [socket]);
+
+  useEffect(() => {
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
     dispatchMessages({
       type: 'initialiseMessages',
       messages: messagesData,
-      userId: talker.id,
     });
+
+    return () => {
+      console.log('UNMOUNT');
+      unSubscribeChat(talker.id);
+    };
   }, []);
 
   useEffect(() => {
     messagesContainerDiv.current.scrollTop = messagesContainerDiv.current.scrollHeight;
-  }, [messages[talker.id]]);
+  }, [messages]);
 
   return (
     <Container maxWidth="md" className={classes.container}>
@@ -124,7 +137,7 @@ function ChatPage({ messagesData, userId, talker }) {
             ref={messagesContainerDiv}
             alignContent="flex-start"
           >
-            {messages[talker.id] && messages[talker.id].map((message) => (
+            {messages.length > 0 && messages.map((message) => (
               <Grid item container xs={12} alignContent="flex-start" className={classes.messageWrapper} key={message.id}>
                 <Grid
                   item

@@ -8,17 +8,12 @@ import { StoreContext } from '../store/Store';
 export const SocketContext = createContext(null);
 
 function messagesReducer(state, action) {
+  console.log('messageReducer', state, action);
   switch (action.type) {
     case 'initialiseMessages':
-      return {
-        ...state,
-        [action.userId]: action.messages,
-      };
+      return action.messages;
     case 'addMessage':
-      return {
-        ...state,
-        [action.userId]: state.concat(action.messages),
-      };
+      return state.concat(action.message);
     default:
       return state;
   }
@@ -36,6 +31,7 @@ function notificationsReducer(state, action) {
 }
 
 function usersConnectedReducer(state, action) {
+  console.log('usersConnectedReducer', state, action);
   switch (action.type) {
     case 'initialiseUsersConnected':
       return action.userIds.reduce((acc, userId) => ({
@@ -74,10 +70,15 @@ export function SocketProvider({ children }) {
     });
 
     socket.on('allUsersConnected', ({ userIds }) => {
-      dispatchUsersConnected({ type: 'initialiseUsersConnected', userIds });
+      if (userIds !== null) {
+        dispatchUsersConnected({ type: 'initialiseUsersConnected', userIds });
+      }
     });
 
     socket.on('messageReceived', ({ message }) => {
+      const userId = (messages[message.sender_id])
+        ? message.sender_id
+        : message.receiver_id;
       dispatchMessages({
         type: 'addMessage',
         message,
@@ -105,6 +106,7 @@ export function SocketProvider({ children }) {
   }
 
   useEffect(() => {
+    console.log('SOCKET CHANGE');
     if (Object.keys(socket).length > 0) {
       initialiseSocket();
     }
@@ -145,6 +147,13 @@ export function SocketProvider({ children }) {
     socket.emit('markAllNotificationsAsRead');
   }
 
+  function subscribeChat(receiverId) {
+    socket.emit('subscribeChat', { receiverId });
+  }
+  function unSubscribeChat(receiverId) {
+    socket.emit('unSubscribeChat', { receiverId });
+  }
+
   const value = {
     socket,
     messages,
@@ -156,6 +165,8 @@ export function SocketProvider({ children }) {
     deleteLike,
     createMessage,
     markAllNotificationsAsRead,
+    subscribeChat,
+    unSubscribeChat,
   };
 
   return (

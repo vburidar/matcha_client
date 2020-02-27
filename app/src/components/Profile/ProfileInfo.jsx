@@ -163,7 +163,7 @@ function ProfileInfos({ props, userId }) {
           />
         ))}
       </Paper>
-      <ProfileActions props={props} />
+      <ProfileActions props={props} userId={userId} />
     </div>
   );
 }
