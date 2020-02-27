@@ -117,7 +117,9 @@ export default function ProfileCard(
                   key={label}
                   size="small"
                   className={classes.chip}
-                  label={label}
+                  label={label
+                    .replace(/^[a-z]|\.[a-z]|-[a-z]|_[a-z]|'[a-z]/g, (el) => el.toUpperCase())
+                    .replace(/_/g, ' ')}
                   color="secondary"
                 />
               ))}
@@ -126,7 +128,9 @@ export default function ProfileCard(
                 key={label}
                 size="small"
                 className={classes.chip}
-                label={label}
+                label={label
+                  .replace(/^[a-z]|\.[a-z]|-[a-z]|_[a-z]|'[a-z]/g, (el) => el.toUpperCase())
+                  .replace(/_/g, ' ')}
               />
             ))}
           </Container>

@@ -135,13 +135,19 @@ export default function Search({ listUsers, setListUsers }) {
     }
   };
 
+  const handleSearchInterestChange = (e) => {
+    if (/^[a-zA-Z0-9-'. ]*$/.test(e.target.value) === true) {
+      setSearchInterest(e.target.value);
+    }
+  };
+
   function addInterest() {
-    if (!interestList.includes(searchInterest)) {
-      if (interestList.length === 1
-      && interestList[0] === 'any interest') {
-        setInterestList([searchInterest]);
+    const interest = searchInterest.trim().toLowerCase().replace(/ /g, '_');
+    if (!interestList.includes(interest) && interest !== '') {
+      if (interestList.length === 1 && interestList[0] === 'any interest') {
+        setInterestList([interest]);
       } else {
-        setInterestList([...interestList, searchInterest]);
+        setInterestList([...interestList, interest]);
       }
       setSearchInterest('');
     }
@@ -160,7 +166,7 @@ export default function Search({ listUsers, setListUsers }) {
               name="interest"
               value={searchInterest}
               onKeyDown={(e) => { if (e.key === 'Enter') { addInterest(); } }}
-              onChange={(e) => setSearchInterest(e.target.value)}
+              onChange={handleSearchInterestChange}
             />
             <Button className={classes.buttonAdd} onClick={addInterest} variant="outlined">ADD</Button>
             {interestList.map((label) => (
@@ -168,7 +174,9 @@ export default function Search({ listUsers, setListUsers }) {
                 key={label}
                 size="small"
                 className={classes.chip}
-                label={label}
+                label={label
+                  .replace(/^[a-z]|\.[a-z]|-[a-z]|_[a-z]|'[a-z]/g, (el) => el.toUpperCase())
+                  .replace(/_/g, ' ')}
                 onDelete={label === 'any interest' ? undefined : handleDelete(label)}
               />
             ))}

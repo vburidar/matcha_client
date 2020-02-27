@@ -6,6 +6,8 @@ import {
   Typography,
   Container,
   Paper,
+  Grid,
+  Box,
 } from '@material-ui/core';
 
 import { StoreContext } from '../store/Store';
@@ -60,6 +62,10 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(2),
     textAlign: 'center',
+  },
+  noResultText: {
+    textAlign: 'center',
+    padding: theme.spacing(2),
   },
 }));
 
@@ -156,6 +162,30 @@ export default function HomePage({ data, userId }) {
         listUsers={listUsers}
         setListUsers={setListUsers}
       />
+      { ((value === 1 && listUsers.data.length === 0)
+        || (value === 0
+          && users.filter(
+            (user) => (user.age >= filters.age[0])
+            && (user.age <= filters.age[1])
+            && (Math.floor(user.distance) <= filters.distance)
+            && (parseInt(user.score_popularity * 100, 10) >= filters.popularity[0])
+            && (parseInt(user.score_popularity * 100, 10) <= filters.popularity[1])
+            && (user.common_interests >= filters.commonInterests),
+          ).length === 0
+        ))
+        && (
+          <Grid container>
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <Typography className={classes.noResultText}>
+                  We didn&apos;t find anyone matching your search
+                  <br />
+                  Open your mind and explore new horizons by extending your search
+                </Typography>
+              </Paper>
+            </Grid>
+          </Grid>
+        )}
       {
         value === 0
         && users
