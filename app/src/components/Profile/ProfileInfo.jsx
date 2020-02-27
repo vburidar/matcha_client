@@ -132,7 +132,9 @@ function ProfileInfos({ props, userId }) {
             key={element}
             size="small"
             className={classes.chip}
-            label={element}
+            label={element
+              .replace(/^[a-z]|\.[a-z]|-[a-z]|_[a-z]|'[a-z]/g, (el) => el.toUpperCase())
+              .replace(/_/g, ' ')}
             color="secondary"
           />
         ))}

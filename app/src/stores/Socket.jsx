@@ -4,6 +4,8 @@ import {
 import io from 'socket.io-client';
 
 import { StoreContext } from '../store/Store';
+import { getErrorDict, getNotificationDict } from './Api';
+import { newNotification } from '../store/actions';
 
 export const SocketContext = createContext(null);
 
@@ -54,7 +56,7 @@ function usersConnectedReducer(state, action) {
 }
 
 export function SocketProvider({ children }) {
-  const { state } = useContext(StoreContext);
+  const { state, dispatch } = useContext(StoreContext);
   const [socket, setSocket] = useState({});
   const [messages, dispatchMessages] = useReducer(messagesReducer, []);
   const [notifications, dispatchNotifications] = useReducer(notificationsReducer, []);
@@ -75,14 +77,18 @@ export function SocketProvider({ children }) {
       }
     });
 
-    socket.on('messageReceived', ({ message }) => {
-      const userId = (messages[message.sender_id])
-        ? message.sender_id
-        : message.receiver_id;
-      dispatchMessages({
-        type: 'addMessage',
-        message,
-      });
+    socket.on('messageReceived', ({ message, err }) => {
+      if (err) {
+        newNotification(
+          dispatch,
+          { message: getErrorDict(err.id), severity: 'error' },
+        );
+      } else {
+        dispatchMessages({
+          type: 'addMessage',
+          message,
+        });
+      }
     });
 
     socket.on('notificationReceived', ({ notification }) => {
@@ -106,7 +112,7 @@ export function SocketProvider({ children }) {
   }
 
   useEffect(() => {
-    console.log('SOCKET CHANGE');
+    console.log('SOCKET CHANGE', socket);
     if (Object.keys(socket).length > 0) {
       initialiseSocket();
     }

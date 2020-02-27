@@ -4,6 +4,44 @@ import axios from 'axios';
 import { StoreContext } from '../store/Store';
 import { newNotification } from '../store/actions';
 
+export function getErrorDict(key) {
+  const dict = {
+    session_does_not_exist: 'You are already logged out',
+    user_logged_already: 'You are already logged in',
+    validation_link_invalid: 'You url link is invalid',
+    login_invalid: 'Wrong login or password',
+    password_invalid: 'Wrong login or password',
+    account_not_validated: 'Your account is not validated yet. Please wait for an email with further instructions',
+    value_already_exist: 'Those credentials are already in use',
+    email_invalid: 'This email didn\'nt show up in our database. Are you sure you registered with this address?',
+    validation_code_invalid: 'This account can\'t be validated',
+    invalid_nb_of_interests: 'Number of interests should be more than 2 and less than 7',
+    not_authorized: 'Not authorized',
+  };
+  if (key.match('invalid-password')) {
+    return ('Wrong login or password');
+  }
+  if (dict[key]) {
+    return (dict[key]);
+  }
+  return ('Unknown error');
+}
+
+export function getNotificationDict(key) {
+  const dict = {
+    signup: 'Your account was successfully created! Wait for our email with our validation link',
+    signin: 'Welcome back!',
+    forgotPwd: 'An Email with a reset link has been sent to your email address',
+    resetPassword: 'Your password wa successfully updated. You can now log in with your new credentials',
+    validateAccount: 'Your account was successfully validated. You can now log in',
+    patchProfile: 'Your profile is now complete, you can now find the true love',
+  };
+  if (dict[key]) {
+    return (dict[key]);
+  }
+  return ('Success!');
+}
+
 export const ApiContext = createContext(null);
 
 export function createApiRequester(req) {
@@ -33,32 +71,8 @@ export function ApiProvider({ children }) {
     headers: { 'Access-Control-Allow-Origin': 'http://localhost:3000/' },
   });
 
-  function getErrorDict(key) {
-    const dict = {
-      session_does_not_exist: 'You are already logged out',
-      user_logged_already: 'You are already logged in',
-      validation_link_invalid: 'You url link is invalid',
-      login_invalid: 'Wrong login or password',
-      password_invalid: 'Wrong login or password',
-      account_not_validated: 'Your account is not validated yet. Please wait for an email with further instructions',
-      value_already_exist: 'Those credentials are already in use',
-      email_invalid: 'This email didn\'nt show up in our database. Are you sure you registered with this address?',
-      validation_code_invalid: 'This account can\'t be validated',
-      invalid_nb_of_interests: 'Number of interests should be more than 2 and less than 7',
-    };
-    if (key.match('invalid-password')) {
-      return ('Wrong login or password');
-    }
-    if (dict[key]) {
-      return (dict[key]);
-    }
-    return ('Unknown error');
-  }
-
   const handleError = (err) => {
-    console.log(err.response, err, err.status, err.message)
     const message = getErrorDict(err.response.data);
-    console.log(err.response);
     const severity = 'error';
     newNotification(
       dispatch,
@@ -66,21 +80,6 @@ export function ApiProvider({ children }) {
     );
     return ({ type: 'error' });
   };
-
-  function getNotificationDict(key) {
-    const dict = {
-      signup: 'Your account was successfully created! Wait for our email with our validation link',
-      signin: 'Welcome back!',
-      forgotPwd: 'An Email with a reset link has been sent to your email address',
-      resetPassword: 'Your password wa successfully updated. You can now log in with your new credentials',
-      validateAccount: 'Your account was successfully validated. You can now log in',
-      patchProfile: 'Your profile is now complete, you can now find the true love',
-    };
-    if (dict[key]) {
-      return (dict[key]);
-    }
-    return ('Success!');
-  }
 
   const showNotification = (data, requestName) => {
     if (data.type !== 'error') {

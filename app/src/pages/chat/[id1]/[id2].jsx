@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   useEffect, useState, useContext, createRef,
 } from 'react';
@@ -85,8 +86,8 @@ function ChatPage({ messagesData, userId, talker }) {
   }
 
   useEffect(() => {
+    console.log('SOCKET', socket);
     if (Object.keys(socket).length > 0) {
-      console.log('SUBSCRIBE CHAT', talker.id)
       subscribeChat(talker.id);
     }
   }, [socket]);
@@ -99,8 +100,9 @@ function ChatPage({ messagesData, userId, talker }) {
     });
 
     return () => {
-      console.log('UNMOUNT');
-      unSubscribeChat(talker.id);
+      console.log(socket, messages);
+      // TO DO unsubscribe
+      // unSubscribeChat(talker.id);
     };
   }, []);
 
@@ -116,10 +118,14 @@ function ChatPage({ messagesData, userId, talker }) {
             <List>
               <ListItem>
                 <ListItemAvatar>
-                  <Avatar
-                    src={talker.path}
-                    alt="profile picture"
-                  />
+                  <Link href="/profile/[id]" as={`/profile/${talker.id}`}>
+                    <a>
+                      <Avatar
+                        src={talker.path}
+                        alt="profile picture"
+                      />
+                    </a>
+                  </Link>
                 </ListItemAvatar>
                 <ListItemText
                   primary={`${talker.first_name} - ${talker.age} years old`}
