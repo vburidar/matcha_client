@@ -198,7 +198,7 @@ HomePage.getInitialProps = async (ctx) => {
     redirectTo('/complete-profile', req, res);
   }
   try {
-    const suggestionList = await apiObj.get('users/getSuggestionList');
+    const suggestionList = await apiObj.get('users/suggestions');
     return { data: suggestionList.data.rows, userId: data.user_id };
   } catch (err) {
     console.log('error: couldn\'t fetch suggestion list');

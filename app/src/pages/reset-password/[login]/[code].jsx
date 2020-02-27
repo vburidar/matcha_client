@@ -46,7 +46,7 @@ ResetPasswordPage.getInitialProps = async ({ req, res, query }) => {
   const { login, code } = query;
 
   try {
-    await apiObj.post('auth/testLinkResetPwd', {
+    await apiObj.post('auth/test-link-reset-password', {
       login,
       code,
     });

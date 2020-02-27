@@ -187,7 +187,7 @@ SettingsPage.getInitialProps = async ({ req, res }) => {
   if (data.profileIsComplete === false) {
     redirectTo('complete-profile', req, res);
   }
-  const u = await apiObj.get('users/getProfileInfo/current');
+  const u = await apiObj.get('users/current');
   const user = u.data;
   return ({ user });
 };

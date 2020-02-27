@@ -74,7 +74,7 @@ ProfilePage.getInitialProps = async ({ req, res, query }) => {
   }
 
   const { id } = query;
-  const talkerQueryRes = await apiObj.get(`users/getProfileInfo/${id}`);
+  const talkerQueryRes = await apiObj.get(`users/${id}`);
   const talker = talkerQueryRes.data.rows[0];
   return ({ talker, userId: data.user_id });
 };

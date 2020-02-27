@@ -25,7 +25,7 @@ export default function CredentialsSettings({
   },
 }) {
   const classes = useStyles();
-  const { forgotPwd } = useContext(ApiContext);
+  const { forgotPassword } = useContext(ApiContext);
 
   function handleCredendialsChange(event) {
     setCredentials({
@@ -71,7 +71,7 @@ export default function CredentialsSettings({
       <Button
         color="primary"
         variant="contained"
-        onClick={() => forgotPwd({ email })}
+        onClick={() => forgotPassword({ email })}
       >
         Send reset password email
       </Button>

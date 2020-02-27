@@ -71,7 +71,7 @@ export function ApiProvider({ children }) {
     const dict = {
       signup: 'Your account was successfully created! Wait for our email with our validation link',
       signin: 'Welcome back!',
-      forgotPwd: 'An Email with a reset link has been sent to your email address',
+      forgotPassword: 'An Email with a reset link has been sent to your email address',
       resetPassword: 'Your password wa successfully updated. You can now log in with your new credentials',
       validateAccount: 'Your account was successfully validated. You can now log in',
       patchProfile: 'Your profile is now complete, you can now find the true love',
@@ -96,13 +96,13 @@ export function ApiProvider({ children }) {
 
   const routes = {
     getUsers: () => (api.get('users').catch(handleError)),
-    forgotPwd: async (data) => (showNotification(await api.post('auth/forgotPwd', data).catch(handleError), 'forgotPwd')),
-    resetPassword: async (data) => (showNotification(await api.post('auth/resetPwd', data).catch(handleError), 'resetPassword')),
+    forgotPassword: async (data) => (showNotification(await api.post('auth/forgot-password', data).catch(handleError), 'forgotPassword')),
+    resetPassword: async (data) => (showNotification(await api.post('auth/reset-password', data).catch(handleError), 'resetPassword')),
     signin: async (data) => (showNotification(await api.post('auth/signin', data).catch(handleError), 'signin')),
     signup: async (data) => (showNotification(await api.post('auth/signup', data).catch(handleError), 'signup')),
-    validateAccount: async (data) => (showNotification(await api.post('auth/accountValidation', data).catch(handleError), 'validateAccount')),
+    validateAccount: async (data) => (showNotification(await api.post('auth/account-validation', data).catch(handleError), 'validateAccount')),
     patchProfile: async (data) => (showNotification(await api.patch('profile', data).catch(handleError), 'patchProfile')),
-    sessionDelete: () => (api.delete('auth/deleteSession').catch(handleError)),
+    sessionDelete: () => (api.delete('auth/delete-session').catch(handleError)),
     createBlock: async (data) => (showNotification(await api.post('event/block', data).catch(handleError), 'blockUser')),
     deleteBlock: async (data) => (showNotification(await api.delete('event/block', data).catch(handleError), 'deleteBlock')),
     createReport: async (data) => (showNotification(await api.post('event/report', data).catch(handleError), 'reportUser')),

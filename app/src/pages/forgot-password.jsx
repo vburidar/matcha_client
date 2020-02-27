@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ForgotPasswordPage() {
-  const { forgotPwd } = useContext(ApiContext);
+  const { forgotPassword } = useContext(ApiContext);
   const [email, setEmail] = useState('');
   const classes = useStyles();
 
@@ -30,7 +30,7 @@ function ForgotPasswordPage() {
   useEffect(() => {
     async function readUser() {
       if (email !== '') {
-        await forgotPwd({ email });
+        await forgotPassword({ email });
       }
     }
     readUser();

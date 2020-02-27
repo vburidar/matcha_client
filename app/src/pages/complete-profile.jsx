@@ -163,7 +163,7 @@ CompleteProfilePage.getInitialProps = async (ctx) => {
   if (data.profileIsComplete === true) {
     redirectTo('/profile/settings', req, res);
   }
-  const u = await apiObj.get('users/getProfileInfo/current');
+  const u = await apiObj.get('users/current');
   const user = u.data;
   try {
     const ipLoc = await axios('http://ip-api.com/json');

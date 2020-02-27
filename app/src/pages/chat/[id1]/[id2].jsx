@@ -204,7 +204,7 @@ ChatPage.getInitialProps = async ({ req, res, query }) => {
   const talkerId = (id1 === data.user_id) ? id2 : id1;
 
   const messagesQueryRes = await apiObj.get('users/message', { params: { talkerId } });
-  const talkerQueryRes = await apiObj.get(`users/getProfileInfo/${talkerId}`);
+  const talkerQueryRes = await apiObj.get(`users/${talkerId}`);
 
   return {
     messagesData: messagesQueryRes.data.rows,
