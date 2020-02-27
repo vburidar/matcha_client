@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Chip,
@@ -14,6 +14,7 @@ import Height from '@material-ui/icons/Height';
 
 import ProfileActions from './ProfileActions';
 import ReportDialog from './reportDialog';
+import ScoreIcons from '../Homepage/ScoreIcons';
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -98,48 +99,21 @@ function ProfileInfos({ props, userId }) {
           {' '}
           {' years old'}
         </Typography>
+        {props.id !== userId
+        && (
         <Typography color="textSecondary" variant="h5" component="h4">
           {Math.floor(props.distance)}
           {' kilometers away'}
         </Typography>
-        <Container className={classes.containerIcon}>
-          <Tooltip title="Localisation">
-            <span className={classes.containerIcon}>
-              <Navigation className={classes.icon} />
-              <Typography>
-                {parseInt(props.score_distance * 100, 10)}
-                %
-              </Typography>
-            </span>
-          </Tooltip>
-          <Tooltip title="Popularity">
-            <span className={classes.containerIcon}>
-              <Stars className={classes.icon} />
-              <Typography>
-                {parseInt(props.popularity_score, 10)}
-                %
-              </Typography>
-            </span>
-          </Tooltip>
-          <Tooltip title="Age proximity">
-            <div className={classes.containerIcon}>
-              <Height />
-              <Typography>
-                {parseInt(props.score_age * 100, 10)}
-                %
-              </Typography>
-            </div>
-          </Tooltip>
-          <Tooltip title="Centers of interests">
-            <div className={classes.containerIcon}>
-              <LocalMovies />
-              <Typography>
-                {parseInt(props.score_interest * 100, 10)}
-                %
-              </Typography>
-            </div>
-          </Tooltip>
-        </Container>
+        )}
+        <ScoreIcons
+          scoreDistance={props.score_distance}
+          scorePopularity={props.popularity_score / 100}
+          scoreAge={props.score_age}
+          scoreInterest={props.score_interest}
+          userId={userId}
+          visitorId={props.id}
+        />
       </Paper>
       <Paper className={classes.paper}>
         <Typography color="textSecondary" variant="h6" component="h4">

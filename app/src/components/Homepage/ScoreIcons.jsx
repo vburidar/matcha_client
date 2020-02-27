@@ -10,16 +10,30 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    margin: theme.spacing(2),
+    margin: theme.spacing(1),
   },
 }));
 
 export default function ScoreIcons({
-  scoreDistance, scorePopularity, scoreAge, scoreInterest,
+  scoreDistance, scorePopularity, scoreAge, scoreInterest, visitorId, userId,
 }) {
   const classes = useStyles();
 
-  if (scoreDistance && scorePopularity && scoreAge && scoreInterest) {
+  if (visitorId === userId) {
+    return (
+      <Container className={classes.containerIcon}>
+        <span className={classes.containerIcon}>
+          <Stars className={classes.icon} />
+          <Typography className={classes.typo}>
+            {'  Your Popularity Score is of '}
+            {parseInt(scorePopularity * 100, 10)}
+            %
+          </Typography>
+        </span>
+      </Container>
+    );
+  }
+  if (scoreDistance !== undefined && scorePopularity !== undefined && scoreAge !== undefined && scoreInterest !== undefined) {
     return (
       <Container className={classes.containerIcon}>
         <Tooltip title="Localisation">

@@ -44,6 +44,7 @@ export function ApiProvider({ children }) {
       value_already_exist: 'Those credentials are already in use',
       email_invalid: 'This email didn\'nt show up in our database. Are you sure you registered with this address?',
       validation_code_invalid: 'This account can\'t be validated',
+      invalid_nb_of_interests: 'Number of interests should be more than 2 and less than 7',
     };
     if (key.match('invalid-password')) {
       return ('Wrong login or password');
@@ -57,6 +58,7 @@ export function ApiProvider({ children }) {
   const handleError = (err) => {
     console.log(err.response, err, err.status, err.message)
     const message = getErrorDict(err.response.data);
+    console.log(err.response);
     const severity = 'error';
     newNotification(
       dispatch,
