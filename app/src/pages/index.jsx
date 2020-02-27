@@ -117,7 +117,7 @@ function usersReducer(state, action) {
       return [].concat(state).sort((first, second) => second.score_popularity - first.score_popularity);
     case 'commoninterests':
       return [].concat(state).sort(
-        (first, second) => first.common_interests - second.common_interests,
+        (first, second) => second.common_interests - first.common_interests,
       );
     default:
       return state;

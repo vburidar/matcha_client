@@ -6,6 +6,7 @@ import {
   Typography,
   Container,
   Box,
+  Paper,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -55,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
   tabs: {
     display: 'flex',
   },
+
+  typoContainer: {
+    textAlign: 'center',
+  },
 }));
 
 function TabPanel(props) {
@@ -91,6 +96,15 @@ export default function ActivityPage(props) {
   }, []);
 
 
+  if (data.length === 0) {
+    return (
+      <Container className={classes.typoContainer}>
+        <Typography variant="h4" color="textSecondary" component="h4">
+          {'You don\'t have any activity yet. Start interacting with other profiles!'}
+        </Typography>
+      </Container>
+    );
+  }
   return (
     <Container>
       <AppBar className={classes.AppBar} position="static">

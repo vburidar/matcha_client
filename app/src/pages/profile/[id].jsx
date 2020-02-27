@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { StoreContext } from '../../store/Store';
 import ProfilePic from '../../components/Profile/ProfilePic';
-import ProfileInfos from '../../components/Profile/ProfileInfo';
+import ProfileInfos from '../../components/Profile/ProfileInfos';
 import BlockDialog from '../../components/Profile/BlockDialog';
 import { createApiRequester } from '../../stores/Api';
 import redirectTo from '../../initialServices/initialServices';
