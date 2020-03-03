@@ -15,6 +15,7 @@ import { createApiRequester } from '../stores/Api';
 
 import ProfileCard from '../components/Homepage/ProfileCard';
 import OptionPanel from '../components/Homepage/OptionPanel';
+import ErrorComponent from '../components/ErrorComponent';
 import redirectTo from '../initialServices/initialServices';
 
 const useStyles = makeStyles((theme) => ({
@@ -124,7 +125,9 @@ function usersReducer(state, action) {
   }
 }
 
-export default function HomePage({ data, userId }) {
+export default function HomePage({
+  type, id, data, userId, status,
+}) {
   const classes = useStyles();
   const { dispatch } = useContext(StoreContext);
   const [value, setValue] = useState(0);
@@ -138,13 +141,16 @@ export default function HomePage({ data, userId }) {
   const [listUsers, setListUsers] = useState({ data: [] });
 
   useEffect(() => {
-    console.log(listUsers);
-  }, [listUsers]);
-
-  useEffect(() => {
     dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
   }, []);
 
+  if (type === 'error') {
+    return (
+      <div>
+        <ErrorComponent error={data} message={id} status={status} />
+      </div>
+    );
+  }
   return (
     <Container className={classes.mainContainer}>
       <div className={classes.paper}>
@@ -220,18 +226,31 @@ export default function HomePage({ data, userId }) {
 HomePage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
-  const { data } = await apiObj.get('users/status');
-  if (data.connected === false) {
-    redirectTo('/signin', req, res);
-  }
-  if (data.profileIsComplete === false) {
-    redirectTo('/complete-profile', req, res);
-  }
   try {
+    try {
+      const { data } = await apiObj.get('users/status');
+      if (data.connected === false) {
+        redirectTo('/signin', req, res);
+        return ({ type: 'redirection', id: 'User is not connected' });
+      }
+      if (data.profileIsComplete === false) {
+        redirectTo('/complete-profile', req, res);
+        return ({ type: 'redirection', id: 'Profile is incomplete' });
+      }
+    } catch (err) {
+      return ({
+        type: 'error', id: 'couldn\'t fetch user status', data: err, userId: null,
+      });
+    }
     const suggestionList = await apiObj.get('users/suggestions');
-    return { data: suggestionList.data.rows, userId: data.user_id };
+    return { type: 'sucess', data: suggestionList.data.rows, userId: data.user_id };
   } catch (err) {
-    console.log('error: couldn\'t fetch suggestion list');
+    return ({
+      type: 'error',
+      status: err.response.status,
+      id: 'couldn\'t fetch suggestion list',
+      data: err.response.data,
+      userId: null,
+    });
   }
-  return ({ type: 'error', id: 'Unable to fetch suggestion list' });
 };
