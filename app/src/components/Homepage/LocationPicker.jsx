@@ -266,7 +266,7 @@ export default function LocationPicker({ location, setLocation }) {
   }
 
   function clearAutocomplete() {
-    setLocation({ label: 'default', type: 'default' });
+    setLocation({ label: '', type: 'default' });
     setLocationSuggestions([]);
   }
 
@@ -388,6 +388,7 @@ export default function LocationPicker({ location, setLocation }) {
         <TextField
           {...params}
           fullWidth
+          placeholder="Your position"
         />
       )}
     />

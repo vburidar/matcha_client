@@ -54,9 +54,7 @@ ResetPasswordPage.getInitialProps = async ({ req, res, query }) => {
     testLink = false;
   }
 
-  if (data.connected === true) {
-    redirectTo('/', req, res);
-  } else if (testLink === false) {
+  if (testLink === false) {
     redirectTo('/signin', req, res);
   }
 

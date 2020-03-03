@@ -74,7 +74,21 @@ ProfilePage.getInitialProps = async ({ req, res, query }) => {
   }
 
   const { id } = query;
-  const talkerQueryRes = await apiObj.get(`users/${id}`);
-  const talker = talkerQueryRes.data.rows[0];
-  return ({ talker, userId: data.user_id });
+  try {
+    const talkerQueryRes = await apiObj.get(`users/${id}`);
+    const talker = talkerQueryRes.data.rows[0];
+    return ({ talker, userId: data.user_id });
+  } catch (err) {
+    if (err.response.data === 'unauthorized') {
+      return ({
+        talker: {
+          visited_blocked_visitor: true,
+          visitor_blocked_visited: true,
+          id,
+        },
+        userId: data.user_id,
+      });
+    }
+    redirectTo('/404', req, res);
+  }
 };

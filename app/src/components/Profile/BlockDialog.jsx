@@ -30,6 +30,7 @@ export default function ReportDialog({ props }) {
   };
 
   async function unblockUser() {
+    console.log('id user = ', props.id);
     await deleteBlock({
       data: {
         user_id: props.id,

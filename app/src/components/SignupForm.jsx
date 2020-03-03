@@ -56,12 +56,12 @@ export default function SignupForm(
     setLoginIsValid(false);
     setDisableSubmit(true);
     setLogin(event.target.value);
-    if (event.target.value.length > 3) {
+    if (event.target.value.match(/^([a-zA-Z1-9]|_){2,20}$/)) {
       setLoginIsValid(true);
       setDisableSubmit(!(allFieldsAreSet() && pwdIsValid && emailIsValid));
       setMessageLogin('');
     } else {
-      setMessageLogin('Login should be at least 4 characters long');
+      setMessageLogin('Login should be between 2 and 20 caracters and should consist of letters, digits, or _');
     }
   };
 
@@ -69,12 +69,12 @@ export default function SignupForm(
     setFirstNameIsValid(false);
     setDisableSubmit(true);
     setFirstName(event.target.value);
-    if (event.target.value.length > 1) {
+    if (event.target.value.match(/^([a-zA-Z]|-|\.|\s){2,20}$/)) {
       setFirstNameIsValid(true);
       setDisableSubmit(!(allFieldsAreSet() && pwdIsValid && emailIsValid && loginIsValid && lastNameIsValid));
       setMessageFirstName('');
     } else {
-      setMessageFirstName('First Name should be at least 2 characters long');
+      setMessageFirstName('First Name should be between 2 and 20 characters and should consist of letters and - . and spaces');
     }
   };
 
@@ -82,12 +82,12 @@ export default function SignupForm(
     setLastNameIsValid(false);
     setDisableSubmit(true);
     setLastName(event.target.value);
-    if (event.target.value.length > 1) {
+    if (event.target.value.match(/^([a-zA-Z]|-|\.|\s){2,20}$/)) {
       setLastNameIsValid(true);
       setDisableSubmit(!(allFieldsAreSet() && pwdIsValid && emailIsValid && loginIsValid && firstNameIsValid));
       setMessageLastName('');
     } else {
-      setMessageLastName('Last Name should be at least 2 characters long');
+      setMessageLastName('Last Name should be between 2 and 20 characters and should consist of letters and - . and spaces');
     }
   };
 
