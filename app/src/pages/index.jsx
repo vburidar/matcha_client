@@ -243,9 +243,9 @@ HomePage.getInitialProps = async (ctx) => {
   } catch (err) {
     return ({
       type: 'error',
-      status: err.response,
+      status: err.response.status,
       id: 'couldn\'t fetch suggestion list',
-      data: err.response,
+      data: err.response.data,
       userId: null,
     });
   }
