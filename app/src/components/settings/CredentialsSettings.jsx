@@ -1,13 +1,15 @@
-import { useContext } from 'react';
+import { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
   TextField,
   FormControl,
+  FormHelperText,
   Button,
 } from '@material-ui/core';
 
 import { ApiContext } from '../../stores/Api';
+import { SettingsContext } from '../../stores/Settings';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -19,13 +21,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CredentialsSettings({
-  props: {
-    credentials, setCredentials, email,
-  },
-}) {
+export default function CredentialsSettings({ email }) {
   const classes = useStyles();
   const { forgotPassword } = useContext(ApiContext);
+  const {
+    credentials,
+    setCredentials,
+    errors,
+  } = useContext(SettingsContext);
 
   function handleCredendialsChange(event) {
     setCredentials({
@@ -43,6 +46,12 @@ export default function CredentialsSettings({
           label="Login"
           value={credentials.login}
           onChange={handleCredendialsChange}
+          helperText={
+            errors.login
+              ? 'Login should be between 2 and 20 caracters and should consist of letters, digits, or _'
+              : ''
+          }
+          error={errors.login}
         />
       </FormControl>
 
@@ -54,7 +63,12 @@ export default function CredentialsSettings({
           label="Email"
           value={credentials.email}
           onChange={handleCredendialsChange}
-          required
+          helperText={
+            errors.email
+              ? 'Invalid email'
+              : ''
+          }
+          error={errors.email}
         />
       </FormControl>
       <FormControl fullWidth className={classes.formControl}>
@@ -64,7 +78,12 @@ export default function CredentialsSettings({
           label="Confirm email"
           value={credentials.emailConfirmation}
           onChange={handleCredendialsChange}
-          required
+          helperText={
+            errors.emailConfirmation
+              ? 'Email confirmation does not match'
+              : ''
+          }
+          error={errors.emailConfirmation}
         />
       </FormControl>
 

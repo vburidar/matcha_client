@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { subYears } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -13,6 +13,7 @@ import {
   Chip,
   ListItemText,
   Checkbox,
+  FormHelperText,
 } from '@material-ui/core';
 
 import SearchIcon from '@material-ui/icons/Search';
@@ -21,6 +22,8 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+
+import { SettingsContext } from '../../stores/Settings';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -54,12 +57,14 @@ const genders = [
   },
 ];
 
-export default function GeneralSettings({
-  props: {
-    inputs, setInputs,
-  },
-}) {
+export default function GeneralSettings() {
   const classes = useStyles();
+  const {
+    inputs,
+    setInputs,
+    errors,
+  } = useContext(SettingsContext);
+
   const [interest, setInterest] = useState('');
 
   const handleInterestDelete = (interestToDelete) => () => {
@@ -112,6 +117,12 @@ export default function GeneralSettings({
           label="First name"
           value={inputs.firstName}
           onChange={handleInputChange}
+          helperText={
+            errors.firstName
+              ? 'First Name should be between 2 and 20 characters and should consist of letters and - . and spaces'
+              : ''
+          }
+          error={errors.firstName}
         />
       </FormControl>
 
@@ -122,6 +133,12 @@ export default function GeneralSettings({
           label="Last name"
           value={inputs.lastName}
           onChange={handleInputChange}
+          helperText={
+            errors.lastName
+              ? 'Last Name should be between 2 and 20 characters and should consist of letters and - . and spaces'
+              : ''
+          }
+          error={errors.lastName}
         />
       </FormControl>
 
@@ -139,6 +156,12 @@ export default function GeneralSettings({
             format="MM/dd/yyyy"
             value={inputs.birthdate}
             onChange={handleInputChange}
+            helperText={
+              errors.birthdate
+                ? 'You must be between 18 and 80 years old'
+                : ''
+            }
+            error={errors.birthdate}
           />
         </MuiPickersUtilsProvider>
       </FormControl>
@@ -209,6 +232,9 @@ export default function GeneralSettings({
           }}
         />
       </FormControl>
+      {errors.interests && (
+        <FormHelperText error>You must have between 3 and 7 center of interests</FormHelperText>
+      )}
 
       {inputs.interests.map((label) => (
         <Chip

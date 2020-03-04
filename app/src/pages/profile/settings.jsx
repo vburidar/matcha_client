@@ -1,5 +1,5 @@
 import {
-  useEffect, useContext, useState, useReducer,
+  useEffect, useContext, useState,
 } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -49,11 +49,8 @@ export default function SettingsPage({ user }) {
   const {
     credentials,
     setCredentials,
-    inputs,
     setInputs,
-    pictures,
     dispatchPictures,
-    locations,
     dispatchLocations,
     credentialsDisabled,
     generalDisabled,
@@ -106,35 +103,22 @@ export default function SettingsPage({ user }) {
     init();
   }, []);
 
-  const credentialsProps = {
-    credentials, setCredentials, email: user.email,
-  };
-  const generalProps = {
-    inputs, setInputs, disabled: false, setDisabled: () => {},
-  };
-  const picturesProps = {
-    pictures, dispatchPictures, disabled: false, setDisabled: () => {},
-  };
-  const locationProps = {
-    locations, dispatchLocations, getLabelFromPos, disabled: false, setDisabled: () => {},
-  };
-
   const tabs = [
     {
       name: 'Credentials',
-      component: <CredentialsSettings props={credentialsProps} />,
+      component: <CredentialsSettings email={user.email} />,
     },
     {
       name: 'General',
-      component: <GeneralSettings props={generalProps} />,
+      component: <GeneralSettings />,
     },
     {
       name: 'Pictures',
-      component: <PicturesSettings props={picturesProps} />,
+      component: <PicturesSettings />,
     },
     {
       name: 'Locations',
-      component: <LocationsSettings props={locationProps} />,
+      component: <LocationsSettings />,
 
     },
   ];

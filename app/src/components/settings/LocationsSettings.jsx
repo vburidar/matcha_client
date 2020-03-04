@@ -2,6 +2,7 @@ import { useEffect, useContext } from 'react';
 
 import { StoreContext } from '../../store/Store';
 import { newNotification } from '../../store/actions';
+import { SettingsContext } from '../../stores/Settings';
 
 import SingleLocation from './SingleLocation';
 
@@ -19,12 +20,14 @@ async function getGpsPositionAsync() {
   });
 }
 
-export default function LocationsSettings({
-  props: {
-    locations, dispatchLocations, getLabelFromPos,
-  },
-}) {
+export default function LocationsSettings() {
   const { dispatch } = useContext(StoreContext);
+  const {
+    locations,
+    dispatchLocations,
+    getLabelFromPos,
+    errors,
+  } = useContext(SettingsContext);
 
   useEffect(() => {
     const init = async () => {

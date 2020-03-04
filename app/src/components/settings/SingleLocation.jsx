@@ -5,6 +5,7 @@ import axios from 'axios';
 import {
   TextField,
   Grid,
+  FormHelperText,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
@@ -267,7 +268,7 @@ const alpha3toalpha2 = {
 
 export default function SingleLocation({ index, disabled }) {
   const { dispatch } = useContext(StoreContext);
-  const { locations, dispatchLocations } = useContext(SettingsContext);
+  const { locations, dispatchLocations, errors } = useContext(SettingsContext);
   const [timeoutId, setTimeoutId] = useState(-1);
   const [locationSuggestions, setLocationSuggestions] = useState([locations[index]]);
 
@@ -403,6 +404,12 @@ export default function SingleLocation({ index, disabled }) {
               index,
             },
           })}
+          helperText={
+            errors.locationName
+              ? 'Location name should be between 2 and 20 characters and should consist of letters and - . and spaces'
+              : ''
+          }
+          error={errors.locationName}
         />
       </Grid>
 
@@ -425,10 +432,15 @@ export default function SingleLocation({ index, disabled }) {
             <TextField
               {...params}
               placeholder="Choose a place"
+              label="Location"
               fullWidth
+              InputLabelProps={{ shrink: true }}
             />
           )}
         />
+        {errors.location && (
+          <FormHelperText error>Invalid location</FormHelperText>
+        )}
       </Grid>
     </Grid>
   );

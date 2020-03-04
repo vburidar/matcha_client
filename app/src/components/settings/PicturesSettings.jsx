@@ -1,5 +1,5 @@
 import {
-  useState, useReducer, useEffect, useCallback,
+  useState, useReducer, useEffect, useContext, useCallback,
 } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -22,6 +22,8 @@ import CropIcon from '@material-ui/icons/Crop';
 import FaceIcon from '@material-ui/icons/Face';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+import { SettingsContext } from '../../stores/Settings';
 
 const useStyles = makeStyles((theme) => ({
   cropContainer: {
@@ -46,10 +48,20 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    border: '2px dashed',
-    borderColor: theme.palette.primary.main,
+    flexDirection: 'column',
+    border: `2px dashed ${theme.palette.primary.main}`,
     borderRadius: '5px',
     cursor: 'pointer',
+    background: 'white',
+    height: '300px',
+  },
+  dropzoneDisabled: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    border: '2px dashed rgba(0, 0, 0, 0.26)',
+    borderRadius: '5px',
     background: 'white',
     height: '300px',
   },
@@ -96,12 +108,13 @@ async function getCroppedImg(imageSrc, pixelCrop) {
   return canvas.toDataURL('image/jpeg');
 }
 
-export default function PicturesSettings({
-  props: {
-    pictures, dispatchPictures,
-  },
-}) {
+export default function PicturesSettings() {
   const classes = useStyles();
+  const {
+    pictures,
+    dispatchPictures,
+  } = useContext(SettingsContext);
+
   const [cropperData, setCropperData] = useState({
     crop: { x: 0, y: 0 },
     zoom: 1,
@@ -203,20 +216,35 @@ export default function PicturesSettings({
     });
   };
 
-  // useEffect(() => {
-  //   const shouldBeDisabled = !(pictures.length > 0 && pictures[0].croppedPicture);
-
-  //   if (disabled !== shouldBeDisabled) {
-  //     setDisabled(!disabled);
-  //   }
-  // }, [pictures]);
-
   return (
     <div>
       {!cropperData.isActive && (
       <div>
-        <label htmlFor="picture-upload" className={classes.dropzone}>
-          <AddIcon style={{ fontSize: 60 }} />
+        <label
+          htmlFor="picture-upload"
+          className={
+            pictures.filter((picture) => picture.croppedPicture !== '').length >= 5
+              ? classes.dropzoneDisabled
+              : classes.dropzone
+          }
+        >
+          <AddIcon
+            style={{ fontSize: 60 }}
+            color={
+              pictures.filter((picture) => picture.croppedPicture !== '').length >= 5
+                ? 'disabled'
+                : 'primary'
+            }
+          />
+          <Typography
+            color={
+              pictures.filter((picture) => picture.croppedPicture !== '').length >= 5
+                ? 'disabled'
+                : 'primary'
+            }
+          >
+            Max 5
+          </Typography>
 
           <input
             accept="image/*"
@@ -224,6 +252,7 @@ export default function PicturesSettings({
             id="picture-upload"
             type="file"
             onChange={onFileChange}
+            disabled={pictures.filter((picture) => picture.croppedPicture !== '').length >= 5}
           />
         </label>
         <div style={{ height: '33px' }} />
