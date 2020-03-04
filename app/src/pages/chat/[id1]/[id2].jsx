@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ChatPage({ messagesData, userId, talker }) {
+export default function SingleChatPage({ messagesData, userId, talker }) {
   const classes = useStyles();
   const {
     socket,
@@ -183,9 +183,8 @@ function ChatPage({ messagesData, userId, talker }) {
     </Container>
   );
 }
-export default ChatPage;
 
-ChatPage.getInitialProps = async ({ req, res, query }) => {
+SingleChatPage.getInitialProps = async ({ req, res, query }) => {
   const apiObj = createApiRequester(req);
   const { data } = await apiObj.get('users/status');
   const id1 = parseInt(query.id1, 10);

@@ -44,7 +44,8 @@ export default function ResetPasswordForm({ login, code }) {
     }
   };
 
-  const submitResetForm = () => {
+  const submitResetForm = (e) => {
+    e.preventDefault();
     async function readUser() {
       if (login) {
         try {

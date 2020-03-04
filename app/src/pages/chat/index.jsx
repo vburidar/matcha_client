@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ChatPage({ users, userId }) {
+export default function ChatPage({ users, userId }) {
   const classes = useStyles();
   const { usersConnected } = useContext(SocketContext);
   const { dispatch } = useContext(StoreContext);
@@ -87,7 +87,6 @@ function ChatPage({ users, userId }) {
     </Container>
   );
 }
-export default ChatPage;
 
 ChatPage.getInitialProps = async ({ req, res }) => {
   const apiObj = createApiRequester(req);

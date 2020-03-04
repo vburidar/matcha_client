@@ -75,7 +75,7 @@ export default function GeneralSettings() {
   };
 
   const handleInterestChange = (event) => {
-    if (/^[a-zA-Z0-9-'. ]*$/.test(event.target.value) === true) {
+    if (/^[a-zA-Z0-9-'. ]{0,64}$/.test(event.target.value) === true) {
       setInterest(event.target.value);
     }
   };
@@ -97,7 +97,7 @@ export default function GeneralSettings() {
     const interestModified = interest.trim().toLowerCase().replace(/ /g, '_');
     if (
       e.key === 'Enter'
-      && interestModified !== ''
+      && /^[a-z0-9-'._]{2,64}$/.test(interestModified)
       && inputs.interests.indexOf(interestModified) === -1
     ) {
       setInputs({

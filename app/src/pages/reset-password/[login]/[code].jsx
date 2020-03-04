@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ResetPasswordPage() {
+export default function ResetPasswordPage() {
   const router = useRouter();
   const classes = useStyles();
 
@@ -60,5 +60,3 @@ ResetPasswordPage.getInitialProps = async ({ req, res, query }) => {
 
   return (data);
 };
-
-export default ResetPasswordPage;
