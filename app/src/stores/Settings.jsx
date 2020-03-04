@@ -291,7 +291,7 @@ export function SettingsProvider({ children }) {
   useEffect(() => {
     let shouldBeDisabled = false;
     if (
-      /^([a-zA-Z1-9]|_){2,20}$/.test(credentials.login) === false
+      /^([a-zA-Z0-9]|_){2,20}$/.test(credentials.login) === false
       || (credentials.emailConfirmation.trim() !== ''
         && (credentials.email !== credentials.emailConfirmation
           || /\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/.test(credentials.email) === false))
@@ -305,7 +305,7 @@ export function SettingsProvider({ children }) {
 
     dispatchErrors({
       type: 'setCredentials',
-      login: /^([a-zA-Z1-9]|_){2,20}$/.test(credentials.login) === false,
+      login: /^([a-zA-Z0-9]|_){2,20}$/.test(credentials.login) === false,
       email:
         credentials.emailConfirmation.trim() !== ''
         && /\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/.test(credentials.email) === false,

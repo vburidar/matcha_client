@@ -56,7 +56,7 @@ export default function SignupForm(
     setLoginIsValid(false);
     setDisableSubmit(true);
     setLogin(event.target.value);
-    if (event.target.value.match(/^([a-zA-Z1-9]|_){2,20}$/)) {
+    if (event.target.value.match(/^([a-zA-Z0-9]|_){2,20}$/)) {
       setLoginIsValid(true);
       setDisableSubmit(!(allFieldsAreSet() && pwdIsValid && emailIsValid));
       setMessageLogin('');
