@@ -227,29 +227,25 @@ HomePage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
   const apiObj = createApiRequester(req);
   try {
-    try {
-      const { data } = await apiObj.get('users/status');
-      if (data.connected === false) {
-        redirectTo('/signin', req, res);
-        return ({ type: 'redirection', id: 'User is not connected' });
-      }
-      if (data.profileIsComplete === false) {
-        redirectTo('/complete-profile', req, res);
-        return ({ type: 'redirection', id: 'Profile is incomplete' });
-      }
-    } catch (err) {
-      return ({
-        type: 'error', id: 'couldn\'t fetch user status', data: err, userId: null,
-      });
+    const { data } = await apiObj.get('users/status');
+    if (data.connected === false) {
+      redirectTo('/signin', req, res);
+      return ({ type: 'redirection', id: 'User is not connected' });
+    }
+    if (data.profileIsComplete === false) {
+      redirectTo('/complete-profile', req, res);
+      return ({ type: 'redirection', id: 'Profile is incomplete' });
     }
     const suggestionList = await apiObj.get('users/suggestions');
-    return { type: 'sucess', data: suggestionList.data.rows, userId: data.user_id };
+    return ({
+      type: 'success', id: 'success', data: suggestionList.data.rows, userId: data.user_id, status: 200,
+    });
   } catch (err) {
     return ({
       type: 'error',
-      status: err.response.status,
+      status: err.response,
       id: 'couldn\'t fetch suggestion list',
-      data: err.response.data,
+      data: err.response,
       userId: null,
     });
   }
