@@ -4,15 +4,11 @@ import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Chip, Container, Tooltip } from '@material-ui/core';
-import SpeedIcon from '@material-ui/icons/Speed';
-import Stars from '@material-ui/icons/Stars';
-import Navigation from '@material-ui/icons/Navigation';
-import LocalMovies from '@material-ui/icons/LocalMovies';
-import Height from '@material-ui/icons/Height';
+import { Chip, Container } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import SimpleSlider from './simpleSlider';
 import ScoreIcons from './ScoreIcons';
+import LinkButton from '../LinkButton';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -77,10 +73,6 @@ export default function ProfileCard(
     }
   }, []);
 
-  function clickToProfile() {
-    router.push(`/profile/${profileData.user_id}`);
-  }
-
   return (
     <Card className={classes.card}>
       <Grid container className={classes.gridContainer}>
@@ -134,7 +126,7 @@ export default function ProfileCard(
               />
             ))}
           </Container>
-          <Button onClick={clickToProfile} className={classes.button} variant="contained" color="primary">
+          <Button component={LinkButton} href={`/profile/${profileData.user_id}`} className={classes.button} variant="contained" color="primary">
             See
             {' '}
             {profileData.first_name}

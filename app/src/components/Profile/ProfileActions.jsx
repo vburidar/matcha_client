@@ -1,16 +1,15 @@
 import router from 'next/router';
-import { useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Chip,
   Button,
   Paper,
-  Typography
+  Typography,
 } from '@material-ui/core';
 
-import { ApiContext } from '../../stores/Api';
 import { StoreContext } from '../../store/Store';
 import { SocketContext } from '../../stores/Socket';
+import LinkButton from '../LinkButton';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,17 +38,19 @@ export default function ProfileAction({ props, userId }) {
     router.push(`/profile/${props.id}`);
   }
 
-  function handleGoToChat() {
-    router.push(`/chat/${Math.min(props.id, userId)}/${Math.max(props.id, userId)}`);
-  }
-
   if (props.id === state.user_id) {
     return (
       <Paper className={classes.paper}>
         <Typography color="textSecondary" variant="h6" component="h4">
           This is a preview of your profile to see how it looks to the others.
         </Typography>
-        <Button className={classes.button} variant="contained" color="primary" onClick={() => router.push('/profile/settings')}>
+        <Button
+          component={LinkButton}
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          href="/profile/settings"
+        >
           Settings
         </Button>
       </Paper>
@@ -97,7 +98,13 @@ export default function ProfileAction({ props, userId }) {
           {props.first_name}
           . Start chatting now!
         </Typography>
-        <Button className={classes.button} variant="contained" color="primary" onClick={handleGoToChat}>
+        <Button
+          component={LinkButton}
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          href={`/chat/${Math.min(props.id, userId)}/${Math.max(props.id, userId)}`}
+        >
           Go to Chat
         </Button>
         <Button className={classes.button} variant="outlined" color="primary" onClick={handleUnlikeProfile}>

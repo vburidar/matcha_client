@@ -9,6 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import ButtonListConnected from './Header/ButtonListConnected';
 import ButtonListDisconnected from './Header/ButtonListDisconnected';
+import LinkButton from '../LinkButton';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -22,8 +23,8 @@ export default function Header() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography component="div" className={classes.title} onClick={() => { router.push('/'); }}>
-          <Button color="inherit">
+        <Typography component="div" className={classes.title}>
+          <Button component={LinkButton} href="/" color="inherit">
             See You
           </Button>
         </Typography>

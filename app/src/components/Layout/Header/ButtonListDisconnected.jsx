@@ -1,7 +1,7 @@
-import router from 'next/router';
 import { useContext } from 'react';
 import { Button } from '@material-ui/core';
 
+import LinkButton from '../../LinkButton';
 import { StoreContext } from '../../../store/Store';
 
 function ButtonListDisconnected() {
@@ -11,14 +11,16 @@ function ButtonListDisconnected() {
     return (
       <div>
         <Button
+          component={LinkButton}
           color="inherit"
-          onClick={() => router.push('/signup')}
+          href="/signup"
         >
           Signup
         </Button>
         <Button
+          component={LinkButton}
           color="inherit"
-          onClick={() => router.push('/signin')}
+          href="/signin"
         >
           Signin
         </Button>

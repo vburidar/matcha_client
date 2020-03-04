@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import IconAction from './IconAction';
 import MessageTypo from './MessageTypo';
 import TimeTypo from './TimeTypo';
+import LinkButton from '../LinkButton';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -59,10 +60,6 @@ export default function ListEvent({ props }) {
     setTab(data.filter(testType));
   }, []);
 
-  function clickToProfile(id) {
-    router.push(`/profile/${id}`);
-  }
-
   if (type === 'all') {
     return (
       <Container>
@@ -74,7 +71,7 @@ export default function ListEvent({ props }) {
               <MessageTypo props={element} />
             </div>
             <TimeTypo props={element} />
-            <Button variant="contained" id={element.id} className={classes.button} onClick={() => clickToProfile(element.sender_id)}>
+            <Button component={LinkButton} variant="contained" id={element.id} className={classes.button} href={`/profile/${element.sender_id}`}>
               See
               {' '}
               {element.first_name}
@@ -96,7 +93,7 @@ export default function ListEvent({ props }) {
             <MessageTypo props={element} />
           </div>
           <TimeTypo props={element} />
-          <Button variant="contained" id={element.id} className={classes.button} onClick={() => clickToProfile(element.sender_id)}>
+          <Button component={LinkButton} variant="contained" id={element.id} className={classes.button} href={`/profile/${element.sender_id}`}>
             See
             {' '}
             {element.first_name}

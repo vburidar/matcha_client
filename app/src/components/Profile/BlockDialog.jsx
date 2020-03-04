@@ -8,14 +8,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {
-  Radio, FormControlLabel, FormControl, RadioGroup, FormLabel, Chip, IconButton, Menu, MenuItem,
-} from '@material-ui/core';
-import { ApiContext, ApiProvider } from '../../stores/Api';
-
-const useStyles = makeStyles((theme) => ({
-
-}));
+import { ApiContext } from '../../stores/Api';
+import LinkButton from '../LinkButton';
 
 export default function ReportDialog({ props }) {
   const [open, setOpen] = useState(true);
@@ -25,12 +19,7 @@ export default function ReportDialog({ props }) {
 
   }
 
-  const backToHome = () => {
-    router.push('/');
-  };
-
   async function unblockUser() {
-    console.log('id user = ', props.id);
     await deleteBlock({
       data: {
         user_id: props.id,
@@ -44,15 +33,15 @@ export default function ReportDialog({ props }) {
         <DialogTitle id="form-dialog-title">Block</DialogTitle>
         <DialogContent>
           <DialogContentText>
-          You blocked this User. You cannot access this page unless you cancel your block.
+            You blocked this User. You cannot access this page unless you cancel your block.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={backToHome} color="primary">
-        Back to homepage
+          <Button component={LinkButton} href="/" color="primary">
+            Back to homepage
           </Button>
           <Button onClick={unblockUser} color="primary">
-        Unblock user
+            Unblock user
           </Button>
         </DialogActions>
       </Dialog>
@@ -67,7 +56,7 @@ export default function ReportDialog({ props }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={backToHome} color="primary">
+          <Button component={LinkButton} href="/" color="primary">
             Back to homepage
           </Button>
         </DialogActions>

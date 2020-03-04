@@ -15,6 +15,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import { StoreContext } from '../../../store/Store';
 import { ApiContext } from '../../../stores/Api';
 import { SocketContext } from '../../../stores/Socket';
+import LinkButton from '../../LinkButton';
 
 function getNotificationMessage(notification) {
   switch (notification.type) {
@@ -144,28 +145,16 @@ export default function ButtonListConnected() {
             ))}
           </List>
         </Popover>
-        <Button
-          color="inherit"
-          onClick={() => router.push('/profile/settings')}
-        >
+        <Button color="inherit" component={LinkButton} href="/profile/settings">
           Settings
         </Button>
-        <Button
-          color="inherit"
-          onClick={() => router.push(`/profile/${state.user_id}`)}
-        >
+        <Button color="inherit" component={LinkButton} href={`/profile/${state.user_id}`}>
           My Profile
         </Button>
-        <Button
-          color="inherit"
-          onClick={() => router.push('/chat')}
-        >
+        <Button color="inherit" component={LinkButton} href="/chat">
           Chat
         </Button>
-        <Button
-          color="inherit"
-          onClick={() => router.push('/activity')}
-        >
+        <Button color="inherit" component={LinkButton} href="/activity">
           Activity
         </Button>
         <Button
