@@ -126,7 +126,7 @@ export default function ProfileCard(
               />
             ))}
           </Container>
-          <Button component={LinkButton} href={`/profile/${profileData.user_id}`} className={classes.button} variant="contained" color="primary">
+          <Button component={LinkButton} href="/profile/[id]" hrefAs={`/profile/${profileData.user_id}`} className={classes.button} variant="contained" color="primary">
             See
             {' '}
             {profileData.first_name}

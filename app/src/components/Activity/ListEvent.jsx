@@ -71,7 +71,7 @@ export default function ListEvent({ props }) {
               <MessageTypo props={element} />
             </div>
             <TimeTypo props={element} />
-            <Button component={LinkButton} variant="contained" id={element.id} className={classes.button} href={`/profile/${element.sender_id}`}>
+            <Button component={LinkButton} variant="contained" id={element.id} className={classes.button} href="/profile/[id]" hrefAs={`/profile/${element.sender_id}`}>
               See
               {' '}
               {element.first_name}
@@ -93,7 +93,7 @@ export default function ListEvent({ props }) {
             <MessageTypo props={element} />
           </div>
           <TimeTypo props={element} />
-          <Button component={LinkButton} variant="contained" id={element.id} className={classes.button} href={`/profile/${element.sender_id}`}>
+          <Button component={LinkButton} variant="contained" id={element.id} className={classes.button} href="/profile/[id]" hrefAs={`/profile/${element.sender_id}`}>
             See
             {' '}
             {element.first_name}

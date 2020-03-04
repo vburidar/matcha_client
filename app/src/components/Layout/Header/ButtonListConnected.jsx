@@ -1,4 +1,5 @@
 import router from 'next/router';
+import Link from 'next/link';
 import { useState, useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -148,7 +149,7 @@ export default function ButtonListConnected() {
         <Button color="inherit" component={LinkButton} href="/profile/settings">
           Settings
         </Button>
-        <Button color="inherit" component={LinkButton} href={`/profile/${state.user_id}`}>
+        <Button color="inherit" component={LinkButton} href="/profile/[id]" hrefAs={`/profile/${state.user_id}`}>
           My Profile
         </Button>
         <Button color="inherit" component={LinkButton} href="/chat">
