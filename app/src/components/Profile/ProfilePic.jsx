@@ -70,9 +70,8 @@ function ProfilePic({ talker }) {
     } else {
       setImageTab(talker.path);
     }
-  }, []);
+  }, [talker.path]);
 
-  console.log(usersLastConnection, talker.id, talker);
   useEffect(() => {
   }, [usersLastConnection]);
 

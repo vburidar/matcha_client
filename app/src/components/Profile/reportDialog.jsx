@@ -106,7 +106,7 @@ export default function reportDialog({ props }) {
       user_id: props.id,
     });
     setOpenDialogBlock(false);
-    router.push(`/profile/${props.id}`);
+    router.push('/profile/[id]', `/profile/${props.id}`);
   }
 
   async function reportUser() {

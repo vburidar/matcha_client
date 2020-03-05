@@ -30,12 +30,12 @@ export default function ProfileAction({ props, userId }) {
 
   async function handleLikeProfile() {
     createLike(props.id);
-    router.push(`/profile/${props.id}`);
+    router.push('/profile/[id]', `/profile/${props.id}`);
   }
 
   async function handleUnlikeProfile() {
     deleteLike(props.id);
-    router.push(`/profile/${props.id}`);
+    router.push('/profile/[id]', `/profile/${props.id}`);
   }
 
   if (props.id === state.user_id) {
