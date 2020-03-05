@@ -72,10 +72,6 @@ function ProfilePic({ talker }) {
     }
   }, []);
 
-  console.log(usersLastConnection, talker.id, talker);
-  useEffect(() => {
-  }, [usersLastConnection]);
-
   return (
     <Paper className={classes.paper}>
       {usersConnected[talker.id] === true && (
