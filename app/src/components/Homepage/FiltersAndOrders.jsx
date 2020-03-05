@@ -35,7 +35,7 @@ const orders = [
   },
 ];
 
-export default function Filter({
+export default function FiltersAndOrders({
   filters, dispatchFilters, users, dispatchUsers,
 }) {
   const [order, setOrder] = useState('relevance');

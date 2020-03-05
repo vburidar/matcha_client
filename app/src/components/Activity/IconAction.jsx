@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -12,31 +11,18 @@ const useStyles = makeStyles((theme) => ({
 }
 ));
 
-const IconAction = (props) => {
-  const [data] = useState(props.props);
+export default function IconAction({ type }) {
   const classes = useStyles();
 
-  if (data.type === 'visit') {
-    return (
+  const iconsFromType = {
+    visit: <VisibilityIcon className={classes.icon} />,
+    like: <InsertEmoticonIcon className={classes.icon} />,
+    match: <FavoriteIcon className={classes.icon} />,
+  };
 
-      <div>
-        <VisibilityIcon className={classes.icon} />
-      </div>
-    );
-  } if (data.type === 'like') {
-    return (
-      <div>
-        <InsertEmoticonIcon className={classes.icon} />
-      </div>
-    );
-  } if (data.type === 'match') {
-    return (
-      <div>
-        <FavoriteIcon className={classes.icon} />
-      </div>
-    );
-  }
-  return (null);
-};
-
-export default IconAction;
+  return (
+    <div>
+      {iconsFromType[type]}
+    </div>
+  );
+}

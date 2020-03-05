@@ -15,6 +15,7 @@ import {
   FormControl,
   TextField,
   Button,
+  Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -32,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
   },
+  online: {
+    border: `solid 2px ${theme.palette.success.main}`,
+  },
   messagesContainer: {
     height: '60vh',
     overflowY: 'scroll',
@@ -46,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '75%',
     padding: theme.spacing(0.5, 1),
   },
+  wordBreak: {
+    wordBreak: 'break-word',
+  },
   currentUserMessage: {
     marginLeft: 'auto',
     backgroundColor: theme.palette.primary.light,
@@ -57,6 +64,7 @@ export default function SingleChatPage({ messagesData, userId, talker }) {
   const classes = useStyles();
   const {
     socket,
+    usersConnected,
     messages,
     dispatchMessages,
     createMessage,
@@ -123,6 +131,7 @@ export default function SingleChatPage({ messagesData, userId, talker }) {
                       <Avatar
                         src={talker.path}
                         alt="profile picture"
+                        className={usersConnected[talker.id] === true ? classes.online : ''}
                       />
                     </a>
                   </Link>
@@ -150,7 +159,7 @@ export default function SingleChatPage({ messagesData, userId, talker }) {
                   xs="auto"
                   className={`${classes.message} ${(message.sender_id === userId) ? classes.currentUserMessage : ''}`}
                 >
-                  {message.content}
+                  <Typography className={classes.wordBreak}>{message.content}</Typography>
                 </Grid>
               </Grid>
             ))}

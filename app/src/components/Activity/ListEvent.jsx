@@ -1,13 +1,16 @@
-import router from 'next/router';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import { useEffect } from 'react';
 import {
-  Avatar, Container, Paper,
+  Avatar,
+  Container,
+  Paper,
+  Button,
+  Typography,
 } from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { formatDistance } from 'date-fns';
+
+
 import IconAction from './IconAction';
-import MessageTypo from './MessageTypo';
-import TimeTypo from './TimeTypo';
 import LinkButton from '../LinkButton';
 
 
@@ -47,61 +50,48 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const getMessageFromType = (firstName) => ({
+  visit: `${firstName} visited your profile`,
+  like: `${firstName} liked your profile`,
+  match: `You matched with ${firstName}`,
+});
+
 export default function ListEvent({ props }) {
   const classes = useStyles();
   const { data, type } = props;
-  const [tab, setTab] = useState([]);
-  function testType(element) {
-    return element.type === type;
-  }
 
-  useEffect(() => {
-    console.log(data);
-    setTab(data.filter(testType));
-  }, []);
-
-  if (type === 'all') {
-    return (
-      <Container>
-        {data.map((element) => (
-          <Paper className={classes.paper} key={`${element.type}/${element.receiver_id}/${element.sender_id}/${element.created_at}`}>
+  return (
+    <Container>
+      {data
+        .filter((el) => el.type === type || type === 'all')
+        .map((el) => (
+          <Paper
+            className={classes.paper}
+            key={`${el.type}/${el.receiver_id}/${el.sender_id}/${el.created_at}`}
+          >
             <div className={classes.div}>
-              <IconAction props={element} />
-              <Avatar className={classes.avatar} alt={element.first_name} src={element.path} />
-              <MessageTypo props={element} />
+              <IconAction type={el.type} />
+              <Avatar className={classes.avatar} alt={el.first_name} src={el.path} />
+              <Typography className={classes.typo} color="textPrimary" variant="h6" component="h4">
+                {getMessageFromType(el.first_name)[el.type]}
+              </Typography>
             </div>
-            <TimeTypo props={element} />
-            <Button component={LinkButton} variant="contained" id={element.id} className={classes.button} href={`/profile/${element.sender_id}`}>
+            <Typography color="textSecondary" component="h4">
+              {formatDistance(
+                new Date(el.created_at),
+                new Date(),
+                { addSuffix: true },
+              )}
+            </Typography>
+            <Button component={LinkButton} variant="contained" id={el.id} className={classes.button} href={`/profile/${el.sender_id}`}>
               See
               {' '}
-              {element.first_name}
+              {el.first_name}
               {' '}
               {'\'s profile'}
             </Button>
           </Paper>
         ))}
-      </Container>
-    );
-  }
-  return (
-    <Container>
-      {tab.map((element) => (
-        <Paper className={classes.paper} key={`${element.typ}/${element.receiver_id}/${element.sender_id}/${element.created_at}`}>
-          <div className={classes.div}>
-            <IconAction props={element} />
-            <Avatar className={classes.avatar} alt={element.first_name} src={element.path} />
-            <MessageTypo props={element} />
-          </div>
-          <TimeTypo props={element} />
-          <Button component={LinkButton} variant="contained" id={element.id} className={classes.button} href={`/profile/${element.sender_id}`}>
-            See
-            {' '}
-            {element.first_name}
-            {' '}
-            {'\'s profile'}
-          </Button>
-        </Paper>
-      ))}
     </Container>
   );
 }

@@ -9,6 +9,7 @@ import {
   Avatar,
   ListItemText,
   Typography,
+  Box,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -53,21 +54,20 @@ export default function ChatPage({ users, userId }) {
                   <Avatar
                     alt={user.firstName}
                     src={user.profilePicture}
-                  // className={user.isOnline ? classes.online : ''}
                     className={usersConnected[user.id] === true ? classes.online : ''}
                   />
                 </ListItemAvatar>
                 <ListItemText
                   primary={user.firstName}
                   secondary={(
-                    <>
-                      <Typography component="span" variant="body2">
+                    <Typography component="span" variant="body2">
+                      <Box textOverflow="ellipsis" overflow="hidden">
                         {user.lastMessage.receiverId === user.id && (
                         <span>Vous: </span>
                         )}
                         {user.lastMessage.content}
-                      </Typography>
-                    </>
+                      </Box>
+                    </Typography>
                 )}
                 />
               </ListItem>

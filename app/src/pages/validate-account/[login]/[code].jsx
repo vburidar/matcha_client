@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { ApiContext, createApiRequester } from '../../../stores/Api';
 import redirectTo from '../../../initialServices/initialServices';
 
-function ValidateAccountPage() {
+export default function ValidateAccountPage() {
   const router = useRouter();
   const { validateAccount } = useContext(ApiContext);
   const { login, code } = router.query;
@@ -32,5 +32,3 @@ ValidateAccountPage.getInitialProps = async ({ req, res }) => {
   }
   return {};
 };
-
-export default ValidateAccountPage;

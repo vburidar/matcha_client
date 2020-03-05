@@ -1,17 +1,12 @@
+import { useEffect, useState, useContext } from 'react';
+import {
+  Paper,
+  Typography,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useEffect, useState } from 'react';
-import CardMedia from '@material-ui/core/CardMedia';
-import Card from '@material-ui/core/Card';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import { Chip } from '@material-ui/core';
+import { formatDistance } from 'date-fns';
+
+import { SocketContext } from '../../stores/Socket';
 import SimpleSlider from '../Homepage/simpleSlider';
 
 const useStyles = makeStyles((theme) => ({
@@ -60,23 +55,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ProfilePic({ props }) {
+function ProfilePic({ talker }) {
   const classes = useStyles();
+  const {
+    usersConnected,
+    usersLastConnection,
+  } = useContext(SocketContext);
+
   const [imageTab, setImageTab] = useState('');
 
   useEffect(() => {
-    if (props.list_images) {
-      setImageTab(`${props.path},${props.list_images}`);
+    if (talker.list_images) {
+      setImageTab(`${talker.path},${talker.list_images}`);
     } else {
-      setImageTab(props.path);
+      setImageTab(talker.path);
     }
   }, []);
 
+  useEffect(() => {
+    console.log(usersLastConnection, talker.id, talker);
+  }, [usersLastConnection]);
+
   return (
     <Paper className={classes.paper}>
-      <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">
-        Picture
-      </Typography>
+      {usersConnected[talker.id] === true && (
+        <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">
+          Connected
+        </Typography>
+      )}
+      {usersConnected[talker.id] !== true && usersLastConnection[talker.id] && (
+        <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">
+          Last connection :
+          {' '}
+          {formatDistance(
+            usersLastConnection[talker.id],
+            new Date(),
+            { addSuffix: true },
+          )}
+        </Typography>
+      )}
+      {usersConnected[talker.id] !== true && !usersLastConnection[talker.id] && (
+        <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">
+          Last connection :
+          {' '}
+          {formatDistance(
+            new Date(talker.last_time_online),
+            new Date(),
+            { addSuffix: true },
+          )}
+        </Typography>
+      )}
       <SimpleSlider imageList={imageTab} />
     </Paper>
   );

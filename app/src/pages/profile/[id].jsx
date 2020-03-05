@@ -53,7 +53,7 @@ export default function ProfilePage({ talker, userId }) {
     <Container maxWidth="xl" className={classes.container}>
       <Grid container spacing={3} className={classes.containerMain}>
         <Grid item xs={12} sm={9} md={5}>
-          <ProfilePic props={talker} />
+          <ProfilePic talker={talker} />
         </Grid>
         <Grid item xs={12} sm={12} md={7} className={classes.container}>
           <ProfileInfos props={talker} userId={userId} />

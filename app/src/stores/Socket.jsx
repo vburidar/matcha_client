@@ -33,7 +33,6 @@ function notificationsReducer(state, action) {
 }
 
 function usersConnectedReducer(state, action) {
-  console.log('usersConnectedReducer', state, action);
   switch (action.type) {
     case 'initialiseUsersConnected':
       return action.userIds.reduce((acc, userId) => ({
@@ -61,6 +60,7 @@ export function SocketProvider({ children }) {
   const [messages, dispatchMessages] = useReducer(messagesReducer, []);
   const [notifications, dispatchNotifications] = useReducer(notificationsReducer, []);
   const [usersConnected, dispatchUsersConnected] = useReducer(usersConnectedReducer, {});
+  const [usersLastConnection, setUsersLastConnection] = useState({});
 
   function initialiseSocket() {
     /** All listeners */
@@ -104,6 +104,10 @@ export function SocketProvider({ children }) {
 
     socket.on('userDisconnected', ({ userId }) => {
       dispatchUsersConnected({ type: 'setUserDisconnected', userId });
+      setUsersLastConnection({
+        ...usersLastConnection,
+        [userId]: new Date(),
+      });
     });
 
     /** Actions on first load (after listeners of course) */
@@ -166,6 +170,7 @@ export function SocketProvider({ children }) {
     dispatchMessages,
     notifications,
     usersConnected,
+    usersLastConnection,
     createVisit,
     createLike,
     deleteLike,

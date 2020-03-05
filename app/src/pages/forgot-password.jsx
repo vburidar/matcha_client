@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ForgotPasswordPage() {
+export default function ForgotPasswordPage() {
   const { forgotPassword } = useContext(ApiContext);
   const [email, setEmail] = useState('');
   const classes = useStyles();
@@ -57,5 +57,3 @@ ForgotPasswordPage.getInitialProps = async (ctx) => {
   }
   return (data);
 };
-
-export default ForgotPasswordPage;

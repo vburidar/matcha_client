@@ -6,7 +6,7 @@ import Document, {
 import { ServerStyleSheets } from '@material-ui/core/styles';
 import theme from '../theme';
 
-export default class MyDocument extends Document {
+export default class SeeYouDocument extends Document {
   render() {
     return (
       <Html lang="en">
@@ -27,7 +27,7 @@ export default class MyDocument extends Document {
   }
 }
 
-MyDocument.getInitialProps = async (ctx) => {
+SeeYouDocument.getInitialProps = async (ctx) => {
   // Resolution order
   //
   // On the server:

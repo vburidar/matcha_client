@@ -15,7 +15,7 @@ import { SettingsProvider } from '../stores/Settings';
 
 import Layout from '../components/Layout';
 
-export default class MyApp extends App {
+export default class SeeYouApp extends App {
   componentDidMount() {
     /** Remove the server-side injected CSS. */
     const jssStyles = document.querySelector('#jss-server-side');
