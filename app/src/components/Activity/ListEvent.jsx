@@ -83,7 +83,7 @@ export default function ListEvent({ props }) {
                 { addSuffix: true },
               )}
             </Typography>
-            <Button component={LinkButton} variant="contained" id={el.id} className={classes.button} href={`/profile/${el.sender_id}`}>
+            <Button component={LinkButton} variant="contained" id={el.id} className={classes.button} href="/profile/[id]" hrefAs={`/profile/${el.sender_id}`}>
               See
               {' '}
               {el.first_name}

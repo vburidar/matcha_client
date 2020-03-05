@@ -103,7 +103,8 @@ export default function ProfileAction({ props, userId }) {
           className={classes.button}
           variant="contained"
           color="primary"
-          href={`/chat/${Math.min(props.id, userId)}/${Math.max(props.id, userId)}`}
+          href="/chat/[id1]/[id2]"
+          hrefAs={`/chat/${Math.min(props.id, userId)}/${Math.max(props.id, userId)}`}
         >
           Go to Chat
         </Button>
