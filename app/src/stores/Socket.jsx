@@ -129,8 +129,7 @@ export function SocketProvider({ children }) {
         setSocket(sock);
       });
     } else if (Object.keys(socket).length !== 0) {
-      console.log('toto')
-      // socket.disconnect();
+      socket.disconnect();
     }
   }, [state.inSession]);
 
