@@ -72,8 +72,8 @@ function ProfilePic({ talker }) {
     }
   }, []);
 
+  console.log(usersLastConnection, talker.id, talker);
   useEffect(() => {
-    console.log(usersLastConnection, talker.id, talker);
   }, [usersLastConnection]);
 
   return (

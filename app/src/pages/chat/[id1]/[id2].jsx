@@ -69,7 +69,6 @@ export default function SingleChatPage({ messagesData, userId, talker }) {
     dispatchMessages,
     createMessage,
     subscribeChat,
-    unSubscribeChat,
   } = useContext(SocketContext);
   const { dispatch } = useContext(StoreContext);
 
@@ -94,7 +93,6 @@ export default function SingleChatPage({ messagesData, userId, talker }) {
   }
 
   useEffect(() => {
-    console.log('SOCKET', socket);
     if (Object.keys(socket).length > 0) {
       subscribeChat(talker.id);
     }
@@ -106,12 +104,6 @@ export default function SingleChatPage({ messagesData, userId, talker }) {
       type: 'initialiseMessages',
       messages: messagesData,
     });
-
-    return () => {
-      console.log(socket, messages);
-      // TO DO unsubscribe
-      // unSubscribeChat(talker.id);
-    };
   }, []);
 
   useEffect(() => {

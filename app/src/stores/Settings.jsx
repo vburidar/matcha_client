@@ -1,3 +1,4 @@
+import router from 'next/router';
 import {
   useState, useReducer, useContext, createContext, useEffect,
 } from 'react';
@@ -172,14 +173,18 @@ export async function getLabelFromPos(latitude, longitude) {
     + '&jsonattributes=1';
 
   const res = await axios.get(query);
-
   if (!res.data.response) {
     throw new Error('Unable to get area from selected position');
   }
+
   const {
     country, city, district, street,
   } = res.data.response.view[0].result[0].location.address;
-  return `${countryToFlag(country)} ${city}, ${district || street}`;
+
+  let complementaryAddress = district || street || '';
+  complementaryAddress = (complementaryAddress !== '') ? `, ${complementaryAddress}` : '';
+
+  return `${countryToFlag(country)} ${city}${complementaryAddress}`;
 }
 
 const genders = [
@@ -268,6 +273,7 @@ export function SettingsProvider({ children }) {
     if (data.user.login === null) delete data.user.login;
 
     await patchProfile(data);
+    router.push('/profile/settings');
   }
 
   const value = {
