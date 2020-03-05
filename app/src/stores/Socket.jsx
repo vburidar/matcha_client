@@ -10,7 +10,6 @@ import { newNotification } from '../store/actions';
 export const SocketContext = createContext(null);
 
 function messagesReducer(state, action) {
-  console.log('messageReducer', state, action);
   switch (action.type) {
     case 'initialiseMessages':
       return action.messages;
@@ -116,7 +115,6 @@ export function SocketProvider({ children }) {
   }
 
   useEffect(() => {
-    console.log('SOCKET CHANGE', socket);
     if (Object.keys(socket).length > 0) {
       initialiseSocket();
     }

@@ -1,7 +1,6 @@
 import { Typography } from '@material-ui/core';
-import { useEffect } from 'react';
 
-export default function ErrorComponent({ error, status, message }) {
+export default function ErrorComponent({ status, message }) {
   return (
     <div>
       <Typography>

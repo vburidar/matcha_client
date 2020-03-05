@@ -21,6 +21,7 @@ import { StoreContext } from '../store/Store';
 import { createApiRequester } from '../stores/Api';
 import { getLabelFromPos, SettingsContext } from '../stores/Settings';
 import redirectTo from '../initialServices/initialServices';
+import ErrorComponent from '../components/ErrorComponent';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CompleteProfilePage({ ipLocation, user }) {
+export default function CompleteProfilePage({ type, ipLocation, user }) {
   const { dispatch } = useContext(StoreContext);
   const {
     inputs,
@@ -59,23 +60,25 @@ export default function CompleteProfilePage({ ipLocation, user }) {
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
-    dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: user.id });
-    setInputs({
-      ...inputs,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    });
-    if (locations.length === 0) {
-      dispatchLocations({
-        type: 'addLocation',
-        payload: {
-          label: ipLocation.label,
-          latitude: ipLocation.latitude,
-          longitude: ipLocation.latitude,
-          type: 'ip',
-          isActive: true,
-        },
+    if (type === 'success') {
+      dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: user.id });
+      setInputs({
+        ...inputs,
+        firstName: user.firstName,
+        lastName: user.lastName,
       });
+      if (locations.length === 0) {
+        dispatchLocations({
+          type: 'addLocation',
+          payload: {
+            label: ipLocation.label,
+            latitude: ipLocation.latitude,
+            longitude: ipLocation.latitude,
+            type: 'ip',
+            isActive: true,
+          },
+        });
+      }
     }
   }, []);
 
@@ -104,6 +107,9 @@ export default function CompleteProfilePage({ ipLocation, user }) {
       disabled: locationsDisabled,
     },
   ];
+  if (type === 'error') {
+    return (<ErrorComponent status={400} message="couldn't fetch data from server" />);
+  }
 
   return (
     <Container maxWidth="md" className={classes.container}>
@@ -155,22 +161,23 @@ export default function CompleteProfilePage({ ipLocation, user }) {
 
 CompleteProfilePage.getInitialProps = async (ctx) => {
   const { req, res } = ctx;
-  const apiObj = createApiRequester(req);
-  const { data } = await apiObj.get('users/status');
-  if (data.connected === false) {
-    redirectTo('/signin', req, res);
-  }
-  if (data.profileIsComplete === true) {
-    redirectTo('/profile/settings', req, res);
-  }
-  const u = await apiObj.get('users/current');
-  const user = u.data;
   try {
+    const apiObj = createApiRequester(req);
+    const { data } = await apiObj.get('users/status');
+    if (data.connected === false) {
+      redirectTo('/signin', req, res);
+    }
+    if (data.profileIsComplete === true) {
+      redirectTo('/profile/settings', req, res);
+    }
+    const u = await apiObj.get('users/current');
+    const user = u.data;
     const ipLoc = await axios('http://ip-api.com/json');
     const latitude = ipLoc.data.lat;
     const longitude = ipLoc.data.lon;
     const label = await getLabelFromPos(latitude, longitude);
     return {
+      type: 'success',
       ipLocation: {
         label,
         latitude,
@@ -179,7 +186,6 @@ CompleteProfilePage.getInitialProps = async (ctx) => {
       user,
     };
   } catch (err) {
-    console.error(err.message);
     return { type: 'error', id: 'Unable to get user data' };
   }
 };
