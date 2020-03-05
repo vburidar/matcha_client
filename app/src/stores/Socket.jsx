@@ -121,14 +121,16 @@ export function SocketProvider({ children }) {
   }, [socket]);
 
   useEffect(() => {
+    console.log(state.inSession, socket);
     if (state.inSession) {
       const sock = io('http://localhost:8080');
-
+      console.log('CONNECT')
       sock.on('connect', () => {
         setSocket(sock);
       });
     } else if (Object.keys(socket).length !== 0) {
-      socket.disconnect();
+      console.log('toto')
+      // socket.disconnect();
     }
   }, [state.inSession]);
 

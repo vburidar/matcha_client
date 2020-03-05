@@ -33,7 +33,7 @@ export default function ProfilePage({ type, talker, userId }) {
   const { socket, createVisit } = useContext(SocketContext);
 
   useEffect(() => {
-    if (type !== 'error' && type !== 'missing') {
+    if (type !== 'error') {
       dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: true, user_id: userId });
     }
   }, []);
@@ -103,7 +103,7 @@ ProfilePage.getInitialProps = async ({ req, res, query }) => {
     const talkerQueryRes = await apiObj.get(`users/${id}`);
     const talker = talkerQueryRes.data.rows[0];
     if (talker === undefined) {
-      return ({ type: 'missing' });
+      return ({ type: 'missing', userId: data.user_id });
     }
     return ({ type: 'success', talker, userId: data.user_id });
   } catch (err) {

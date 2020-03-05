@@ -63,6 +63,7 @@ export default function SigninForm() {
       <form onSubmit={submitSigninForm}>
         <FormControl fullWidth className={classes.formControl}>
           <TextField
+            autoComplete="username"
             id="login"
             name="login"
             label="login"
@@ -72,6 +73,7 @@ export default function SigninForm() {
         </FormControl>
         <FormControl fullWidth className={classes.formControl}>
           <TextField
+            autoComplete="current-password"
             id="password"
             name="password"
             label="password"

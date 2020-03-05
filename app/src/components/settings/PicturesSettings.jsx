@@ -239,7 +239,7 @@ export default function PicturesSettings() {
           <Typography
             color={
               pictures.filter((picture) => picture.croppedPicture !== '').length >= 5
-                ? 'disabled'
+                ? 'secondary'
                 : 'primary'
             }
           >

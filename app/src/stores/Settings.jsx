@@ -273,7 +273,7 @@ export function SettingsProvider({ children }) {
     if (data.user.login === null) delete data.user.login;
 
     await patchProfile(data);
-    router.push('/profile/settings');
+    router.push('/');
   }
 
   const value = {
