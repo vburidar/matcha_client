@@ -98,7 +98,6 @@ export default function SingleChatPage({
 
   useEffect(() => {
     if (type === 'success') {
-      console.log('SOCKET', socket);
       if (Object.keys(socket).length > 0) {
         subscribeChat(talker.id);
       }
