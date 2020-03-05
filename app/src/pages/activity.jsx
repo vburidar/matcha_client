@@ -15,6 +15,7 @@ import { createApiRequester } from '../stores/Api';
 
 import ListEvent from '../components/Activity/ListEvent';
 import redirectTo from '../initialServices/initialServices';
+import ErrorComponent from '../components/ErrorComponent';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -81,9 +82,8 @@ function TabPanel(props) {
   );
 }
 
-export default function ActivityPage(props) {
+export default function ActivityPage({ data, userId, type }) {
   const classes = useStyles();
-  const { data, userId } = props;
   const { dispatch } = useContext(StoreContext);
   const [value, setValue] = useState(0);
 
@@ -96,6 +96,9 @@ export default function ActivityPage(props) {
   }, []);
 
 
+  if (type === 'error') {
+    return (<ErrorComponent status={400} message="couldn't fetch data from server" />);
+  }
   if (data.length === 0) {
     return (
       <Container className={classes.typoContainer}>
@@ -133,14 +136,14 @@ export default function ActivityPage(props) {
 
 ActivityPage.getInitialProps = async ({ req, res }) => {
   const apiObj = createApiRequester(req);
-  const { data } = await apiObj.get('users/status');
-  if (data.connected === false) {
-    redirectTo('/signin', req, res);
-  }
-  if (data.profileIsComplete === false) {
-    redirectTo('/complete-profile', req, res);
-  }
   try {
+    const { data } = await apiObj.get('users/status');
+    if (data.connected === false) {
+      redirectTo('/signin', req, res);
+    }
+    if (data.profileIsComplete === false) {
+      redirectTo('/complete-profile', req, res);
+    }
     const listEvent = await apiObj.get('/event');
     return ({ data: listEvent.data.rows, userId: data.user_id });
   } catch (err) {

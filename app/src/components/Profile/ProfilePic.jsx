@@ -71,9 +71,10 @@ function ProfilePic({ talker }) {
       setImageTab(talker.path);
     }
   }, []);
+  console.log("in useEffect", usersLastConnection, talker.id, talker);
+
 
   useEffect(() => {
-    console.log(usersLastConnection, talker.id, talker);
   }, [usersLastConnection]);
 
   return (

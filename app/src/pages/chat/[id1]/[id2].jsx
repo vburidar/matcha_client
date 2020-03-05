@@ -23,6 +23,7 @@ import { createApiRequester } from '../../../stores/Api';
 import redirectTo from '../../../initialServices/initialServices';
 import { SocketContext } from '../../../stores/Socket';
 import { StoreContext } from '../../../store/Store';
+import ErrorComponent from '../../../components/ErrorComponent';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -60,7 +61,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SingleChatPage({ messagesData, userId, talker }) {
+export default function SingleChatPage({
+  type, messagesData, userId, talker,
+}) {
   const classes = useStyles();
   const {
     socket,
@@ -94,9 +97,11 @@ export default function SingleChatPage({ messagesData, userId, talker }) {
   }
 
   useEffect(() => {
-    console.log('SOCKET', socket);
-    if (Object.keys(socket).length > 0) {
-      subscribeChat(talker.id);
+    if (type === 'success') {
+      console.log('SOCKET', socket);
+      if (Object.keys(socket).length > 0) {
+        subscribeChat(talker.id);
+      }
     }
   }, [socket]);
 
@@ -115,9 +120,14 @@ export default function SingleChatPage({ messagesData, userId, talker }) {
   }, []);
 
   useEffect(() => {
-    messagesContainerDiv.current.scrollTop = messagesContainerDiv.current.scrollHeight;
+    if (type === 'success') {
+      messagesContainerDiv.current.scrollTop = messagesContainerDiv.current.scrollHeight;
+    }
   }, [messages]);
 
+  if (type === 'error') {
+    return (<ErrorComponent status={400} message="cannot fetch data from server" />);
+  }
   return (
     <Container maxWidth="md" className={classes.container}>
       <Paper className={classes.paper}>
@@ -194,35 +204,45 @@ export default function SingleChatPage({ messagesData, userId, talker }) {
 }
 
 SingleChatPage.getInitialProps = async ({ req, res, query }) => {
-  const apiObj = createApiRequester(req);
-  const { data } = await apiObj.get('users/status');
-  const id1 = parseInt(query.id1, 10);
-  const id2 = parseInt(query.id2, 10);
+  try {
+    const apiObj = createApiRequester(req);
+    const { data } = await apiObj.get('users/status');
+    const id1 = parseInt(query.id1, 10);
+    const id2 = parseInt(query.id2, 10);
 
-  if (data.connected === false) {
-    redirectTo('/signin', req, res);
-  }
-  if (data.profileIsComplete === false) {
-    redirectTo('/complete-profile', req, res);
-  }
+    if (data.connected === false) {
+      redirectTo('/signin', req, res);
+    }
+    if (data.profileIsComplete === false) {
+      redirectTo('/complete-profile', req, res);
+    }
 
-  const matchesQueryRes = await apiObj.get('users/current/matches');
-  if (
-    matchesQueryRes.data.findIndex((el) => el.id === id1 || el.id === id2) === -1
+    const matchesQueryRes = await apiObj.get('users/current/matches');
+    if (
+      matchesQueryRes.data.findIndex((el) => el.id === id1 || el.id === id2) === -1
     || [id1, id2].indexOf(data.user_id) === -1
     || id1 >= id2
-  ) {
-    redirectTo('/chat', req, res);
+    ) {
+      redirectTo('/chat', req, res);
+    }
+
+    const talkerId = (id1 === data.user_id) ? id2 : id1;
+
+    const messagesQueryRes = await apiObj.get('users/message', { params: { talkerId } });
+    const talkerQueryRes = await apiObj.get(`users/${talkerId}`);
+
+    return {
+      type: 'success',
+      messagesData: messagesQueryRes.data.rows,
+      userId: data.user_id,
+      talker: talkerQueryRes.data.rows[0],
+    };
+  } catch (err) {
+    return {
+      type: 'error',
+      messagesData: null,
+      userId: null,
+      talker: null,
+    };
   }
-
-  const talkerId = (id1 === data.user_id) ? id2 : id1;
-
-  const messagesQueryRes = await apiObj.get('users/message', { params: { talkerId } });
-  const talkerQueryRes = await apiObj.get(`users/${talkerId}`);
-
-  return {
-    messagesData: messagesQueryRes.data.rows,
-    userId: data.user_id,
-    talker: talkerQueryRes.data.rows[0],
-  };
 };

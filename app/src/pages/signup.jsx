@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { createApiRequester, ApiContext } from '../stores/Api';
 import SignupForm from '../components/SignupForm';
 import redirectTo from '../initialServices/initialServices';
+import ErrorComponent from '../components/ErrorComponent';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignupPage() {
+export default function SignupPage({ type }) {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -57,6 +58,11 @@ export default function SignupPage() {
     createUser();
   }, [login]);
 
+  if (type === 'error') {
+    return (
+      <ErrorComponent status={400} message="could not fetch data from server" />
+    );
+  }
   return (
     <Container maxWidth="md" className={classes.container}>
       <Paper className={classes.paper}>
@@ -70,10 +76,14 @@ export default function SignupPage() {
 }
 
 SignupPage.getInitialProps = async ({ req, res }) => {
-  const apiObj = createApiRequester(req);
-  const { data } = await apiObj.get('users/status', req, res);
-  if (data.connected === true) {
-    redirectTo('/', req, res);
+  try {
+    const apiObj = createApiRequester(req);
+    const { data } = await apiObj.get('users/status', req, res);
+    if (data.connected === true) {
+      redirectTo('/', req, res);
+    }
+    return ({ type: 'sucess' });
+  } catch (err) {
+    return ({ type: 'error' });
   }
-  return (data);
 };

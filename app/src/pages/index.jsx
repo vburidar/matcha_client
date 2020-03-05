@@ -147,7 +147,7 @@ export default function HomePage({
   if (type === 'error') {
     return (
       <div>
-        <ErrorComponent error={data} message={id} status={status} />
+        <ErrorComponent message={id} status={400} />
       </div>
     );
   }
@@ -243,9 +243,7 @@ HomePage.getInitialProps = async (ctx) => {
   } catch (err) {
     return ({
       type: 'error',
-      status: err.response.status,
       id: 'couldn\'t fetch suggestion list',
-      data: err.response.data,
       userId: null,
     });
   }
