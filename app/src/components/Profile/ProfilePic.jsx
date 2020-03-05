@@ -70,7 +70,7 @@ function ProfilePic({ talker }) {
     } else {
       setImageTab(talker.path);
     }
-  }, []);
+  }, [talker.path]);
 
   return (
     <Paper className={classes.paper}>

@@ -100,6 +100,18 @@ ProfilePage.getInitialProps = async ({ req, res, query }) => {
     return ({ type: 'redirection' });
   }
   try {
+    const block = await apiObj.get('event/block', { params: { visitedId: id, visitorId: data.user_id } });
+    if (block.data.length > 0) {
+      return ({
+        type: 'blocked',
+        talker: {
+          visited_blocked_visitor: block.data[0].sender_id === parseInt(id, 10),
+          visitor_blocked_visited: block.data[0].sender_id === data.user_id,
+          id,
+        },
+        userId: data.user_id,
+      });
+    }
     const talkerQueryRes = await apiObj.get(`users/${id}`);
     const talker = talkerQueryRes.data.rows[0];
     if (talker === undefined) {
@@ -107,17 +119,6 @@ ProfilePage.getInitialProps = async ({ req, res, query }) => {
     }
     return ({ type: 'success', talker, userId: data.user_id });
   } catch (err) {
-    if (err.response && err.response.data === 'unauthorized') {
-      return ({
-        type: 'blocked',
-        talker: {
-          visited_blocked_visitor: true,
-          visitor_blocked_visited: true,
-          id,
-        },
-        userId: data.user_id,
-      });
-    }
     return ({ type: 'error' });
   }
 };

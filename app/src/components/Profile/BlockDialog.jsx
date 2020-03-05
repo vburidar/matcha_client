@@ -25,7 +25,7 @@ export default function ReportDialog({ props }) {
         user_id: props.id,
       },
     });
-    router.push(`/profile/${props.id}`);
+    router.push('/profile/[id]', `/profile/${props.id}`);
   }
   if (props.visitor_blocked_visited) {
     return (

@@ -393,14 +393,6 @@ export function SettingsProvider({ children }) {
     });
   }, [locations]);
 
-  useEffect(() => {
-    console.log('errors', errors);
-  }, [errors]);
-
-  useEffect(() => {
-    console.log('disabgbled', generalDisabled, picturesDisabled, locationsDisabled);
-  }, [generalDisabled, picturesDisabled, locationsDisabled]);
-
   return (
     <SettingsContext.Provider value={value}>
       {children}
