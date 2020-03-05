@@ -83,6 +83,40 @@ const useStyles = makeStyles((theme) => ({
 function ProfileInfos({ props, userId }) {
   const classes = useStyles();
 
+  function computeGender(val) {
+    if (val === 1) {
+      return ('Man');
+    } if (val === 2) {
+      return ('Woman');
+    } if (val === 4) {
+      return ('Gender Queer');
+    }
+    return ('Gender Fluid');
+  }
+
+  function computeSexualPreference(val) {
+    let ret = '';
+    if (val & 1) {
+      ret += 'Man';
+    } if (val & 2) {
+      if (ret.length > 0) {
+        ret += ', ';
+      }
+      ret += 'Woman';
+    } if (val & 4) {
+      if (ret.length > 0) {
+        ret += ', ';
+      }
+      ret += 'Gender Queer';
+    } if (val & 8) {
+      if (ret.length > 0) {
+        ret += ', ';
+      }
+      ret += 'Gender Fluid';
+    }
+    return (ret);
+  }
+
   return (
     <div>
       <Paper className={classes.paper}>
@@ -114,6 +148,16 @@ function ProfileInfos({ props, userId }) {
           userId={userId}
           visitorId={props.id}
         />
+      </Paper>
+      <Paper className={classes.paper}>
+        <Typography color="textSecondary" variant="h6" component="h4">
+          {'Gender: '}
+          {computeGender(props.gender)}
+        </Typography>
+        <Typography color="textSecondary" variant="h6" component="h4">
+          {'Sexual preference: '}
+          {computeSexualPreference(props.sexual_preference)}
+        </Typography>
       </Paper>
       <Paper className={classes.paper}>
         <Typography color="textSecondary" variant="h6" component="h4">
