@@ -12,7 +12,7 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-
+import { newNotification } from '../../../store/actions';
 import { StoreContext } from '../../../store/Store';
 import { ApiContext } from '../../../stores/Api';
 import { SocketContext } from '../../../stores/Socket';
@@ -87,9 +87,10 @@ export default function ButtonListConnected() {
       await sessionDelete();
       dispatch({ type: 'UPDATE_CONNECTION_STATUS', inSession: false });
     } catch (err) {
-      console.log('error');
+      return newNotification(dispatch, { message: err.message, severity: 'error' });
     }
     router.push('/signin');
+    return (null);
   }
 
   function handleNotificationButtonClick(e) {

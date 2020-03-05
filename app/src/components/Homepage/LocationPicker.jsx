@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Grid, TextField } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import axios from 'axios';
 
 import { countryToFlag } from '../../stores/Settings';
+import { StoreContext } from '../../store/Store';
+import { newNotification } from '../../store/actions';
 
 export default function LocationPicker({ location, setLocation }) {
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [timeoutId, setTimeoutId] = useState(-1);
+  const { dispatch } = useContext(StoreContext);
 
   function clearAutocomplete() {
     setLocation({ label: '', type: 'default' });
@@ -41,8 +44,7 @@ export default function LocationPicker({ location, setLocation }) {
         });
       }
     } catch (err) {
-      console.log('error when fetching position');
-      // newNotification(dispatch, { message: err.message, severity: 'error' });
+      newNotification(dispatch, { message: err.message, severity: 'error' });
     }
   }
 
@@ -92,9 +94,7 @@ export default function LocationPicker({ location, setLocation }) {
 
       return setLocationSuggestions(suggestions);
     } catch (err) {
-      console.log('error2');
-      return (null);
-      // return newNotification(dispatch, { message: err.message, severity: 'error' });
+      return newNotification(dispatch, { message: err.message, severity: 'error' });
     }
   }
 

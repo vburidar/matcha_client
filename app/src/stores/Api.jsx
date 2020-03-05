@@ -16,6 +16,7 @@ export function getErrorDict(key) {
     email_invalid: 'This email didn\'nt show up in our database. Are you sure you registered with this address?',
     validation_code_invalid: 'This account can\'t be validated',
     invalid_nb_of_interests: 'Number of interests should be more than 2 and less than 7',
+    invalid_request_report: 'You can only report a user once',
     not_authorized: 'Not authorized',
   };
   if (key.match('invalid-password')) {

@@ -5,6 +5,7 @@ import {
   Paper,
   Button,
   Typography,
+  Grid,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { formatDistance } from 'date-fns';
@@ -69,27 +70,33 @@ export default function ListEvent({ props }) {
             className={classes.paper}
             key={`${el.type}/${el.receiver_id}/${el.sender_id}/${el.created_at}`}
           >
-            <div className={classes.div}>
-              <IconAction type={el.type} />
-              <Avatar className={classes.avatar} alt={el.first_name} src={el.path} />
-              <Typography className={classes.typo} color="textPrimary" variant="h6" component="h4">
-                {getMessageFromType(el.first_name)[el.type]}
-              </Typography>
-            </div>
-            <Typography color="textSecondary" component="h4">
-              {formatDistance(
-                new Date(el.created_at),
-                new Date(),
-                { addSuffix: true },
-              )}
-            </Typography>
-            <Button component={LinkButton} variant="contained" id={el.id} className={classes.button} href="/profile/[id]" hrefAs={`/profile/${el.sender_id}`}>
-              See
-              {' '}
-              {el.first_name}
-              {' '}
-              {'\'s profile'}
-            </Button>
+            <Grid container>
+              <Grid item className={classes.div} xs={12} sm>
+                <IconAction type={el.type} />
+                <Avatar className={classes.avatar} alt={el.first_name} src={el.path} />
+                <Typography className={classes.typo} color="textPrimary" variant="h6" component="h4">
+                  {getMessageFromType(el.first_name)[el.type]}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm>
+                <Typography color="textSecondary" component="h4" align="center">
+                  {formatDistance(
+                    new Date(el.created_at),
+                    new Date(),
+                    { addSuffix: true },
+                  )}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm>
+                <Button component={LinkButton} variant="contained" id={el.id} className={classes.button} href="/profile/[id]" hrefAs={`/profile/${el.sender_id}`}>
+                  See
+                  {' '}
+                  {el.first_name}
+                  {' '}
+                  {'\'s profile'}
+                </Button>
+              </Grid>
+            </Grid>
           </Paper>
         ))}
     </Container>

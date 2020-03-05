@@ -47,9 +47,7 @@ export default function SingleLocation({ index, disabled }) {
 
       return setLocationSuggestions(suggestions);
     } catch (err) {
-      console.log('error2');
-      return (null);
-      // return newNotification(dispatch, { message: err.message, severity: 'error' });
+      return newNotification(dispatch, { message: err.message, severity: 'error' });
     }
   }
 

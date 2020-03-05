@@ -4,6 +4,8 @@ import { FormControl, FormHelperText } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import FlatButton from '@material-ui/core/Button';
 import { ApiContext } from '../stores/Api';
+import { StoreContext } from '../store/Store';
+import { newNotification } from '../store/actions';
 
 export default function ResetPasswordForm({ login, code }) {
   const { resetPassword } = useContext(ApiContext);
@@ -11,6 +13,8 @@ export default function ResetPasswordForm({ login, code }) {
   const [passwordConf, setPasswordConf] = useState('');
   const [messagePwd, setMessagePwd] = useState('');
   const [submitDisabled, setSubmitDisabled] = useState(true);
+  const { dispatch } = useContext(StoreContext);
+
 
   const handleChangePassword = (event) => {
     setPassword(event.target.value);
@@ -52,9 +56,10 @@ export default function ResetPasswordForm({ login, code }) {
           await resetPassword({ login, password, code });
           router.push('/signin');
         } catch (err) {
-          console.log(err);
+          return newNotification(dispatch, { message: err.message, severity: 'error' });
         }
       }
+      return (null);
     }
     readUser();
   };
