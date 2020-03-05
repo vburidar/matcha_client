@@ -94,7 +94,7 @@ function ProfilePic({ talker }) {
           )}
         </Typography>
       )}
-      {usersConnected[talker.id] !== true && !usersLastConnection[talker.id] && (
+      {usersConnected[talker.id] !== true && !usersLastConnection[talker.id] && talker.last_time_online !== null && (
         <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">
           Last connection :
           {' '}
@@ -103,6 +103,11 @@ function ProfilePic({ talker }) {
             new Date(),
             { addSuffix: true },
           )}
+        </Typography>
+      )}
+      {usersConnected[talker.id] !== true && !usersLastConnection[talker.id] && talker.last_time_online === null && (
+        <Typography className={classes.typo} color="textSecondary" variant="h6" component="h4">
+          New user
         </Typography>
       )}
       <SimpleSlider imageList={imageTab} />
