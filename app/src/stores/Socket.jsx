@@ -122,7 +122,7 @@ export function SocketProvider({ children }) {
 
   useEffect(() => {
     if (state.inSession) {
-      const sock = io('http://localhost:8080');
+      const sock = io(`http://${process.env.DOMAIN}:8080`);
       sock.on('connect', () => {
         setSocket(sock);
       });
