@@ -51,7 +51,7 @@ export function createApiRequester(req) {
       baseURL: `http://${process.env.DOMAIN}:8080/api`,
       timeout: 10000,
       withCredentials: true,
-      headers: { 'Access-Control-Allow-Origin': `http://${process.env.DOMAIN}:3000/` },
+      headers: { 'Access-Control-Allow-Origin': `http://${process.env.DOMAIN}/` },
     }));
   }
   return (axios.create({
@@ -69,7 +69,7 @@ export function ApiProvider({ children }) {
     baseURL: `http://${process.env.DOMAIN}:8080/api`,
     timeout: 10000,
     withCredentials: true,
-    headers: { 'Access-Control-Allow-Origin': `http://${process.env.DOMAIN}:3000/` },
+    headers: { 'Access-Control-Allow-Origin': `http://${process.env.DOMAIN}/` },
   });
 
   const handleError = (err) => {

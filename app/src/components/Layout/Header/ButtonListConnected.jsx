@@ -37,10 +37,10 @@ function getNotificationMessage(notification) {
 
 function getNotificationLink(notification) {
   if (['like', 'unlike', 'visit'].indexOf(notification.type) > -1) {
-    return `http://${process.env.DOMAIN}:3000/profile/${notification.senderId}`;
+    return `/profile/${notification.senderId}`;
   }
   if (['match', 'message'].indexOf(notification.type) > -1) {
-    return `http://${process.env.DOMAIN}:3000/chat/${Math.min(notification.senderId, notification.receiverId)}/${Math.max(notification.senderId, notification.receiverId)}`;
+    return `/chat/${Math.min(notification.senderId, notification.receiverId)}/${Math.max(notification.senderId, notification.receiverId)}`;
   }
   return '/';
 }
