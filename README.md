@@ -8,12 +8,6 @@
 
 **SeeYou** is the name we choose for our own version of **Matcha**
 
-## Who are the developers behind SeeYou?
-
-We are Thomas and Victor, two students at 42 Paris.
-
-You can also report any bug at this same address.
-
 ## Where can I see the website?
 
 The website is accessible at seeyou.victorburidard.com. We added an algorithm that populate the databases with fake profiles so you can browse it and explore the different functionalities. 
