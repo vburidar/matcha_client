@@ -10,7 +10,7 @@
 
 ## Where can I see the website?
 
-The website is accessible at <seeyou.victorburidard.com>. We added an algorithm that populate the databases with fake profiles so you can browse it and explore the different functionalities. 
+The website is accessible [here](seeyou.victorburidard.com). We added an algorithm that populate the databases with fake profiles so you can browse it and explore the different functionalities. 
 
 All the profile have **Firstname_LASTNAME** as login and the well secured **Qwerty123** as password so you can test it easily. Examples of login and password combinations are provided on the Signin page of the website.
 
