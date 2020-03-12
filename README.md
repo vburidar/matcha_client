@@ -6,7 +6,7 @@
 
 ## What is SeeYou?
 
-**SeeYou** is the name we choose for our own version of **Matcha**
+**SeeYou** is the name we choose for our own version of **Matcha**.
 
 ## Where can I see the website?
 
@@ -29,7 +29,7 @@ To improve the aspects of our pages and components, we used the graphic library 
 Here you can connect to your account if it has been previously created and validated.
 
 ## Signup
-Here you can create a new account. You will receive an email when signup is completed in order to validate your account
+Here you can create a new account. You will receive an email when signup is completed in order to validate your account.
 
 ## Complete-profile
 When you log in for the first time, you won't be able to access to the functionalities of the site until you fill in complementary informations such as birthdate, gender, sexual preference. You will also have to add a picture and a localisation to your profile.
@@ -38,15 +38,15 @@ When you log in for the first time, you won't be able to access to the functiona
 
 ### Suggestion list
 The Homepage will display a list of profiles that are relevant to your own profile. There are strict criteria and soft criteria. The strict criteria are :
-- User should be less than 20 kilometers away
+- User should be less than 20 kilometers away.
 - User should have at least one common interest with your profile.
 - You should correspond to the sexual preference of those profiles and they should match your sexual preference.
 
 Soft criteria are used to compute a matching score. This matching score allows us to rank the profile from most relevant to less relevant:
  - Distance in kilometers
- - Number of common interests
- - Popularity: ratio of received likes / given likes + match / given_likes
- - Age difference
+ - Number of common interests.
+ - Popularity: ratio of received likes / given likes + match / given_likes.
+ - Age difference.
 
 ### Option panel
 On the Homepage, you have an option panel with two main features:
@@ -66,4 +66,4 @@ On this page, you can see all the users you can chat with and the last message y
 On the activity page are displayed the following activities:
 - The visits you received.
 - The likes you received.
-- The matches you received.
+- The matches you were part.
