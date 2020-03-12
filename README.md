@@ -10,7 +10,7 @@
 
 ## Where can I see the website?
 
-The website is accessible [here](http://seeyou.victorburidard.com). We added an algorithm that populate the databases with fake profiles so you can browse it and explore the different functionalities. 
+The website is accessible [here](http://seeyou.victorburidard.com). We added an algorithm that populates the databases with fake profiles so you can explore the different functionalities in "real" conditions. 
 
 All the profile have **Firstname_LASTNAME** as login and the well secured **Qwerty123** as password so you can test it easily. Examples of login and password combinations are provided on the Signin page of the website.
 
@@ -19,9 +19,9 @@ You can also create your own account.
 
 You are here in the git repository for the **client part** of SeeYou. If you wish to check out the **api side** of our project, you can go [here](https://github.com/vburidar/matcha_api)
 
-The client part of our project is coded in **React** with the **Hooks** functionalities. We also used **NextJs** especially for the Router, the Links between our pages and for the GetInitialProps function that allow us to load all the data we need from the Node server before rendering the page.
+The client part of our project is coded in **React** with the **Hooks** functionalities. We also used **NextJs** especially for the Router, the Links between our pages and for the GetInitialProps function that allowed us to load all the data we need from the Node server before rendering the page.
 
-To improve the aspects of our pages and components, we used the graphic library **Material UI**.
+To improve the visual aspect of our pages and components, we used the graphic library **Material UI**.
 
 # Pages
 
