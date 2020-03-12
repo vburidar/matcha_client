@@ -6,7 +6,7 @@
 
 ## What is SeeYou?
 
-**SeeYou** is the name we choose for our own version of **Matcha**.
+**SeeYou** is the name we chose for our own version of **Matcha**.
 
 ## Where can I see the website?
 
